@@ -1,0 +1,153 @@
+1#######################################################
+
+Pentru aface disponibila functionalitatea de autentificare din Breeze in forum:
+
+app/Http/Middleware/HandleInertiaRequests.php
+---------------------------------------------
+Modifica metoda share sa arate asa:
+use Illuminate\Support\Facades\Route; // Nu uita sa introduci facada Route
+
+public function share(Request $request): array
+{
+    return [
+        ...parent::share($request),
+        'auth' => [
+            'user' => $request->user(),
+        ],
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ];
+}
+
+Aceasta face ca props canLogin si canRegister sa fie disponibile global in frontend. Apoi:
+
+Creeaza o pagina Layout, cum ar fi
+resources/js/Layouts/ForumLayout.vue
+------------------------------------
+<!-- resources/js/Layouts/ForumLayout.vue -->
+<template>
+  <div>
+    <nav v-if="$page.props.canLogin" class="flex justify-end gap-4">
+      <Link
+        v-if="$page.props.auth.user"
+        :href="route('dashboard')"
+        class="text-black dark:text-white px-3 py-2 hover:text-gray-600"
+      >
+        Dashboard
+      </Link>
+      <template v-else>
+        <Link :href="route('login')" class="px-3 py-2">Log in</Link>
+        <Link v-if="$page.props.canRegister" :href="route('register')" class="px-3 py-2">
+          Register
+        </Link>
+      </template>
+    </nav>
+    <!-- Include slot for page-specific content -->
+    <slot />
+  </div>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3';
+</script>
+
+<style scoped>
+/* Add any necessary styling */
+</style>
+
+//// Sau daca vrei sa incluzi in loc de Link catre Dashboard user's drop-down menu cand este autentificat /////////////
+resources/js/Layouts/ForumLayout.vue
+------------------------------------
+<template>
+  <div>
+    <!-- Navigation with User Dropdown or Guest Links -->
+    <nav v-if="$page.props.canLogin" class="flex justify-end gap-4">
+      <!-- Authenticated User Dropdown -->
+      <div v-if="$page.props.auth.user" class="relative inline-block">
+        <button class="text-black dark:text-white px-3 py-2 hover:text-gray-600">
+          {{$page.props.auth.user.name}} <!-- Display user's name -->
+        </button>
+        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg dark:bg-gray-800">
+          <Link
+            :href="route('profile.edit')"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            Profile
+          </Link>
+          <Link
+            as="button"
+            method="post"
+            :href="route('logout')"
+            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            Logout
+          </Link>
+        </div>
+      </div>
+
+      <!-- Guest Links -->
+      <template v-else>
+        <Link :href="route('login')" class="px-3 py-2">Log in</Link>
+        <Link v-if="$page.props.canRegister" :href="route('register')" class="px-3 py-2">
+          Register
+        </Link>
+      </template>
+    </nav>
+
+    <!-- Include slot for page-specific content -->
+    <slot />
+  </div>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3';
+</script>
+
+////////////////////
+
+
+In sfarsit, ai acest layout disponibil in toate paginile. Tot ce ai de facut este sa il importi in <script setup> componenta ForumLayout.vue si sa inglobezi pagina in acest layout:
+
+<template>
+    <ForumLayout>
+        // Aici codul paginii curente
+    </FormLayout>
+</template>
+
+Daca vrei sa folosesti o componenta (nu un layout) precum <AuthButtons /> care sa iti ofere oriunde vrei aceste butoane:
+resources/js/Components/AuthButtons.vue
+---------------------------------------
+<!-- resources/js/Components/AuthButtons.vue -->
+<template>
+  <nav v-if="$page.props.canLogin" class="flex justify-end gap-4">
+    <Link
+      v-if="$page.props.auth.user"
+      :href="route('dashboard')"
+      class="text-black dark:text-white px-3 py-2 hover:text-gray-600"
+    >
+      Dashboard
+    </Link>
+    <template v-else>
+      <Link :href="route('login')" class="px-3 py-2">Log in</Link>
+      <Link v-if="$page.props.canRegister" :href="route('register')" class="px-3 py-2">
+        Register
+      </Link>
+    </template>
+  </nav>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3';
+</script>
+
+Apoi in Home.vue poti sa integrezi asa:
+
+<template>
+    <AuthButtons />
+    // cod pentru pagina
+    // poti pune <AuthButtons /> in oricare alta parte
+</template>
+
+2#################################################################
+
+

@@ -1,0 +1,22 @@
+INSERT INTO posts (thread_id, user_id, content, created_at, updated_at) VALUES
+-- Starting posts for Technology threads
+(1, 1, 'AI is transforming industries. AI is changing the way we work across various sectors, from healthcare to finance.', NOW(), NOW()),
+(2, 1, 'Choosing the right language. Each programming language has its strengths and use cases. Let''s discuss!', NOW(), NOW()),
+
+-- Starting posts for Health threads
+(3, 1, 'Eating right is key. A balanced diet not only keeps us healthy but also boosts our mood and energy levels.', NOW(), NOW()),
+(4, 1, 'Mental health matters. It\’s essential to talk about mental health openly and support one another.', NOW(), NOW()),
+(5, 1, 'Starting your fitness journey. Fitness is not just about working out; it\’s about making healthy choices.', NOW(), NOW()),
+
+-- Starting posts for Travel threads
+(6, 1, 'Hidden gems to visit. Let\’s explore some lesser-known travel destinations this year!', NOW(), NOW()),
+(7, 1, 'Traveling cheaply. Here are some hacks to travel without breaking the bank.', NOW(), NOW()),
+
+-- Starting posts for Food threads
+(8, 1, 'Easy meals for busy days. Here are some quick recipes that do not compromise on taste.', NOW(), NOW()),
+(9, 1, 'Culinary adventures. What\’s your favorite cuisine to explore?', NOW(), NOW()),
+
+-- Starting posts for Lifestyle threads
+(10, 1, 'Why minimalism works. Living minimally can lead to a more fulfilling life with less stress.', NOW(), NOW()),
+(11, 1, 'Going green. What small changes can we make for a sustainable future?', NOW(), NOW()),
+(12, 1, 'Finding balance. Work-life balance is crucial for overall well-being. Let\’s share tips.', NOW(), NOW());
