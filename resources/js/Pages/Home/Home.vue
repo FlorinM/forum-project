@@ -25,7 +25,7 @@
 <script setup>
 import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3'; // Importing Link from Inertia
-import ForumLayout from '../../Layouts/ForumLayout.vue';
+import ForumLayout from '@/Layouts/ForumLayout.vue';
 
 const props = defineProps({
   categories: Array, // Expecting an array of categories

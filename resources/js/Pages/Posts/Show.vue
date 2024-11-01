@@ -20,7 +20,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import ForumLayout from '../../Layouts/ForumLayout.vue';
+import ForumLayout from '@/Layouts/ForumLayout.vue';
 
 const props = defineProps({
   category: Object, // The selected category
