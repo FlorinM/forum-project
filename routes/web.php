@@ -31,6 +31,18 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/categories/{categoryId}/threads/create', [ThreadController::class, 'create'])
+    ->name('threads.create');
+
+    Route::post('/categories/{categoryId}/threads', [ThreadController::class, 'store'])
+    ->name('threads.store');
+});
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/categories/{category}', [ThreadController::class, 'show'])->name('categories.show');
 Route::get('/categories/{category}/threads/{thread}', [PostController::class, 'show'])->name('threads.show');
+
+
+
+

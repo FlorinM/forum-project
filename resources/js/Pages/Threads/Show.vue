@@ -4,6 +4,12 @@
 <ForumLayout>
   <div class="container">
     <h1 class="heading">{{ category.name }} - Threads</h1>
+
+    <!-- New Thread Button (only visible to authenticated users) -->
+    <Link v-if="$page.props.auth.user" :href="route('threads.create', { categoryId: category.id })" class="btn-new-thread">
+      Start New Thread
+    </Link>
+
     <ul class="thread-list">
       <li
         v-for="thread in threads"
@@ -66,5 +72,29 @@ const props = defineProps({
 
 .thread-item:hover {
   background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+.btn-new-thread {
+  display: inline-block; /* Allows margin and padding to take effect */
+  padding: 10px 20px; /* Top/bottom and left/right padding */
+  font-size: 16px; /* Font size */
+  font-weight: bold; /* Bold text */
+  color: white; /* Text color */
+  background-color: #007bff; /* Button background color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animation for hover effects */
+}
+
+.btn-new-thread:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.btn-new-thread:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Add a shadow on focus */
 }
 </style>
