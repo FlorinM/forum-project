@@ -8,6 +8,7 @@
         <input
           id="threadTitle"
           v-model="form.title"
+          @change="form.validate('title')"
           class="input-field"
           required
           placeholder="Enter thread title"
@@ -20,6 +21,7 @@
         <textarea
           id="threadDescription"
           v-model="form.content"
+          @change="form.validate('content')"
           name="content"
           class="input-field"
           required
@@ -34,6 +36,7 @@
         <textarea
           id="postContent"
           v-model="form.postContent"
+          @change="form.validate('postContent')"
           name="postContent"
           class="input-field"
           required
@@ -42,27 +45,33 @@
         ></textarea>
       </div>
 
-      <button type="submit" class="btn-submit">Create Thread</button>
+      <button :disabled="form.processing" type="submit" class="btn-submit">Create Thread</button>
     </form>
+
+    <div v-if="form.invalid('title')" class="error">{{ form.errors.title }}</div>
+    <div v-if="form.invalid('content')" class="error">{{ form.errors.content }}</div>
+    <div v-if="form.invalid('postContent')" class="error">{{ form.errors.postContent }}</div>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm } from 'laravel-precognition-vue-inertia';
 
 const props = defineProps({
   category: Object,
 });
 
-const form = useForm({
+const form = useForm('post', route('threads.store', {categoryId: props.category.id}), {
   title: '',
   content: '',        // For thread description
   postContent: '',    // For the first post content
 });
 
 function submitForm() {
-  form.post(route('threads.store', { categoryId: props.category.id }));
+    form.submit({
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
+    });
 }
 </script>
 
@@ -129,5 +138,11 @@ h1 {
 
 .btn-submit:hover {
   background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 5px;
 }
 </style>

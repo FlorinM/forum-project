@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\PostController;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
 Route::get('/', function () {
@@ -36,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
     ->name('threads.create');
 
     Route::post('/categories/{categoryId}/threads', [ThreadController::class, 'store'])
-    ->name('threads.store');
+    ->name('threads.store')
+    ->middleware([HandlePrecognitiveRequests::class]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

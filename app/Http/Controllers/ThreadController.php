@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Thread;
 use App\Models\Post;
 use Inertia\Inertia;
+use App\Http\Requests\StoreThreadRequest;
 
 class ThreadController extends Controller
 {
@@ -30,24 +31,25 @@ class ThreadController extends Controller
         ]);
     }
 
-    public function store(Request $request, $categoryId)
+    public function store(StoreThreadRequest $request, $categoryId)
     {
-        // Store the new thread without validation for now
+        // At this point the input is validated
         $thread = Thread::create([
             'category_id' => $categoryId,
             'user_id' => auth()->id(),
-            'title' => $request->title,
-            'content' => $request->content, // This is for the thread description
+            'title' => $request->get('title'),
+            'content' => $request->get('content'), // This is for the thread description
         ]);
 
         // Now create the first post for this thread
         Post::create([
             'thread_id' => $thread->id,
             'user_id' => auth()->id(),
-            'content' => $request->postContent, // Use postContent to match the input
+            'content' => $request->get('postContent'), // Use postContent to match the input
         ]);
 
         // Redirect or return response
-        return redirect()->route('threads.show', [$categoryId, $thread->id]);
+        return redirect()->route('threads.show', [$categoryId, $thread->id])
+            ->with('success', 'Thread created successfully');
     }
 }
