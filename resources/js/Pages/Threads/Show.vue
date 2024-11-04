@@ -1,29 +1,36 @@
 <!-- resources/js/Pages/Threads/Show.vue -->
 
 <template>
-<ForumLayout>
-  <div class="container">
-    <h1 class="heading">{{ category.name }} - Threads</h1>
+  <ForumLayout>
+    <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
+      <h1 class="text-center text-4xl font-bold text-gray-800 mb-6">{{ category.name }} - Threads</h1>
 
-    <!-- New Thread Button (only visible to authenticated users) -->
-    <Link v-if="$page.props.auth.user" :href="route('threads.create', { categoryId: category.id })" class="btn-new-thread">
-      Start New Thread
-    </Link>
-
-    <ul class="thread-list">
-      <li
-        v-for="thread in threads"
-        :key="thread.id"
-        class="thread-item"
+      <!-- New Thread Button (only visible to authenticated users) -->
+      <Link
+        v-if="$page.props.auth.user"
+        :href="route('threads.create', { categoryId: category.id })"
+        class="inline-block mb-4 px-4 py-2 text-white bg-blue-600 rounded-md transition duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
       >
-        <Link :href="route('threads.show', [category.id, thread.id])">
-            <h2>{{ thread.title }}</h2>
-            <p>Posted by User ID: {{ thread.user_id }}</p>
-        </Link>
-      </li>
-    </ul>
-  </div>
-</ForumLayout>
+        Start New Thread
+      </Link>
+
+      <ul class="list-none p-0">
+        <li
+          v-for="thread in threads"
+          :key="thread.id"
+          class="w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+        >
+          <Link
+            :href="route('threads.show', [category.id, thread.id])"
+            class="block text-sm text-blue-600 w-full text-left p-5"
+          >
+            {{ thread.title }}
+            <span class="block text-xs text-gray-600">Posted by User ID: {{ thread.user_id }}</span>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  </ForumLayout>
 </template>
 
 <script setup>
@@ -36,65 +43,3 @@ const props = defineProps({
   threads: Array,   // The threads under the selected category
 });
 </script>
-
-<style scoped>
-/* Add your styles here for the thread list */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.heading {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.thread-list {
-  list-style: none;
-  padding: 0;
-}
-
-.thread-item {
-  padding: 15px;
-  margin: 10px 0;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.thread-item:hover {
-  background-color: #f0f0f0; /* Light gray background on hover */
-}
-
-.btn-new-thread {
-  display: inline-block; /* Allows margin and padding to take effect */
-  padding: 10px 20px; /* Top/bottom and left/right padding */
-  font-size: 16px; /* Font size */
-  font-weight: bold; /* Bold text */
-  color: white; /* Text color */
-  background-color: #007bff; /* Button background color */
-  border: none; /* Remove default border */
-  border-radius: 5px; /* Rounded corners */
-  text-align: center; /* Center text */
-  text-decoration: none; /* Remove underline */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Animation for hover effects */
-}
-
-.btn-new-thread:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  transform: translateY(-2px); /* Slight lift on hover */
-}
-
-.btn-new-thread:focus {
-  outline: none; /* Remove default focus outline */
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Add a shadow on focus */
-}
-</style>

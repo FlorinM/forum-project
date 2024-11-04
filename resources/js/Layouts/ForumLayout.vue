@@ -1,18 +1,21 @@
 <template>
-  <div>
-    <nav v-if="$page.props.canLogin" class="flex justify-end gap-4">
-      <!-- Authenticated User Dropdown -->
-      <div v-if="$page.props.auth.user" class="relative ms-3">
-        <Dropdown align="right" width="48">
-          <template #trigger>
-            <span class="inline-flex rounded-md">
+  <div class="min-h-screen bg-blue-50">
+    <nav class="flex justify-between items-center bg-blue-600 text-white shadow-md p-4">
+      <div class="flex items-center">
+        <h1 class="text-lg font-bold">My Forum</h1>
+      </div>
+      <div class="flex items-center">
+        <!-- Authenticated User Dropdown -->
+        <div v-if="$page.props.auth.user" class="relative">
+          <Dropdown align="right" width="48">
+            <template #trigger>
               <button
                 type="button"
-                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                class="flex items-center rounded-md border border-transparent bg-blue-800 px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-blue-700 focus:outline-none"
               >
                 {{ $page.props.auth.user.name }}
                 <svg
-                  class="-me-0.5 ms-2 h-4 w-4"
+                  class="-mr-1 ml-2 h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -24,31 +27,33 @@
                   />
                 </svg>
               </button>
-            </span>
-          </template>
+            </template>
 
-          <template #content>
-            <DropdownLink :href="route('profile.edit')">
-              Profile
-            </DropdownLink>
-            <DropdownLink :href="route('logout')" method="post" as="button">
-              Log Out
-            </DropdownLink>
-          </template>
-        </Dropdown>
+            <template #content>
+              <DropdownLink :href="route('profile.edit')" class="text-gray-700 hover:bg-gray-200">
+                Profile
+              </DropdownLink>
+              <DropdownLink :href="route('logout')" method="post" as="button" class="text-gray-700 hover:bg-gray-200">
+                Log Out
+              </DropdownLink>
+            </template>
+          </Dropdown>
+        </div>
+
+        <!-- Guest Links for Login and Register -->
+        <template v-else>
+          <div class="flex space-x-4">
+            <Link :href="route('login')" class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded-md transition">Log in</Link>
+            <Link v-if="$page.props.canRegister" :href="route('register')" class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded-md transition">Register</Link>
+          </div>
+        </template>
       </div>
-
-      <!-- Guest Links for Login and Register -->
-      <template v-else>
-        <Link :href="route('login')" class="px-3 py-2">Log in</Link>
-        <Link v-if="$page.props.canRegister" :href="route('register')" class="px-3 py-2">
-          Register
-        </Link>
-      </template>
     </nav>
 
     <!-- Slot for Page-Specific Content -->
-    <slot />
+    <div class="py-6">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -58,4 +63,3 @@ import { Link } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 </script>
-

@@ -1,21 +1,22 @@
-<!-- resources/js/Pages/Posts/Show.vue -->
-
 <template>
-<ForumLayout>
-  <div class="container">
-    <h1 class="heading">{{ thread.title }}</h1>
-    <ul class="post-list">
-      <li
-        v-for="post in posts"
-        :key="post.id"
-        class="post-item"
-      >
-        <p>Posted by User ID: {{ post.user_id }}</p>
-        <p>{{ post.content }}</p>
-      </li>
-    </ul>
-  </div>
-</ForumLayout>
+  <ForumLayout>
+    <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
+      <h1 class="text-center text-4xl font-bold text-gray-800 mb-6">{{ thread.title }}</h1>
+
+      <ul class="list-none p-0">
+        <li
+          v-for="post in posts"
+          :key="post.id"
+          class="w-full mb-4 bg-white border border-gray-300 rounded-md"
+        >
+          <div class="block text-left p-5">
+            <p class="text-xs text-gray-600">Posted by User ID: {{ post.user_id }}</p>
+            <div class="text-xs text-gray-800">{{ post.content }}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </ForumLayout>
 </template>
 
 <script setup>
@@ -25,41 +26,6 @@ import ForumLayout from '@/Layouts/ForumLayout.vue';
 const props = defineProps({
   category: Object, // The selected category
   thread: Object,   // The selected thread
-  posts: Array, // Posts associated with this category/thread
+  posts: Array,     // Posts associated with this category/thread
 });
 </script>
-
-<style scoped>
-/* Add your styles here for the thread list */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.heading {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.post-list {
-  list-style: none;
-  padding: 0;
-}
-
-.post-item {
-  padding: 15px;
-  margin: 10px 0;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-}
-
-p {font-size: 0.8rem;}
-</style>
