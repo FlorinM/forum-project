@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         // Fetch all root categories with all nested subcategories
         $categories = Category::whereNull('parent_id')
-            ->with('allSubcategories')
+            ->with('subcategories')
             ->get();
 
         // Pass the category data to the Inertia view
