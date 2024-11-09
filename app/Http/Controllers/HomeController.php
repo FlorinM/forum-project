@@ -10,7 +10,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::all(); // Fetch all categories
+        // Fetch all root categories with all nested subcategories
+        $categories = Category::whereNull('parent_id')
+            ->with('allSubcategories')
+            ->get();
+
+        // Pass the category data to the Inertia view
         return Inertia::render('Home/Home', [
             'categories' => $categories
         ]);
