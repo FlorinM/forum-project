@@ -16,7 +16,7 @@
             {{ category.name }} (Created by User ID: {{ category.user_id }})
           </Link>
 
-          <ul v-if="category.subcategories && category.subcategories.length" class="pl-5">
+          <ul v-if="category.subcategories && category.subcategories.length" class="pl-5 mr-2">
             <CategoryItem
               v-for="subcat in category.subcategories"
               :key="subcat.id"
