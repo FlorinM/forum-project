@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,16 +8,20 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
-    // Method for showing subcategories
+    // Method for showing subcategories and threads
     public function showSubcategories(Category $category)
     {
-        // Fetch only the current category and its immediate subcategories
-        $subcategories = $category->subcategories;  // No need for nested subcategories
+        // Fetch the subcategories (immediate subcategories)
+        $subcategories = $category->subcategories;
 
-        // Return the view and pass the category and its direct subcategories
+        // Fetch the threads for the current category (eager load the user for each thread)
+        $threads = $category->threads()->with('user')->get();
+
+        // Return the view and pass the category, its subcategories, and threads
         return Inertia::render('Categories/Subcategories', [
             'category' => $category,
             'subcategories' => $subcategories,
+            'threads' => $threads,  // Pass the threads to the view
         ]);
     }
 }
