@@ -7,7 +7,10 @@
         <li
           v-for="category in categories"
           :key="category.id"
-          class="w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+          :class="[
+            'w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200',
+            !category.subcategories.length ? 'hover:bg-gray-200' : ''  // Only apply hover effect if no subcategories
+          ]"
         >
           <Link
             :href="route('categories.subcategories', category.id)"
