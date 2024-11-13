@@ -11,6 +11,12 @@ use App\Http\Requests\StoreThreadRequest;
 
 class ThreadController extends Controller
 {
+    /**
+     * Display threads for a given category.
+     *
+     * @param Category $category The category to display threads for
+     * @return \Inertia\Response The Inertia response with the category and threads
+     */
     public function show(Category $category)
     {
         $threads = $category->threads()->with('user')->get(); // Eager load the user relationship
@@ -20,6 +26,12 @@ class ThreadController extends Controller
         ]);
     }
 
+    /**
+     * Show the form to create a new thread.
+     *
+     * @param int $categoryId The category ID for the new thread
+     * @return \Inertia\Response The Inertia response with the category
+     */
     public function create($categoryId)
     {
         // Find the category by ID
@@ -31,6 +43,13 @@ class ThreadController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created thread and its first post.
+     *
+     * @param StoreThreadRequest $request The validated request data
+     * @param int $categoryId The category ID to associate with the thread
+     * @return \Illuminate\Http\RedirectResponse Redirect to the new thread page
+     */
     public function store(StoreThreadRequest $request, $categoryId)
     {
         // At this point the input is validated

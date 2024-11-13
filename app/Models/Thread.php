@@ -11,19 +11,31 @@ class Thread extends Model
 
     protected $fillable = ['category_id', 'user_id', 'title', 'content'];
 
-    // Relationship with Category
+    /**
+     * Define the relationship between the thread and the category it belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Relationship with User
+    /**
+     * Define the relationship between the thread and the user who created it.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relationship with Posts
+    /**
+     * Define the relationship between the thread and its posts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function posts()
     {
         return $this->hasMany(Post::class);

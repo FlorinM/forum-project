@@ -8,6 +8,11 @@ use Inertia\Inertia;
 
 class HomeController extends Controller
 {
+    /**
+     * Display the home page with all root categories and their subcategories.
+     *
+     * @return \Inertia\Response
+     */
     public function index()
     {
         // Fetch all root categories with all nested subcategories

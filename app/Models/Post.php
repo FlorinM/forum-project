@@ -11,13 +11,21 @@ class Post extends Model
 
     protected $fillable = ['thread_id', 'user_id', 'title', 'content'];
 
-    // Relationship with Thread
+    /**
+     * Define the relationship between the post and the thread it belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function thread()
     {
         return $this->belongsTo(Thread::class);
     }
 
-    // Relationship with User
+    /**
+     * Define the relationship between the post and the user who created it.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

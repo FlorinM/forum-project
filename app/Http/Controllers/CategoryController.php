@@ -8,7 +8,12 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
-    // Method for showing subcategories and threads
+    /**
+     * Show the subcategories and threads of a given category.
+     *
+     * @param Category $category The category for which to show subcategories and threads
+     * @return \Inertia\Response The Inertia response with subcategories and threads
+     */
     public function showSubcategories(Category $category)
     {
         // Fetch the subcategories (immediate subcategories)
