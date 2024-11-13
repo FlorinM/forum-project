@@ -17,7 +17,7 @@
             {{ subcategory.name }} (Created by User ID: {{ subcategory.user_id }})
           </Link>
 
-          <!-- Render first-level subcategories (and further levels recursively) -->
+          <!-- Render first-level subcategories using CategoryItem component -->
           <ul v-if="subcategory.subcategories && subcategory.subcategories.length" class="pl-5">
             <CategoryItem
               v-for="subcat in subcategory.subcategories"
