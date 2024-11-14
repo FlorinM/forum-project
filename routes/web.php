@@ -33,11 +33,14 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+/**
+ * Always name route parameters {category} and {thread}
+ */
 Route::middleware(['auth'])->group(function () {
-    Route::get('/categories/{categoryId}/threads/create', [ThreadController::class, 'create'])
+    Route::get('/categories/{category}/threads/create', [ThreadController::class, 'create'])
     ->name('threads.create');
 
-    Route::post('/categories/{categoryId}/threads', [ThreadController::class, 'store'])
+    Route::post('/categories/{category}/threads', [ThreadController::class, 'store'])
     ->name('threads.store')
     ->middleware([HandlePrecognitiveRequests::class]);
 });

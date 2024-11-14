@@ -32,7 +32,7 @@
       <!-- New Thread Button (only visible to authenticated users) -->
       <Link
         v-if="$page.props.auth.user"
-        :href="route('threads.create', { categoryId: category.id })"
+        :href="route('threads.create', { category: category.id })"
         class="inline-block mb-4 px-4 py-2 text-white bg-blue-600 rounded-md transition duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
       >
         Start New Thread

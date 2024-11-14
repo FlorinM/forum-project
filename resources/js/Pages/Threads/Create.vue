@@ -61,7 +61,7 @@ const props = defineProps({
   category: Object,
 });
 
-const form = useForm('post', route('threads.store', {categoryId: props.category.id}), {
+const form = useForm('post', route('threads.store', {category: props.category.id}), {
   title: '',
   content: '',        // For thread description
   postContent: '',    // For the first post content
