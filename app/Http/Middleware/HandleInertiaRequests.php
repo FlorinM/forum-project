@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
+            'breadcrumbs' => breadcrumbs(),
         ];
     }
 }
