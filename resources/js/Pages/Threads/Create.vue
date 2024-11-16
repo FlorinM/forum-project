@@ -1,61 +1,67 @@
 <template>
-  <div class="create-thread-container">
-    <h1>Create New Thread in {{ category.name }}</h1>
-    <form @submit.prevent="submitForm" class="thread-form">
-      <!-- Title Input -->
-      <div class="form-group">
-        <label for="threadTitle">Title</label>
-        <input
-          id="threadTitle"
-          v-model="form.title"
-          @change="form.validate('title')"
-          class="input-field"
-          required
-          placeholder="Enter thread title"
-        />
-      </div>
+  <ForumLayout>
+    <div class="max-w-3xl mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
+      <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Create New Thread in {{ category.name }}</h1>
 
-      <!-- Content Input for Thread Description -->
-      <div class="form-group">
-        <label for="threadDescription">Thread Description</label>
-        <textarea
-          id="threadDescription"
-          v-model="form.content"
-          @change="form.validate('content')"
-          name="content"
-          class="input-field"
-          required
-          rows="3"
-          placeholder="Write a brief description of your thread"
-        ></textarea>
-      </div>
+      <form @submit.prevent="submitForm" class="flex flex-col gap-4">
+        <!-- Title Input -->
+        <div class="flex flex-col items-center">
+          <label for="threadTitle" class="text-gray-700 font-semibold mb-2 w-4/5 text-left">Title</label>
+          <input
+            id="threadTitle"
+            v-model="form.title"
+            @change="form.validate('title')"
+            class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
+            required
+            placeholder="Enter thread title"
+          />
+        </div>
 
-      <!-- Initial Post Content Input -->
-      <div class="form-group">
-        <label for="postContent">First Post Content</label>
-        <textarea
-          id="postContent"
-          v-model="form.postContent"
-          @change="form.validate('postContent')"
-          name="postContent"
-          class="input-field"
-          required
-          rows="5"
-          placeholder="Write the content of your first post"
-        ></textarea>
-      </div>
+        <!-- Content Input for Thread Description -->
+        <div class="flex flex-col items-center">
+          <label for="threadDescription" class="text-gray-700 font-semibold mb-2 w-4/5 text-left">Thread Description</label>
+          <textarea
+            id="threadDescription"
+            v-model="form.content"
+            @change="form.validate('content')"
+            name="content"
+            class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
+            required
+            rows="3"
+            placeholder="Write a brief description of your thread"
+          ></textarea>
+        </div>
 
-      <button :disabled="form.processing" type="submit" class="btn-submit">Create Thread</button>
-    </form>
+        <!-- Initial Post Content Input -->
+        <div class="flex flex-col items-center">
+          <label for="postContent" class="text-gray-700 font-semibold mb-2 w-4/5 text-left">First Post Content</label>
+          <textarea
+            id="postContent"
+            v-model="form.postContent"
+            @change="form.validate('postContent')"
+            name="postContent"
+            class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
+            required
+            rows="5"
+            placeholder="Write the content of your first post"
+          ></textarea>
+        </div>
 
-    <div v-if="form.invalid('title')" class="error">{{ form.errors.title }}</div>
-    <div v-if="form.invalid('content')" class="error">{{ form.errors.content }}</div>
-    <div v-if="form.invalid('postContent')" class="error">{{ form.errors.postContent }}</div>
-  </div>
+        <button :disabled="form.processing" type="submit" class="w-24 mx-auto p-3 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors mt-4">
+          Create Thread
+        </button>
+      </form>
+
+      <div v-if="form.invalid('title')" class="text-red-500 text-sm mt-2">{{ form.errors.title }}</div>
+      <div v-if="form.invalid('content')" class="text-red-500 text-sm mt-2">{{ form.errors.content }}</div>
+      <div v-if="form.invalid('postContent')" class="text-red-500 text-sm mt-2">{{ form.errors.postContent }}</div>
+    </div>
+  </ForumLayout>
 </template>
 
 <script setup>
 import { useForm } from 'laravel-precognition-vue-inertia';
+import ForumLayout from '@/Layouts/ForumLayout.vue';
 
 const props = defineProps({
   category: Object,
@@ -74,75 +80,3 @@ function submitForm() {
     });
 }
 </script>
-
-<style scoped>
-.create-thread-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.thread-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;  /* Center align the label and input */
-}
-
-.label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-  width: 80%;           /* Align label with the input field */
-  text-align: left;     /* Align label text to the left */
-}
-
-.input-field {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  max-width: 100%;      /* Allow 100% width but limit to max width below */
-  width: 80%;           /* Set width to 80% for centered layout */
-  margin: 0 auto;       /* Center the input fields */
-}
-
-.btn-submit {
-  padding: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 10px;     /* Add some space above the button */
-  margin: 0 auto;
-  width: 100px;
-}
-
-.btn-submit:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  color: red;
-  font-size: 0.875rem;
-  margin-top: 5px;
-}
-</style>
