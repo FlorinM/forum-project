@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-blue-50">
-    <nav class="flex justify-between items-center bg-blue-600 text-white shadow-md p-4">
+  <div class="max-w-screen-xl mx-auto min-h-screen bg-blue-50">
+    <nav class="fixed flex w-full max-w-screen-xl mx-auto justify-between items-center bg-blue-600 text-white shadow-md p-4 rounded-md z-20">
       <div class="flex items-center">
         <h1 class="text-lg font-bold">My Forum</h1>
       </div>
@@ -50,7 +50,9 @@
       </div>
     </nav>
 
-    <Breadcrumbs></Breadcrumbs>
+    <div class="pt-20">
+        <Breadcrumbs></Breadcrumbs>
+    </div>
     <!-- Slot for Page-Specific Content -->
     <div class="py-6">
       <slot />
