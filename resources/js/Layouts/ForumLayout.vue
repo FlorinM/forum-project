@@ -50,12 +50,12 @@
       </div>
     </nav>
 
-    <Breadcrumbs />
+    <Breadcrumbs></Breadcrumbs>
     <!-- Slot for Page-Specific Content -->
     <div class="py-6">
       <slot />
     </div>
-    <Breadcrumbs />
+    <Breadcrumbs></Breadcrumbs>
   </div>
 </template>
 
