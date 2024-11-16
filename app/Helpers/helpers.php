@@ -16,6 +16,14 @@ if (! function_exists('breadcrumbs')) {
         $category = request()->route('category');  // Automatically gets the category from the route
         $thread = request()->route('thread');      // Automatically gets the thread from the route
 
+        // Make sure $category and $thread are resolved
+        if (is_numeric($category)) {
+            $category = Category::find($category);
+        }
+        if (is_numeric($thread)) {
+            $thread = Thread::find($thread);
+        }
+
         // Build breadcrumb path by traversing up through parent categories if category exists
         if ($category instanceof Category) {
             while ($category) {
