@@ -49,7 +49,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/categories/{category}', [ThreadController::class, 'show'])->name('categories.show');
 Route::get('/categories/{category}/threads/{thread}', [PostController::class, 'show'])->name('threads.show');
 Route::get('/categories/{category}/subcategories', [CategoryController::class, 'showSubcategories'])->name('categories.subcategories');
 

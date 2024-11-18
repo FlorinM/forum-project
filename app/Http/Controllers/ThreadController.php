@@ -12,21 +12,6 @@ use App\Http\Requests\StoreThreadRequest;
 class ThreadController extends Controller
 {
     /**
-     * Display threads for a given category.
-     *
-     * @param Category $category The category to display threads for
-     * @return \Inertia\Response The Inertia response with the category and threads
-     */
-    public function show(Category $category)
-    {
-        $threads = $category->threads()->with('user')->get(); // Eager load the user relationship
-        return Inertia::render('Threads/Show', [
-            'category' => $category,
-            'threads' => $threads,
-        ]);
-    }
-
-    /**
      * Show the form to create a new thread.
      *
      * @param int $categoryId The category ID for the new thread
