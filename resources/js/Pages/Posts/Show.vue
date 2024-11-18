@@ -22,19 +22,23 @@
       <div class="mt-6">
         <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
           <textarea
-            v-model="replyContent"
+            v-model="form.content"
+            @change="form.validate('content')"
+            required
             placeholder="Write your reply here..."
             class="w-full h-24 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
           ></textarea>
           <div class="mt-4 text-right">
             <button
               type="submit"
+              :disabled="form.processing"
               class="px-6 py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 focus:outline-none"
             >
               Post Reply
             </button>
           </div>
         </form>
+        <div v-if="form.invalid('content')" class="text-red-500 text-sm mt-2">{{ form.errors.content }}</div>
       </div>
     </div>
   </ForumLayout>
@@ -42,8 +46,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3'; // Import Inertia's form helper
-import ForumLayout from '@/Layouts/ForumLayout.vue'; // Correctly importing ForumLayout
+import { useForm } from 'laravel-precognition-vue-inertia';
+import ForumLayout from '@/Layouts/ForumLayout.vue';
 
 // Define props passed to the component
 const props = defineProps({
@@ -52,22 +56,15 @@ const props = defineProps({
   posts: Array,
 });
 
-// Local state for reply content
-const replyContent = ref('');
-
-// Create an Inertia form for the reply
-const form = useForm({
-  content: '', // Corresponds to the "content" field for a new post
+// Create a Laravel Precognition Vue form
+const form = useForm('post', route('posts.store', {category: props.category.id, thread: props.thread.id}), {
+  content: '', // The contend of the post
 });
 
-// Handle form submission
-const submitReply = () => {
-  form.content = replyContent.value; // Bind form content to the reply input
-
-  form.post(`/categories/${props.category.id}/threads/${props.thread.id}/posts`, {
-    onSuccess: () => {
-      replyContent.value = ''; // Clear the reply input after successful submission
-    },
-  });
-};
+function submitReply() {
+    form.submit({
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
+    });
+}
 </script>

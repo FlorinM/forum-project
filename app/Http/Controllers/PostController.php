@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Thread;
 use App\Models\Post;
 use Inertia\Inertia;
+use App\Http\Requests\StorePostRequest;
 
 class PostController extends Controller
 {
@@ -36,17 +37,13 @@ class PostController extends Controller
      * @param Thread $thread The thread to which the reply belongs
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, Category $category, Thread $thread)
+    public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
-        // Validate the request
-        $validated = $request->validate([
-            'content' => 'required|string|min:1|max:5000', // Limit the content size
-        ]);
-
         // Create the new post
         $thread->posts()->create([
             'user_id' => auth()->id(), // Use the currently authenticated user
-            'content' => $validated['content'],
+            'thread_id' => $thread->id,
+            'content' => $request->get('content'),
         ]);
 
         return back(); // Redirect back to the thread view

@@ -45,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
     ->middleware([HandlePrecognitiveRequests::class]);
 
     Route::post('/categories/{category}/threads/{thread}/posts', [PostController::class, 'store'])
-    ->name('posts.store');
+    ->name('posts.store')
+    ->middleware([HandlePrecognitiveRequests::class]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
