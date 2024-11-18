@@ -19,7 +19,7 @@
       </ul>
 
       <!-- Reply Form -->
-      <div class="mt-6">
+      <div v-if="$page.props.auth.user" class="mt-6">
         <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
           <textarea
             v-model="form.content"
