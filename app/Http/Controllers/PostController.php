@@ -27,4 +27,28 @@ class PostController extends Controller
             'posts' => $posts
         ]);
     }
+
+    /**
+     * Store a new reply for a thread.
+     *
+     * @param Request $request The incoming HTTP request
+     * @param Category $category The category of the thread
+     * @param Thread $thread The thread to which the reply belongs
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request, Category $category, Thread $thread)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'content' => 'required|string|min:1|max:5000', // Limit the content size
+        ]);
+
+        // Create the new post
+        $thread->posts()->create([
+            'user_id' => auth()->id(), // Use the currently authenticated user
+            'content' => $validated['content'],
+        ]);
+
+        return back(); // Redirect back to the thread view
+    }
 }
