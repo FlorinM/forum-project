@@ -13,7 +13,7 @@
         >
           <div class="block text-left p-5">
             <p class="text-xs text-gray-600">Posted by User ID: {{ post.user_id }}</p>
-            <div class="text-xs text-gray-800">{{ post.content }}</div>
+            <div class="prose max-w-full text-xs text-gray-800" v-html="post.content"></div>
           </div>
         </li>
       </ul>
