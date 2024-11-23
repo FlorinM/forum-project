@@ -21,7 +21,7 @@
       <!-- Reply Form -->
       <div v-if="$page.props.auth.user" class="mt-6">
         <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
-          <div ref="quillEditor"></div> <!-- Quill editor container -->
+          <QuillEditor v-model="form.content" />
           <div class="mt-4 text-right">
             <button
               type="submit"
@@ -39,11 +39,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
-import Quill from 'quill';
-import 'quill/dist/quill.snow.css';
+import QuillEditor from '@/Components/QuillEditor.vue';
 
 // Define props passed to the component
 const props = defineProps({
@@ -57,51 +56,15 @@ const form = useForm('post', route('posts.store', {category: props.category.id, 
   content: '', // The content of the post
 });
 
-// Initialize Quill Editor
-const quillEditor = ref(null);
-let quillInstance = null;
-
-onMounted(() => {
-  // Initialize the Quill editor inside the div container
-  quillInstance = new Quill(quillEditor.value, {
-    theme: 'snow',
-    placeholder: 'Write your reply here...',
-    modules: {
-      toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'align': [] }],
-        ['bold', 'italic', 'underline'],
-        [{ color: [] }],
-        ['link'],
-        ['image', 'video'],
-        ['code-block'],
-      ],
-    },
-  });
-
-  // Sync Quill content with form.content
-  quillInstance.on('text-change', () => {
-    form.content = quillInstance.root.innerHTML;
-  });
-});
-
 function submitReply() {
-  // Get the content from the Quill editor
-  let content = quillInstance.root.innerHTML;
-
   // Remove any <input> elements from the content
-  content = content.replace(/<input[^>]*>/g, '');
-
-  // Set the cleaned content to the form
-  form.content = content;
+  form.content.replace(/<input[^>]*>/g, '');
 
   // Submit the form
   form.submit({
     preserveScroll: true,
     onSuccess: () => {
       form.reset();  // Reset form fields, including the content
-      quillInstance.setContents([]);  // Clear the Quill editor content properly
     },
   });
 }
