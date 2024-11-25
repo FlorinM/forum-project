@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StorePostRequest extends FormRequest
 {
@@ -22,7 +23,27 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string', 'min:10', 'max:5000'],
+            'content' => ['string', 'max:5000'],
+        ];
+    }
+
+    /**
+     * Get the "after" validation callables for the request.
+     *
+     * @return array
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $content = $this->input('content');
+                $plainText = strip_tags($content);  // Strip out HTML tags
+
+                if (!empty($plainText) && strlen($plainText) < 10) {
+                    // Add custom error message
+                    $validator->errors()->add('content', 'The post must be at least 10 characters long.');
+                }
+            },
         ];
     }
 }

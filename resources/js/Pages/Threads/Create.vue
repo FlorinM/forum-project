@@ -10,7 +10,7 @@
           <input
             id="threadTitle"
             v-model="form.title"
-            @change="form.validate('title')"
+            @input="form.validate('title')"
             class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
             required
             placeholder="Enter thread title"
@@ -54,6 +54,7 @@
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
+import { watch } from 'vue';
 
 const props = defineProps({
   category: Object,
@@ -63,6 +64,10 @@ const form = useForm('post', route('threads.store', {category: props.category.id
   title: '',
   content: '',        // For thread description
   postContent: '',    // For the first post content
+});
+
+watch(() => form.postContent, () => {
+   form.validate('postContent');
 });
 
 function submitForm() {

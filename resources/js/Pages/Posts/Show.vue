@@ -43,6 +43,7 @@ import { ref } from 'vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
+import { watch } from 'vue';
 
 // Define props passed to the component
 const props = defineProps({
@@ -56,11 +57,11 @@ const form = useForm('post', route('posts.store', {category: props.category.id, 
   content: '', // The content of the post
 });
 
-function submitReply() {
-  // Remove any <input> elements from the content
-  form.content.replace(/<input[^>]*>/g, '');
+watch(() => form.content, () => {
+   form.validate('content');
+});
 
-  // Submit the form
+function submitReply() {
   form.submit({
     preserveScroll: true,
     onSuccess: () => {
