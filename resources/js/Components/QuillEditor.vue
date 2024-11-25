@@ -1,7 +1,7 @@
 <template>
    <div>
       <!-- Quill editor container -->
-      <div ref="quillEditor" class="quill-editor"></div>
+      <div ref="quillEditor" class="min-h-[200px] border border-gray-300 rounded-lg bg-white"></div>
    </div>
 </template>
 
@@ -45,7 +45,6 @@ onMounted(() => {
    });
 });
 
-
 // Watch for changes in modelValue and update the Quill editor
 watch(modelValue, (newValue) => {
    if (quillInstance && quillInstance.root.innerHTML !== newValue) {
@@ -53,13 +52,3 @@ watch(modelValue, (newValue) => {
    }
 });
 </script>
-
-<style scoped>
-/* Optional: Add styles for the Quill editor */
-.quill-editor {
-   min-height: 200px; /* Adjust as necessary */
-   border: 1px solid #ddd;
-   border-radius: 8px;
-   background-color: #fff;
-}
-</style>
