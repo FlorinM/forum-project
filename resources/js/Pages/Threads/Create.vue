@@ -35,16 +35,7 @@
         <!-- Initial Post Content Input -->
         <div class="flex flex-col items-center">
           <label for="postContent" class="text-gray-700 font-semibold mb-2 w-4/5 text-left">First Post Content</label>
-          <textarea
-            id="postContent"
-            v-model="form.postContent"
-            @change="form.validate('postContent')"
-            name="postContent"
-            class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
-            required
-            rows="5"
-            placeholder="Write the content of your first post"
-          ></textarea>
+          <QuillEditor id="postContent" v-model="form.postContent"/>
         </div>
 
         <button :disabled="form.processing" type="submit" class="w-24 mx-auto p-3 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors mt-4">
@@ -62,6 +53,7 @@
 <script setup>
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
+import QuillEditor from '@/Components/QuillEditor.vue';
 
 const props = defineProps({
   category: Object,
