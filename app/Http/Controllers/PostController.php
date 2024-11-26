@@ -8,9 +8,17 @@ use App\Models\Thread;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Http\Requests\StorePostRequest;
+use App\Services\SanitizationService;
 
 class PostController extends Controller
 {
+    protected $sanitizationService;
+
+    public function __construct(SanitizationService $sanitizationService)
+    {
+        $this->sanitizationService = $sanitizationService;
+    }
+
     /**
      * Display the posts for a given thread in a category.
      *
@@ -39,11 +47,14 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
+        // Sanitize the content using the service
+        $sanitizedContent = $this->sanitizationService->sanitize($request->input('content'));
+
         // Create the new post
         $thread->posts()->create([
             'user_id' => auth()->id(), // Use the currently authenticated user
             'thread_id' => $thread->id,
-            'content' => $request->get('content'),
+            'content' => $sanitizedContent,
         ]);
 
         return back(); // Redirect back to the thread view
