@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use HTMLPurifier;
-use HTMLPurifier_HTML5Config;
 
 class SanitizationService
 {
@@ -20,18 +19,10 @@ class SanitizationService
      * - Allows inline styles for text formatting, such as color, background-color, and text alignment.
      * - Permits YouTube embeds via `<iframe>` with the `HTML.SafeIframe` directive and a safe URI pattern.
      */
-    public function __construct()
+    public function __construct(HTMLPurifier $purifier)
     {
-        // Create the default configuration for HTML5 with the necessary directives
-        $config = HTMLPurifier_HTML5Config::createDefault();
-
-        // You can adjust additional configurations if needed
-        // Example: Allow YouTube embeds in iframe tags
-        $config->set('HTML.SafeIframe', true);
-        $config->set('URI.SafeIframeRegexp', '%^//www\.youtube\.com/embed/%');
-
         // Instantiate the HTMLPurifier object
-        $this->purifier = new HTMLPurifier($config);
+        $this->purifier = $purifier;
     }
 
     /**
