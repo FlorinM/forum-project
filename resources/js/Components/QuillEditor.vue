@@ -45,10 +45,17 @@ onMounted(() => {
    });
 });
 
-// Watch for changes in modelValue and update the Quill editor
+// Watch for changes in modelValue and update the Quill editor content
 watch(modelValue, (newValue) => {
-   if (quillInstance && quillInstance.root.innerHTML !== newValue) {
-      quillInstance.root.innerHTML = newValue; // Update the editor content
-   }
+  if (quillInstance && newValue !== quillInstance.root.innerHTML) {
+    // Check if quoted content exists in the newValue
+    if (newValue.includes('<blockquote>')) {
+      // If quoted content exists, insert it using dangerouslyPasteHTML
+      quillInstance.clipboard.dangerouslyPasteHTML(newValue);
+    } else {
+      // Otherwise, just set the HTML content normally
+      quillInstance.root.innerHTML = newValue;
+    }
+  }
 });
 </script>

@@ -15,6 +15,12 @@
             <p class="text-xs text-gray-600">Posted by User ID: {{ post.user_id }}</p>
             <div class="prose max-w-full text-xs text-gray-800" v-html="post.content"></div>
           </div>
+          <!-- Quote button -->
+          <div v-if="$page.props.auth.user" class="flex justify-end p-4">
+            <button @click="quotePost(post)" class="quote-btn text-right py-1 px-3 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none">
+                Quote
+            </button>
+          </div>
         </li>
       </ul>
 
@@ -60,6 +66,24 @@ const form = useForm('post', route('posts.store', {category: props.category.id, 
 watch(() => form.content, () => {
    form.validate('content');
 });
+
+// Method to handle quote button click
+function quotePost(post) {
+  const postContent = post.content; // HTML content from the quoted post
+  const postAuthor = `Posted by User ID: ${post.user_id}`; // You can customize this as needed
+  const postTimestamp = `Posted on ${post.created_at}`; // You can also customize this
+
+  // Create the quoted HTML content
+  // Create the quoted HTML content
+  const quotedText = `<blockquote>
+                        <strong>${postAuthor}</strong><br>
+                        ${postTimestamp}:<br>
+                        ${postContent}
+                      </blockquote>`;
+
+  // Pass quoted content to child component
+  form.content += quotedText; // Add the quoted content to the form content (QuillEditor will sync)
+}
 
 function submitReply() {
   form.submit({
