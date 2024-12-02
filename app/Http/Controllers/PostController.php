@@ -48,15 +48,85 @@ class PostController extends Controller
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
         // Sanitize the content using the service
-        $sanitizedContent = $this->sanitizationService->sanitize($request->input('content'));
+        $content = $this->sanitizationService->sanitize($request->input('content'));
+
+        // Remove nested <blockquote>...</blockquote> if any
+        $content = $this->removeNestedBlockquotes($content);
 
         // Create the new post
         $thread->posts()->create([
             'user_id' => auth()->id(), // Use the currently authenticated user
             'thread_id' => $thread->id,
-            'content' => $sanitizedContent,
+            'content' => $content,
         ]);
 
         return back(); // Redirect back to the thread view
+    }
+
+    /**
+     * Removes nested blockquotes from the input HTML.
+     *
+     * This method processes the provided HTML input, searches for all <blockquote> elements,
+     * and removes any blockquotes that are nested inside other blockquotes. Root blockquotes
+     * (those not inside any other blockquote) and any other content outside blockquotes are
+     * preserved.
+     *
+     * @param string $input The HTML string to process.
+     *
+     * @return string The HTML string with nested blockquotes removed.
+     */
+    protected function removeNestedBlockquotes($input)
+    {
+        // If the input is empty, return the empty string immediately
+        if (empty($input)) {
+            return '';
+        }
+
+        // Create a new DOMDocument instance
+        $dom = new \DOMDocument();
+
+        // Suppress warnings from invalid HTML, such as unclosed tags
+        libxml_use_internal_errors(true);
+
+        // Load the input HTML string, making sure it handles empty or malformed input gracefully
+        $dom->loadHTML($input, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Find all blockquote elements
+        $blockquotes = $dom->getElementsByTagName('blockquote');
+
+        // Loop through all blockquotes and remove nested ones
+        foreach ($blockquotes as $blockquote) {
+            // Check if the current blockquote is inside any ancestor blockquote
+            if ($this->hasAncestorBlockquote($blockquote)) {
+                // Remove the nested blockquote and everything inside it (including nested blockquotes)
+                $blockquote->parentNode->removeChild($blockquote);
+            }
+        }
+
+        // Save and return the cleaned HTML string
+        // Trim the result to avoid any extra newline or whitespace
+        return trim($dom->saveHTML());
+    }
+
+    /**
+     * Checks if the given blockquote is inside any ancestor blockquote.
+     *
+     * This method traverses up the DOM tree from the provided blockquote element to check if it
+     * is nested within another blockquote element. If an ancestor blockquote is found, the method
+     * returns true, indicating that the blockquote is nested. Otherwise, it returns false.
+     *
+     * @param DOMElement $blockquote The blockquote element to check.
+     *
+     * @return bool Returns true if the blockquote is inside another blockquote, otherwise false.
+     */
+    private function hasAncestorBlockquote($blockquote)
+    {
+        // Traverse up the ancestor chain of the blockquote
+        while ($blockquote = $blockquote->parentNode) {
+            if ($blockquote->nodeName === 'blockquote') {
+                return true; // Found an ancestor blockquote
+            }
+        }
+        return false; // No ancestor blockquote found
     }
 }
