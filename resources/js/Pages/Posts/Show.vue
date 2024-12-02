@@ -67,13 +67,25 @@ watch(() => form.content, () => {
    form.validate('content');
 });
 
+function extractUserText(postContent) {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = postContent;
+
+  // Remove all <blockquote> elements from the content
+  tempDiv.querySelectorAll('blockquote').forEach((blockquote) => {
+    blockquote.remove();
+  });
+
+  return tempDiv.innerHTML; // Return the cleaned-up HTML
+}
+
 // Method to handle quote button click
 function quotePost(post) {
-  const postContent = post.content; // HTML content from the quoted post
+  // Extract only the user's text (excluding quotes)
+  const postContent = extractUserText(post.content);
   const postAuthor = `Posted by User ID: ${post.user_id}`; // You can customize this as needed
   const postTimestamp = `Posted on ${post.created_at}`; // You can also customize this
 
-  // Create the quoted HTML content
   // Create the quoted HTML content
   const quotedText = `<blockquote>
                         <strong>${postAuthor}</strong><br>
