@@ -26,7 +26,7 @@
 
       <!-- Reply Form -->
       <div v-if="$page.props.auth.user" class="mt-6">
-        <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
+        <form ref="replyForm" @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
           <QuillEditor v-model="form.content" />
           <div class="mt-4 text-right">
             <button
@@ -57,6 +57,9 @@ const props = defineProps({
   thread: Object,
   posts: Array,
 });
+
+// Define a reference for the reply form
+const replyForm = ref(null);
 
 // Create a Laravel Precognition Vue form
 const form = useForm('post', route('posts.store', {category: props.category.id, thread: props.thread.id}), {
@@ -95,6 +98,11 @@ function quotePost(post) {
 
   // Pass quoted content to child component
   form.content += quotedText; // Add the quoted content to the form content (QuillEditor will sync)
+
+  // Scroll to the reply form
+  if (replyForm.value) {
+    replyForm.value.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to the form
+  }
 }
 
 function submitReply() {
