@@ -22,7 +22,7 @@ class HTMLPurifierServiceProvider extends ServiceProvider
 
             // Additional configurations (e.g., allow YouTube embeds)
             $config->set('HTML.SafeIframe', true);
-            $config->set('URI.SafeIframeRegexp', '%^//www\.youtube\.com/embed/%');
+            $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube\.com/embed/)%');
 
             // Return an instance of HTMLPurifier
             return new HTMLPurifier($config);
