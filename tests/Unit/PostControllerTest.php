@@ -7,6 +7,8 @@ use App\Http\Controllers\PostController;
 use App\Services\SanitizationService;
 use ReflectionMethod;
 use HTMLPurifier;
+use App\Services\ImageStorageService;
+use App\Services\ImageExtractorService;
 
 class PostControllerTest extends TestCase
 {
@@ -64,18 +66,32 @@ class PostControllerTest extends TestCase
 
         // Mock the HTMLPurifier class
         $purifierMock = $this->createMock(HTMLPurifier::class);
-
-        // Mock the purify method to return the input unchanged (just for testing the blockquote removal)
         $purifierMock->method('purify')
         ->willReturnCallback(function($htmlContent) {
-            return $htmlContent; // Simply return the content without modifying it (no real sanitization for testing)
+            return $htmlContent;
         });
 
         // Create an instance of the SanitizationService with the mocked HTMLPurifier
         $sanitizationService = new SanitizationService($purifierMock);
 
-        // Create an instance of the PostController with the mocked SanitizationService
-        $this->controller = new PostController($sanitizationService);
+        // Mock the ImageStorageService
+        $imageStorageServiceMock = $this->createMock(ImageStorageService::class);
+
+        // Mock the storeImage method to return a fake URL
+        $imageStorageServiceMock->method('storeImage')
+        ->willReturn('http://fakeurl.com/image.jpg');
+
+        // Mock the ImageExtractorService with the mocked ImageStorageService
+        $imageExtractorServiceMock = $this->createMock(ImageExtractorService::class);
+
+        // Mock the extractAndReplaceImages method to return the input unchanged (just for testing)
+        $imageExtractorServiceMock->method('extractAndReplaceImages')
+        ->willReturnCallback(function($htmlContent) {
+            return $htmlContent; // You can modify this to simulate image extraction if needed
+        });
+
+        // Create an instance of the PostController with the mocked services
+        $this->controller = new PostController($sanitizationService, $imageExtractorServiceMock);
     }
 
     /**
