@@ -9,14 +9,19 @@ use App\Models\Post;
 use Inertia\Inertia;
 use App\Http\Requests\StorePostRequest;
 use App\Services\SanitizationService;
+use App\Services\ImageExtractorService;
 
 class PostController extends Controller
 {
     protected $sanitizationService;
+    protected $imageExtractorService;
 
-    public function __construct(SanitizationService $sanitizationService)
-    {
+    public function __construct(
+        SanitizationService $sanitizationService,
+        ImageExtractorService $imageExtractorService
+    ) {
         $this->sanitizationService = $sanitizationService;
+        $this->imageExtractorService = $imageExtractorService;
     }
 
     /**
@@ -47,8 +52,11 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
+        // Extract images from the string and replace with urls
+        $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
+
         // Sanitize the content using the service
-        $content = $this->sanitizationService->sanitize($request->input('content'));
+        $content = $this->sanitizationService->sanitize($content);
 
         // Remove nested <blockquote>...</blockquote> if any
         $content = $this->removeNestedBlockquotes($content);
