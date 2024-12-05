@@ -34,6 +34,9 @@ onMounted(() => {
             ['bold', 'italic', 'underline'],
             [{ color: [] }, { background: [] }],
             ['link', 'image', 'video'],
+                // If 'image' is included in the toolbar, ensure that
+                // $useDefaultQuillImageHandler is set to true in PostController
+                // to prevent base64-encoded image data from polluting posts.
             ['code-block'],
          ],
       },
