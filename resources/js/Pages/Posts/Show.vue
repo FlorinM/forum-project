@@ -50,6 +50,7 @@ import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
 import { watch } from 'vue';
+import { onMounted } from 'vue';
 
 // Define props passed to the component
 const props = defineProps({
@@ -113,4 +114,10 @@ function submitReply() {
     },
   });
 }
+
+onMounted(() => {
+  document.querySelectorAll('img').forEach(img => {
+    img.onerror = () => (img.style.display = 'none');
+  });
+});
 </script>
