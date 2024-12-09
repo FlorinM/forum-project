@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +22,8 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'avatar' => $request->user()->avatar_url,
+            'baseUrl' => config('app.url'),
         ]);
     }
 
@@ -59,5 +62,54 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Update the user's avatar
+     */
+    public function updateAvatar(Request $request)
+    {
+        // Validate the avatar file input (optional if you're already doing this in Vue)
+        $request->validate([
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        // Check if the request contains a file and it's an image
+        if ($request->file('avatar')) {
+            // If the user already has an avatar, delete the old file
+            if ($user->avatar_url) {
+                Storage::disk('public')->delete($user->avatar_url);
+            }
+
+            // Store the new avatar
+            $path = $request->file('avatar')->store('avatars', 'public');
+
+            // Update the user's avatar URL in the database
+            $user->update(['avatar_url' => $path]);
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'Avatar updated successfully!');
+    }
+
+
+    /**
+     * Delete the user's avatar.
+     */
+    public function deleteAvatar(Request $request)
+    {
+        $user = $request->user();
+
+        // Check if the user has an avatar
+        if ($user->avatar_url) {
+            // Delete the avatar from storage
+            Storage::disk('public')->delete($user->avatar_url);
+
+            // Set avatar_url to null in the database
+            $user->update(['avatar_url' => null]);
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'Avatar removed successfully!');
     }
 }

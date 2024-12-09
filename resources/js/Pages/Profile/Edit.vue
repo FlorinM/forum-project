@@ -25,6 +25,12 @@
                 <div
                     class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
                 >
+                    <UpdateAvatarForm :avatar="avatar" :baseUrl="baseUrl" class="max-w-xl" />
+                </div>
+
+                <div
+                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
+                >
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
 
@@ -43,6 +49,7 @@ import ForumLayout from '@/Layouts/ForumLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import UpdateAvatarForm from './Partials/UpdateAvatarForm.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -51,6 +58,14 @@ defineProps({
     },
     status: {
         type: String,
+    },
+    avatar: {
+        type: [null, String],
+        default: null,
+    },
+    baseUrl: {
+        type: String,
+        required: true,
     },
 });
 </script>
