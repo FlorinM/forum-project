@@ -12,7 +12,13 @@
           class="w-full mb-4 bg-white border border-gray-300 rounded-md"
         >
           <div class="block text-left p-5">
-            <p class="text-xs text-gray-600">Posted by User ID: {{ post.user_id }}</p>
+
+            <!-- Avatar Component -->
+            <div class="flex items-center space-x-2">
+                <Avatar :avatarUrl="post.user.avatar_url" :altText="post.user.name" />
+                <p class="text-sm text-gray-800">{{ post.user.name }}</p>
+            </div>
+
             <div class="prose max-w-full text-xs text-gray-800" v-html="post.content"></div>
           </div>
           <!-- Quote button -->
@@ -49,6 +55,7 @@ import { ref } from 'vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
+import Avatar from '@/Components/Avatar.vue';
 import { watch } from 'vue';
 import { onMounted } from 'vue';
 
