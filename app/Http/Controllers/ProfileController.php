@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -82,8 +84,15 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->avatar_url);
             }
 
-            // Store the new avatar
+            // Store the new image
             $path = $request->file('avatar')->store('avatars', 'public');
+
+            // Transform the new image to an avatar by rescaling
+            $manager = new ImageManager (new Driver());
+            $fullPath = storage_path('app/public/' . $path);
+            $image = $manager->read($fullPath);
+            $image->scale(height: 200);
+            $image->save($fullPath, 100);
 
             // Update the user's avatar URL in the database
             $user->update(['avatar_url' => $path]);
