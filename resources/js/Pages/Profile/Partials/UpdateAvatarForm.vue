@@ -28,7 +28,7 @@
                     />
                     <img
                         v-else
-                        :src="props.baseUrl + '/storage/avatars/default-avatar.jpg'"
+                        :src="baseUrl + '/storage/avatars/default-avatar.jpg'"
                         alt="Default Avatar"
                         class="object-cover w-full h-full"
                     />
@@ -85,20 +85,18 @@ import { useForm } from 'laravel-precognition-vue-inertia';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps ({
     avatar: {
         type: [null, String],
         default: null,
     },
-    baseUrl: {
-        type: String,
-        required: true,
-    },
 });
 
+const baseUrl = ref(usePage().props.baseUrl);
 const hasAvatar = ref(props.avatar != null ? true : false);
-const avatar_url = ref(props.baseUrl + '/storage/' + props.avatar);
+const avatar_url = ref(baseUrl.value + '/storage/' + props.avatar);
 
 // Form for avatar handling
 const form = useForm('post', route('avatar.update'), {

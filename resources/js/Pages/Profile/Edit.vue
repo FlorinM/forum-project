@@ -25,7 +25,7 @@
                 <div
                     class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
                 >
-                    <UpdateAvatarForm :avatar="avatar" :baseUrl="baseUrl" class="max-w-xl" />
+                    <UpdateAvatarForm :avatar="avatar" class="max-w-xl" />
                 </div>
 
                 <div
@@ -62,10 +62,6 @@ defineProps({
     avatar: {
         type: [null, String],
         default: null,
-    },
-    baseUrl: {
-        type: String,
-        required: true,
     },
 });
 </script>

@@ -23,7 +23,6 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
             'avatar' => $request->user()->avatar_url,
-            'baseUrl' => config('app.url'),
         ]);
     }
 
