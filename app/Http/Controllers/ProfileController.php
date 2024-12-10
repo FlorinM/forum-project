@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    /**
+     * @var ImageManager
+     */
+    protected $imageManager;
+
+    /**
+     * @param ImageManager $imageManager
+     */
+    public function __construct (ImageManager $imageManager) {
+        $this->imageManager = $imageManager;
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -88,9 +99,8 @@ class ProfileController extends Controller
             $path = $request->file('avatar')->store('avatars', 'public');
 
             // Transform the new image to an avatar by rescaling
-            $manager = new ImageManager (new Driver());
             $fullPath = storage_path('app/public/' . $path);
-            $image = $manager->read($fullPath);
+            $image = $this->imageManager->read($fullPath);
             $image->scale(height: 200);
             $image->save($fullPath, 100);
 
