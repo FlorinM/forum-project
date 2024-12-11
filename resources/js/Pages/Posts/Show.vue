@@ -4,15 +4,29 @@
       <!-- Thread Title -->
       <h1 class="text-center text-4xl font-bold text-gray-800 mb-6">{{ thread.title }}</h1>
 
+        <!-- Pagination top -->
+        <Pagination
+            :currentPage="posts.current_page"
+            :lastPage="posts.last_page"
+            :onPageChange="handlePageChange"
+        />
+
       <!-- Posts List -->
       <div class="list-none p-0">
         <Post
-          v-for="post in posts"
+          v-for="post in posts.data"
           :key="post.id"
           :post="post"
           :quotePost="quotePost"
         />
       </div>
+
+        <!-- Pagination bottom -->
+        <Pagination
+            :currentPage="posts.current_page"
+            :lastPage="posts.last_page"
+            :onPageChange="handlePageChange"
+        />
 
       <!-- Reply Form -->
       <div v-if="$page.props.auth.user" class="mt-6">
@@ -40,14 +54,16 @@ import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
 import Post from './Post.vue';
+import Pagination from './Pagination.vue';
 import { watch } from 'vue';
 import { onMounted } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 // Define props passed to the component
 const props = defineProps({
   category: Object,
   thread: Object,
-  posts: Array,
+  posts: Object,
 });
 
 // Define a reference for the reply form
@@ -111,4 +127,16 @@ onMounted(() => {
     img.onerror = () => (img.style.display = 'none');
   });
 });
+
+function handlePageChange(page) {
+  router.get(
+    route('threads.show', {
+      category: props.category.id,
+      thread: props.thread.id,
+      page: page, // The page number you want to load
+    }),
+    {}, // You can add extra data if needed
+    { preserveScroll: false } // If true, the scroll position is preserved
+  );
+}
 </script>

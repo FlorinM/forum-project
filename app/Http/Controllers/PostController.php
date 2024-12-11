@@ -40,14 +40,21 @@ class PostController extends Controller
      * @param Thread $thread The thread to display posts for
      * @return \Inertia\Response The Inertia response with the category, thread, and posts
      */
-    public function show (Category $category, Thread $thread)
+    public function show(Category $category, Thread $thread)
     {
-        $posts = $thread->posts()->with('user')->get(); // Eager load the user relationship
+        // Get the current page from the query string, default to page 1 if not set
+        $page = request()->query('page', 1);
+
+        // Paginate the posts for the current thread
+        $posts = $thread->posts()
+            ->with('user')
+            ->orderBy('created_at', 'asc')
+            ->paginate(10, ['*'], 'page', $page);
 
         return Inertia::render('Posts/Show', [
             'category' => $category,
             'thread' => $thread,
-            'posts' => $posts
+            'posts' => $posts,
         ]);
     }
 
