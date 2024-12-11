@@ -33,7 +33,7 @@
         @click="changePage(page)"
         :class="[
           'px-2 py-0.5 text-white text-sm rounded',
-          'bg-blue-500 hover:bg-blue-600-400'
+          'bg-blue-500 hover:bg-blue-600'
         ]"
       >
         {{ page }}
