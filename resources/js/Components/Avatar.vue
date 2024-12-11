@@ -2,7 +2,7 @@
   <img
     :src="avatarUrl"
     :alt="props.altText"
-    class="w-10 h-10 rounded-full border border-gray-300"
+    class="w-12 h-12 rounded-full border border-gray-300"
   />
 </template>
 

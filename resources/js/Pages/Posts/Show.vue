@@ -5,14 +5,14 @@
       <h1 class="text-center text-4xl font-bold text-gray-800 mb-6">{{ thread.title }}</h1>
 
       <!-- Posts List -->
-      <ul class="list-none p-0">
+      <div class="list-none p-0">
         <Post
           v-for="post in posts"
           :key="post.id"
           :post="post"
           :quotePost="quotePost"
         />
-      </ul>
+      </div>
 
       <!-- Reply Form -->
       <div v-if="$page.props.auth.user" class="mt-6">
