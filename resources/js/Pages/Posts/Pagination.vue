@@ -1,19 +1,19 @@
 <template>
-  <div class="flex justify-center items-center space-x-2 mt-6 mb-6">
+  <div class="flex justify-center items-center space-x-0.5 mt-6 mb-6">
     <!-- First Page Button -->
     <button
       :disabled="currentPage === 1"
       @click="changePage(1)"
-      class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+      class="px-2 py-0.5 text-white text-sm bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
     >
-      First
+      <<
     </button>
 
     <!-- Previous Page Button -->
     <button
       :disabled="currentPage === 1"
       @click="changePage(currentPage - 1)"
-      class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+      class="px-2 py-0.5 text-white text-sm bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
     >
       Previous
     </button>
@@ -23,7 +23,7 @@
       <!-- Current Page -->
       <span
         v-if="page === currentPage"
-        class="px-3 py-1 rounded bg-blue-500 text-white font-bold"
+        class="px-2 py-0.5 rounded bg-gray-300 text-gray-600"
       >
         Page {{ page }} of {{ lastPage }}
       </span>
@@ -32,8 +32,8 @@
         v-else
         @click="changePage(page)"
         :class="[
-          'px-3 py-1 rounded',
-          'bg-gray-300 hover:bg-gray-400'
+          'px-2 py-0.5 text-white text-sm rounded',
+          'bg-blue-500 hover:bg-blue-600-400'
         ]"
       >
         {{ page }}
@@ -44,7 +44,7 @@
     <button
       :disabled="currentPage === lastPage"
       @click="changePage(currentPage + 1)"
-      class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+      class="px-2 py-0.5 text-white text-sm bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
     >
       Next
     </button>
@@ -53,9 +53,9 @@
     <button
       :disabled="currentPage === lastPage"
       @click="changePage(lastPage)"
-      class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+      class="px-2 py-0.5 text-white text-sm bg-blue-500 rounded hover:bg-blue-600 disabled:opacity-50"
     >
-      Last
+      >>
     </button>
   </div>
 </template>
