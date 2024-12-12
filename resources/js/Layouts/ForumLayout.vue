@@ -50,6 +50,8 @@
       </div>
     </nav>
 
+    <NewTopics />
+
     <div class="pt-20">
         <Breadcrumbs></Breadcrumbs>
     </div>
@@ -67,4 +69,5 @@ import { Link } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import NewTopics from '@/Components/NewTopics.vue';
 </script>
