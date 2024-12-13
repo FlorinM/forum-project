@@ -21,6 +21,7 @@
                 :key="topic.id"
                 class="topic-item text-xs p-4 border rounded-md"
             >
+                <span class="w-1 h-1 bg-blue-500 rounded-full"></span>&nbsp;
                 <Link
                     :href="`/categories/${topic.category_id}/threads/${topic.id}`"
                     class="text-blue-600 hover:underline"
@@ -95,7 +96,6 @@
 
     .topic-item {
         display: flex;
-        justify-content: center;
         align-items: center;
         text-align: center;
         height: 30px;
