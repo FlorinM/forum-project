@@ -9,6 +9,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\NewTopicsController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\VisitedUserController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -32,7 +34,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile', [ProfileController::class, 'updateAvatar'])->name('avatar.update');
     Route::delete('/profile', [ProfileController::class, 'deleteAvatar'])->name('avatar.delete');
-    Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.send');
 });
 
 require __DIR__.'/auth.php';
@@ -51,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/categories/{category}/threads/{thread}/posts', [PostController::class, 'store'])
     ->name('posts.store')
     ->middleware([HandlePrecognitiveRequests::class]);
+
+    Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/visited/{user}', [VisitedUserController::class, 'showProfile'])->name('visited.user.show');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

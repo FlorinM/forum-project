@@ -5,7 +5,11 @@
       <!-- Left Side: Avatar and Name (10%) -->
       <div class="col-span-1 flex flex-col items-center space-y-2">
         <Avatar :avatarUrl="post.user.avatar_url" :altText="post.user.name" />
-        <p class="text-sm text-gray-800 text-center truncate">{{ post.user.name }}</p>
+        <p class="text-sm text-gray-800 text-center truncate">
+            <Link :href="route('visited.user.show', post.user.id)">
+                {{ post.user.name }}
+            </Link>
+        </p>
       </div>
 
       <!-- Right Side: Content and Quote Button (90%) -->
@@ -27,6 +31,7 @@
 
 <script setup>
 import Avatar from '@/Components/Avatar.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
   post: Object, // Post data
