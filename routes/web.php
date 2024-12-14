@@ -53,7 +53,10 @@ Route::middleware(['auth'])->group(function () {
     ->name('posts.store')
     ->middleware([HandlePrecognitiveRequests::class]);
 
-    Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::post('/message', [MessageController::class, 'sendMessage'])
+        ->name('message.send')
+        ->middleware([HandlePrecognitiveRequests::class]);
+
     Route::get('/visited/{user}', [VisitedUserController::class, 'showProfile'])->name('visited.user.show');
 });
 

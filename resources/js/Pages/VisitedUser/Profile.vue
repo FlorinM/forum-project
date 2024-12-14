@@ -28,34 +28,69 @@
 
       <!-- Send Message Button -->
       <div class="text-center mt-8">
-        <button
-          @click="showMessageForm"
-          class="px-3 py-1 text-m font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <button v-if="!isMessageFormVisible"
+          @click="openMessageForm"
+          class="px-3 py-1 text-m font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
         >
           Send Message
         </button>
       </div>
+
+      <!-- Form with QuillEditor -->
+      <div v-if="isMessageFormVisible">
+        <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
+          <QuillEditor v-model="form.message" />
+          <div class="mt-4 text-right">
+            <button
+              type="submit"
+              :disabled="form.processing"
+              class="px-6 py-2 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-600 focus:outline-none"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+        <div v-if="form.invalid('message')" class="text-red-500 text-sm mt-2">{{ form.errors.message }}</div>
+    </div>
 
     </div>
   </ForumLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import Avatar from '@/Components/Avatar.vue';
+import QuillEditor from '@/Components/QuillEditor.vue';
+import { useForm } from 'laravel-precognition-vue-inertia';
 
 const props = defineProps({
-  user: Object,  // Expecting the full user data (name, avatar, bio, etc.)
+  user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
 });
+
+// Create a Laravel Precognition Vue form
+const form = useForm('post', route('message.send'), {
+    receiver_id: props.user.id,
+    message: '', // The content of the post
+});
+
+watch(() => form.message, () => {
+   form.validate('message');
+});
+
+function submitReply() {
+  form.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();  // Reset form fields, including the content
+      isMessageFormVisible.value = false;
+    },
+  });
+}
 
 const isMessageFormVisible = ref(false);
 
-const showMessageForm = () => {
-  isMessageFormVisible.value = true;
-};
-
-const closeMessageForm = () => {
-  isMessageFormVisible.value = false;
+const openMessageForm = () => {
+    isMessageFormVisible.value = true;
 };
 </script>
