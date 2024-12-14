@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile', [ProfileController::class, 'updateAvatar'])->name('avatar.update');
     Route::delete('/profile', [ProfileController::class, 'deleteAvatar'])->name('avatar.delete');
+    Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.send');
 });
 
 require __DIR__.'/auth.php';
