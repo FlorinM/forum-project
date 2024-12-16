@@ -36,12 +36,21 @@ class StorePostRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                $content = $this->input('content');
-                $plainText = strip_tags($content);  // Strip out HTML tags
+                $min = 10;
+                $max = 5000;
 
-                if (!empty($plainText) && strlen($plainText) < 10) {
+                $plainText = strip_tags($this->input('content'));  // Strip out HTML tags
+                $len = strlen($plainText);
+
+                if (!empty($plainText) && $len < $min) {
                     // Add custom error message
-                    $validator->errors()->add('content', 'The post must be at least 10 characters long.');
+                    $validator->errors()
+                    ->add('content', 'The post must be at least ' . $min . ' characters long.');
+                }
+
+                if ($len > $max) {
+                    $validator->errors()
+                    ->add('content', 'The post must be at most ' . $max . ' characters long.');
                 }
             },
         ];

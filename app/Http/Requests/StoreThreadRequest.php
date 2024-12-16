@@ -50,12 +50,21 @@ class StoreThreadRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                $postContent = $this->input('postContent');
-                $plainText = strip_tags($postContent);  // Strip out HTML tags
+                $min = 10;
+                $max = 5000;
 
-                if (!empty($plainText) && strlen($plainText) < 10) {
+                $plainText = strip_tags($this->input('postContent'));  // Strip out HTML tags
+                $len = strlen($plainText);
+
+                if (!empty($plainText) && $len < $min) {
                     // Add custom error message
-                    $validator->errors()->add('postContent', 'The post must be at least 10 characters long.');
+                    $validator->errors()
+                        ->add('postContent', 'The post must be at least ' . $min . ' characters long.');
+                }
+
+                if ($len > $max) {
+                    $validator->errors()
+                        ->add('postContent', 'The post must be at most ' . $max . ' characters long.');
                 }
             },
         ];
