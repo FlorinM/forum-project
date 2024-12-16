@@ -16,15 +16,6 @@ class PostController extends Controller
     protected $sanitizationService;
     protected $imageExtractorService;
 
-    /**
-     * Specifies whether to use Quill's default image handling behavior.
-     * Set to true to enable it, false to disable.
-     * If enabled, ensure 'image' is included in Quill's configuration.
-     *
-     * @var bool
-     */
-    protected $useDefaultQuillImageHandler = true;
-
     public function __construct(
         SanitizationService $sanitizationService,
         ImageExtractorService $imageExtractorService
@@ -68,7 +59,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
-        if ($this->useDefaultQuillImageHandler) {
+        if ($this->imageExtractorService->useDefaultQuillImageHandler()) {
             // Extract images from the string and replace with urls
             $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
         } else {
