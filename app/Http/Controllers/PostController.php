@@ -78,7 +78,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
-        if ($this->imageExtractorService->useDefaultQuillImageHandler()) {
+        if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
         } else {

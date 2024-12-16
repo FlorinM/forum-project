@@ -6,30 +6,11 @@ use App\Services\ImageStorageService;
 
 class ImageExtractorService
 {
-    /**
-     * Specifies whether to use Quill's default image handling behavior.
-     * Set to true to enable it, false to disable.
-     * If enabled, ensure 'image' is included in Quill's configuration.
-     *
-     * @var bool
-     */
-    protected $useDefaultQuillImageHandler = true;
-
     protected $imageStorageService;
 
     public function __construct(ImageStorageService $imageStorageService)
     {
         $this->imageStorageService = $imageStorageService;
-    }
-
-    /**
-     * This method indicates if the default Quill image handler
-     * is utilized for managing images within the editor.
-     *
-     * @return bool Returns true if the default image handler is used.
-     */
-    public function useDefaultQuillImageHandler () : bool {
-        return $this->useDefaultQuillImageHandler;
     }
 
     /**

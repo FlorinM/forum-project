@@ -78,7 +78,7 @@ class ThreadController extends Controller
         ]);
 
         // Now create the first post for this thread
-        if ($this->imageExtractorService->useDefaultQuillImageHandler()) {
+        if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $postContent = $this->imageExtractorService->extractAndReplaceImages($request->input('postContent'));
         } else {

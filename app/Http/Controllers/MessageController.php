@@ -49,7 +49,7 @@ class MessageController extends Controller
      */
     public function sendMessage(SendMessageRequest $request)
     {
-        if ($this->imageExtractorService->useDefaultQuillImageHandler()) {
+        if (config('quill_use_image_handler')) {
             // Extract images from the string and replace with urls
             $message = $this->imageExtractorService->extractAndReplaceImages($request->input('message'));
         } else {
