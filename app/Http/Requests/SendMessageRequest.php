@@ -23,7 +23,27 @@ class SendMessageRequest extends FormRequest
     {
         return [
             'receiver_id' => ['required', 'exists:users,id', 'not_in:' . auth()->id()],
-            'message' => ['required', 'string', 'min:20', 'max:2000'],
+            'message' => ['required', 'string'],
+        ];
+    }
+
+    /**
+     * Get the "after" validation callables for the request.
+     *
+     * @return array
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $message = $this->input('message');
+                $plainText = strip_tags($message);  // Strip out HTML tags
+
+                if (!empty($plainText) && strlen($plainText) < 10) {
+                    // Add custom error message
+                    $validator->errors()->add('message', 'The message must be at least 10 characters long.');
+                }
+            },
         ];
     }
 }

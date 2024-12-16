@@ -25,7 +25,7 @@ class StoreThreadRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/'],
             'content' => ['required', 'string', 'max:500'],
-            'postContent' => ['string', 'max:5000'],
+            'postContent' => ['required', 'string'],
         ];
     }
 
