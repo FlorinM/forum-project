@@ -8,9 +8,41 @@ use App\Models\Thread;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Http\Requests\StoreThreadRequest;
+use App\Services\SanitizationService;
+use App\Services\ImageExtractorService;
 
 class ThreadController extends Controller
 {
+    /**
+     * Service for sanitizing input data to ensure security and proper formatting.
+     *
+     * @var App\Services\SanitizationService
+     */
+    protected $sanitizationService;
+
+    /**
+     * Service for extracting and processing images, enabling centralized management of image-related functionality.
+     *
+     * @var App\Services\ImageExtractorService
+     */
+    protected $imageExtractorService;
+
+    /**
+     * Initializes the controller with the required services for sanitization
+     * and image extraction, enabling secure input handling and centralized
+     * image management.
+     *
+     * @param App\Services\SanitizationService $sanitizationService Service for input sanitization.
+     * @param App\Services\ImageExtractorService $imageExtractorService Service for image extraction and processing.
+     */
+    public function __construct(
+        SanitizationService $sanitizationService,
+        ImageExtractorService $imageExtractorService
+    ) {
+        $this->sanitizationService = $sanitizationService;
+        $this->imageExtractorService = $imageExtractorService;
+    }
+
     /**
      * Show the form to create a new thread.
      *
@@ -46,10 +78,19 @@ class ThreadController extends Controller
         ]);
 
         // Now create the first post for this thread
+        if ($this->imageExtractorService->useDefaultQuillImageHandler()) {
+            // Extract images from the string and replace with urls
+            $postContent = $this->imageExtractorService->extractAndReplaceImages($request->input('postContent'));
+        } else {
+            $postContent = $request->input('postContent');
+        }
+
+        // Sanitize the content using the service
+        $postContent = $this->sanitizationService->sanitize($postContent);
         Post::create([
             'thread_id' => $thread->id,
             'user_id' => auth()->id(),
-            'content' => $request->get('postContent'), // Use postContent to match the input
+            'content' => $postContent,
         ]);
 
         // Redirect or return response
