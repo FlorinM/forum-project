@@ -29,6 +29,18 @@ class SendMessageRequest extends FormRequest
     }
 
     /**
+     * Define custom error messages for the validation rules applied in the form request.
+     *
+     * @return array<string, string> An associative array of validation rule error messages.
+     */
+    public function messages()
+    {
+        return [
+            'receiver_id.not_in' => 'Oops! You cannot send a message to yourself.',
+        ];
+    }
+
+    /**
      * Get the "after" validation callables for the request.
      *
      * @return array
@@ -46,12 +58,12 @@ class SendMessageRequest extends FormRequest
                 if (!empty($plainText) && $len < $min) {
                     // Add custom error message
                     $validator->errors()
-                    ->add('message', 'The message must be at least ' . $min . ' characters long.');
+                        ->add('message', 'The message must be at least ' . $min . ' characters long.');
                 }
 
                 if ($len > $max) {
                     $validator->errors()
-                    ->add('message', 'The message must be at most ' . $max . ' characters long.');
+                        ->add('message', 'The message must be at most ' . $max . ' characters long.');
                 }
             },
         ];

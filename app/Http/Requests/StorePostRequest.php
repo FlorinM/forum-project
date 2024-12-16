@@ -45,12 +45,12 @@ class StorePostRequest extends FormRequest
                 if (!empty($plainText) && $len < $min) {
                     // Add custom error message
                     $validator->errors()
-                    ->add('content', 'The post must be at least ' . $min . ' characters long.');
+                        ->add('content', 'The post must be at least ' . $min . ' characters long.');
                 }
 
                 if ($len > $max) {
                     $validator->errors()
-                    ->add('content', 'The post must be at most ' . $max . ' characters long.');
+                        ->add('content', 'The post must be at most ' . $max . ' characters long.');
                 }
             },
         ];
