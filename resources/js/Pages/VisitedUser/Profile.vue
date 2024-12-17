@@ -9,8 +9,15 @@
             <div class="col-span-9">
                 <h1 class="text-xl font-bold text-gray-800 inline-block">{{ user.name }}</h1>
 
+                <FlattenedButton
+                    v-if="$page.props.auth.user.id != user.id && !isMessageFormVisible"
+                    @click="openMessageForm"
+                >
+                    Send Message
+                </FlattenedButton>
+
                 <FlattenedButton @click="fetchThreads">
-                    Topics
+                    Threads
                 </FlattenedButton>
 
                 <FlattenedButton>
@@ -31,29 +38,23 @@
             </div>
         </div>
 
-      <!-- User Details -->
-      <div class="bg-white p-6 rounded-md shadow-md mb-8">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">User Info</h2>
-        <div class="grid grid-cols-1 text-gray-600">
-          <div><strong>Age:</strong> 20</div>
-          <div><strong>Sex:</strong> F</div>
-          <div><strong>Birthday:</strong> 23</div>
-          <div><strong>Posts:</strong> 50</div>
-          <div><strong>Threads Started:</strong> 9</div>
+        <div class="grid grid-cols-10">
+            <!-- User Details -->
+            <div class="bg-white p-6 rounded-md shadow-md mb-6 col-span-3 mr-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Info: </h2>
+                <div class="grid grid-cols-1 text-gray-600">
+                    <div><strong>Age:</strong> 20</div>
+                    <div><strong>Sex:</strong> F</div>
+                    <div><strong>Birthday:</strong> 23</div>
+                    <div><strong>Posts:</strong> 50</div>
+                    <div><strong>Threads Started:</strong> 9</div>
+                </div>
+            </div>
+
+            <div class="col-span-7 mb-6">
+                <DisplayUserThreads :threads="visitedUserThreads" :number="10"/>
+            </div>
         </div>
-      </div>
-
-      <DisplayUserThreads :threads="visitedUserThreads" :number="5" />
-
-      <!-- Send Message Button -->
-      <div v-if="$page.props.auth.user.id != user.id" class="text-center mt-8">
-        <button v-if="!isMessageFormVisible"
-          @click="openMessageForm"
-          class="px-3 py-1 text-m font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-        >
-          Send Message
-        </button>
-      </div>
 
       <!-- Form with QuillEditor -->
       <div v-if="isMessageFormVisible">
@@ -111,15 +112,22 @@ function submitReply() {
     preserveScroll: true,
     onSuccess: () => {
       form.reset();  // Reset form fields, including the content
+
+      // The message form disappears and the send message button reappears
       isMessageFormVisible.value = false;
     },
   });
 }
 
+// If the message form is visible the Send Message button
+// is hidden and vice versa
 const isMessageFormVisible = ref(false);
 
-const openMessageForm = () => {
+function openMessageForm () {
     isMessageFormVisible.value = true;
+
+    // Smooth scroll to the message form
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 };
 
 // State variable for storing visted user's topics

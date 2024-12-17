@@ -1,7 +1,7 @@
 <template>
-    <div class="bg-white p-6 rounded-md shadow-md">
+    <div class="bg-white p-6 rounded-md shadow-md overflow-scroll max-h-[500px]">
         <!-- Header -->
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">User Threads</h2>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Threads</h2>
 
         <!-- No Threads Case -->
         <p v-if="threads.length === 0" class="text-gray-600">
