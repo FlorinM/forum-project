@@ -4,14 +4,14 @@
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Threads</h2>
 
         <!-- No Threads Case -->
-        <p v-if="threads.length === 0" class="text-gray-600">
+        <p v-if="visitedUserThreads.length === 0" class="text-gray-600">
             No threads to display.
         </p>
 
         <!-- Threads List -->
         <ul v-else class="divide-y divide-gray-200">
             <li
-                v-for="(thread, index) in threads"
+                v-for="(thread, index) in visitedUserThreads"
                 :key="index"
                 class="py-4 flex items-start justify-between"
             >
@@ -35,16 +35,43 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+
 const props = defineProps({
-    threads: {
-        type: Array,
+    userId: {
+        type: Number,
         required: true,
     },
-    number: {
-        type: Number,
-        default: 10,
-    },
 });
+
+// State variable for storing visted user's topics
+const visitedUserThreads = ref([]);
+
+// Fetch topics from backend or sessionStorage
+const fetchThreads = async () => {
+    // Make a variable name for cache
+    const cachedThreads = 'visitedUserThreads' + props.userId;
+
+    // Check if threads are already stored in sessionStorage
+    const storedThreads = sessionStorage.getItem(cachedThreads);
+
+    if (storedThreads) {
+        // If threads are stored in sessionStorage, use them
+        visitedUserThreads.value = JSON.parse(storedThreads);
+        return; // Skip fetching data again
+    }
+
+    // If no topics in sessionStorage, fetch from the backend
+    try {
+        const response = await axios.get('/visited-user-threads/' + props.userId);
+        visitedUserThreads.value = response.data.threads || [];
+
+        // Store the fetched threads in sessionStorage for the rest of the session
+        sessionStorage.setItem(cachedThreads, JSON.stringify(visitedUserThreads.value));
+    } catch (error) {
+        console.error('Error fetching threads:', error);
+    }
+};
 
 /**
  * Utility function to format date.
@@ -55,4 +82,6 @@ function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+onMounted(fetchThreads);
 </script>

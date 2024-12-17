@@ -16,11 +16,11 @@
                     Send Message
                 </FlattenedButton>
 
-                <FlattenedButton @click="fetchThreads">
+                <FlattenedButton @click="display('threads')">
                     Threads
                 </FlattenedButton>
 
-                <FlattenedButton>
+                <FlattenedButton @click="display('posts')">
                     Posts
                 </FlattenedButton>
 
@@ -52,7 +52,7 @@
             </div>
 
             <div class="col-span-7 mb-6">
-                <DisplayUserThreads :threads="visitedUserThreads" :number="10"/>
+                <DisplayUserThreads v-if="displayThreads" :userId="props.user.id" />
             </div>
         </div>
 
@@ -93,6 +93,9 @@ const routes = [
     {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
 ];
 
+const displayThreads = ref(false);
+const displayPosts = ref(false);
+
 const props = defineProps({
   user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
 });
@@ -130,32 +133,13 @@ function openMessageForm () {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 };
 
-// State variable for storing visted user's topics
-const visitedUserThreads = ref([]);
-
-// Fetch topics from backend or sessionStorage
-const fetchThreads = async () => {
-    // Make a variable name for cache
-    const cachedThreads = 'visitedUserThreads' + props.user.id;
-
-    // Check if threads are already stored in sessionStorage
-    const storedThreads = sessionStorage.getItem(cachedThreads);
-
-    if (storedThreads) {
-        // If threads are stored in sessionStorage, use them
-        visitedUserThreads.value = JSON.parse(storedThreads);
-        return; // Skip fetching data again
+function display (value) {
+    if (value === 'threads') {
+        displayThreads.value = true;
+        displayPosts.value = false;
+    } else if (value === 'posts') {
+        displayThreads.value = false;
+        displayPosts.value = true;
     }
-
-    // If no topics in sessionStorage, fetch from the backend
-    try {
-        const response = await axios.get('/visited-user-threads/' + props.user.id);
-        visitedUserThreads.value = response.data.threads || [];
-
-        // Store the fetched threads in sessionStorage for the rest of the session
-        sessionStorage.setItem(cachedThreads, JSON.stringify(visitedUserThreads.value));
-    } catch (error) {
-        console.error('Error fetching threads:', error);
-    }
-};
+}
 </script>
