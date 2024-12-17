@@ -4,15 +4,11 @@
         <div class="inline-block">
             <h2 class="text-m font-bold mb-4">Latest Topics</h2>
         </div>
+
         <!-- Cycle Button -->
-        <div class="mt-2 ml-4 text-center inline-block">
-            <button
-                @click="nextPage"
-                class="px-4 py-0 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
-                {{ currentPage }}/{{ totalPages}} >>
-            </button>
-        </div>
+        <FlattenedButton @click="nextPage">
+            {{ currentPage }}/{{ totalPages }} >>
+        </FlattenedButton>
 
         <!-- Grid of Topics -->
         <div class="grid grid-cols-4 gap-1">
@@ -38,6 +34,7 @@
     import { ref, computed, onMounted } from 'vue';
     import axios from 'axios';
     import { Link } from '@inertiajs/vue3';
+    import FlattenedButton from '@/Components/FlattenedButton.vue';
 
     // State variables
     const topics = ref([]);

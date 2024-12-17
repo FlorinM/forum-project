@@ -7,7 +7,16 @@
                 <Avatar :avatarUrl="user.avatar_url" :altText="user.name"/>
             </div>
             <div class="col-span-9">
-                <h1 class="text-xl font-bold text-gray-800">{{ user.name }}</h1>
+                <h1 class="text-xl font-bold text-gray-800 inline-block">{{ user.name }}</h1>
+
+                <template v-if="$page.props.auth.user.id === user.id">
+                    <FlattenedButton v-for="rt in routes" :key="rt.id">
+                        <Link :href="route(rt.link)">
+                            {{ rt.name }}
+                        </Link>
+                    </FlattenedButton>
+                </template>
+
                 <p class="text-sm text-gray-600 mt-4">
                     {{ user.name }} is a 20-year-old woman with a vibrant personality and a deep passion for learning. Born and raised in a small town, she has always been curious and driven, eager to explore the world beyond her immediate surroundings. Jane is currently a student, pursuing a degree in environmental science, with a strong interest in sustainability and conservation. Her goal is to make a positive impact on the environment by contributing to innovative solutions for climate change and resource management.
                 </p>
@@ -27,7 +36,7 @@
       </div>
 
       <!-- Send Message Button -->
-      <div class="text-center mt-8">
+      <div v-if="$page.props.auth.user.id != user.id" class="text-center mt-8">
         <button v-if="!isMessageFormVisible"
           @click="openMessageForm"
           class="px-3 py-1 text-m font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
@@ -64,6 +73,13 @@ import ForumLayout from '@/Layouts/ForumLayout.vue';
 import Avatar from '@/Components/Avatar.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
+import { Link } from '@inertiajs/vue3';
+import FlattenedButton from '@/Components/FlattenedButton.vue';
+
+const routes = [
+    {id: 1, name: 'Inbox', link: 'profile.edit'}, // Change with profile.inbox when you have route
+    {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
+];
 
 const props = defineProps({
   user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
