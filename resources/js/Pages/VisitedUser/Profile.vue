@@ -9,6 +9,14 @@
             <div class="col-span-9">
                 <h1 class="text-xl font-bold text-gray-800 inline-block">{{ user.name }}</h1>
 
+                <FlattenedButton @click="fetchThreads">
+                    Topics
+                </FlattenedButton>
+
+                <FlattenedButton>
+                    Posts
+                </FlattenedButton>
+
                 <template v-if="$page.props.auth.user.id === user.id">
                     <FlattenedButton v-for="rt in routes" :key="rt.id">
                         <Link :href="route(rt.link)">
@@ -34,6 +42,8 @@
           <div><strong>Threads Started:</strong> 9</div>
         </div>
       </div>
+
+      <DisplayUserThreads :threads="visitedUserThreads" :number="5" />
 
       <!-- Send Message Button -->
       <div v-if="$page.props.auth.user.id != user.id" class="text-center mt-8">
@@ -75,6 +85,7 @@ import QuillEditor from '@/Components/QuillEditor.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
+import DisplayUserThreads from '@/Components/DisplayUserThreads.vue';
 
 const routes = [
     {id: 1, name: 'Inbox', link: 'profile.edit'}, // Change with profile.inbox when you have route
@@ -109,5 +120,34 @@ const isMessageFormVisible = ref(false);
 
 const openMessageForm = () => {
     isMessageFormVisible.value = true;
+};
+
+// State variable for storing visted user's topics
+const visitedUserThreads = ref([]);
+
+// Fetch topics from backend or sessionStorage
+const fetchThreads = async () => {
+    // Make a variable name for cache
+    const cachedThreads = 'visitedUserThreads' + props.user.id;
+
+    // Check if threads are already stored in sessionStorage
+    const storedThreads = sessionStorage.getItem(cachedThreads);
+
+    if (storedThreads) {
+        // If threads are stored in sessionStorage, use them
+        visitedUserThreads.value = JSON.parse(storedThreads);
+        return; // Skip fetching data again
+    }
+
+    // If no topics in sessionStorage, fetch from the backend
+    try {
+        const response = await axios.get('/visited-user-threads/' + props.user.id);
+        visitedUserThreads.value = response.data.threads || [];
+
+        // Store the fetched threads in sessionStorage for the rest of the session
+        sessionStorage.setItem(cachedThreads, JSON.stringify(visitedUserThreads.value));
+    } catch (error) {
+        console.error('Error fetching threads:', error);
+    }
 };
 </script>

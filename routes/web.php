@@ -58,12 +58,15 @@ Route::middleware(['auth'])->group(function () {
         ->middleware([HandlePrecognitiveRequests::class]);
 
     Route::get('/visited/{user}', [VisitedUserController::class, 'showProfile'])->name('visited.user.show');
+    Route::get('/visited-user-threads/{user}', [VisitedUserController::class, 'fetchThreads'])
+        ->name('visited.user.threads');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/categories/{category}/threads/{thread}', [PostController::class, 'show'])->name('threads.show');
 Route::get('/categories/{category}/subcategories', [CategoryController::class, 'showSubcategories'])->name('categories.subcategories');
 Route::get('/new-topics', [NewTopicsController::class, 'index'])->name('new-topics.index');
+
 
 
 
