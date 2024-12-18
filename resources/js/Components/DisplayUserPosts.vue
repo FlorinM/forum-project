@@ -26,7 +26,7 @@
                         Started on: {{ formatDate(post.created_at) }}
                     </p>
                     <FlattenedButton @click="toggleVisibility(index)">{{ showClose[index] }}</FlattenedButton>
-                    <p v-if="visibility[index]" v-html="post.content" class="pl-5 mt-2"></p>
+                    <p v-if="visibility[index]" v-html="post.content" class="prose pl-5 mt-2"></p>
                 </div>
 
                 <!-- Optional Number Display -->
