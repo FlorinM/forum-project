@@ -17,7 +17,7 @@
             >
                 <!-- Thread Content -->
                 <div>
-                    <h3 class="text-lg font-medium text-blue-600 hover:text-blue-700">
+                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700">
                         <Link :href="route('threads.show', [thread.category_id, thread.id])">
                             {{ thread.title }}
                         </Link>

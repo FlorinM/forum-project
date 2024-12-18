@@ -17,16 +17,16 @@
             >
                 <!-- Post Content -->
                 <div>
-                    <h3 class="text-lg font-medium text-blue-600 hover:text-blue-700">
+                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700">
                         <Link :href="route('find.post', [post.id])">
                             Post in: {{ post.thread.title }}
                         </Link>
                     </h3>
                     <p class="text-sm text-gray-600 mt-1">
-                        Started on: {{ formatDate(post.created_at) }}
+                        Posted on: {{ formatDate(post.created_at) }}
                     </p>
                     <FlattenedButton @click="toggleVisibility(index)">{{ showClose[index] }}</FlattenedButton>
-                    <p v-if="visibility[index]" v-html="post.content" class="prose pl-5 mt-2"></p>
+                    <p v-if="visibility[index]" v-html="post.content" class="prose text-xs pl-5 mt-2"></p>
                 </div>
 
                 <!-- Optional Number Display -->
