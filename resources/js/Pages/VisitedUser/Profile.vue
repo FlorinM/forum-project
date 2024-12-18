@@ -51,8 +51,12 @@
                 </div>
             </div>
 
-            <div class="col-span-7 mb-6">
-                <DisplayUserThreads v-if="displayThreads" :userId="props.user.id" />
+            <div v-if="displayThreads" class="col-span-7 mb-6">
+                <DisplayUserThreads :userId="props.user.id" />
+            </div>
+
+            <div v-if="displayPosts" class="col-span-7 mb-6">
+                <DisplayUserPosts :userId="props.user.id" />
             </div>
         </div>
 
@@ -87,6 +91,7 @@ import { useForm } from 'laravel-precognition-vue-inertia';
 import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
 import DisplayUserThreads from '@/Components/DisplayUserThreads.vue';
+import DisplayUserPosts from '@/Components/DisplayUserPosts.vue';
 
 const routes = [
     {id: 1, name: 'Inbox', link: 'profile.edit'}, // Change with profile.inbox when you have route

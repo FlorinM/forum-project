@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Thread;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -39,6 +40,30 @@ class VisitedUserController extends Controller
 
         return response()->json([
             'threads' => $threads,
+        ]);
+    }
+
+    /**
+     * Fetch the latest 10 posts of a user along with thread and category details.
+     *
+     * This method retrieves the latest 10 posts of a specified user, along with the
+     * thread the post belongs to and the category the thread belongs to.
+     *
+     * @param \App\Models\User $user The user whose posts are being fetched.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the user's posts,
+     *         along with thread and category details.
+     */
+    public function fetchPosts(User $user)
+    {
+        // Fetch latest 10 posts of the user, including the thread and category details
+        $posts = Post::with(['thread.category']) // Eager load the thread and its category
+            ->where('user_id', $user->id) // Filter posts by the specified user
+            ->latest() // Order by the most recent posts
+            ->take(10) // Limit to the latest 10 posts
+            ->get();
+
+        return response()->json([
+            'posts' => $posts,
         ]);
     }
 }

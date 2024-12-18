@@ -60,6 +60,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/visited/{user}', [VisitedUserController::class, 'showProfile'])->name('visited.user.show');
     Route::get('/visited-user-threads/{user}', [VisitedUserController::class, 'fetchThreads'])
         ->name('visited.user.threads');
+    Route::get('/visited-user-posts/{user}', [VisitedUserController::class, 'fetchPosts'])
+        ->name('visited.user.posts');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
