@@ -143,6 +143,7 @@ class PostController extends Controller
             'thread' => $thread,
             'posts' => $posts,
             'currentPage' => $page,
+            'targetPostId' => $postId,
         ]);
     }
 

@@ -18,6 +18,7 @@
           :key="post.id"
           :post="post"
           :quotePost="quotePost"
+          :id="'post-' + post.id"
         />
       </div>
 
@@ -58,12 +59,17 @@ import Pagination from './Pagination.vue';
 import { watch } from 'vue';
 import { onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { nextTick } from 'vue';
 
 // Define props passed to the component
 const props = defineProps({
   category: Object,
   thread: Object,
   posts: Object,
+  targetPostId: {
+    type: [Number, null],
+    default: null,
+  },
 });
 
 // Define a reference for the reply form
@@ -123,9 +129,19 @@ function submitReply() {
 }
 
 onMounted(() => {
-  document.querySelectorAll('img').forEach(img => {
-    img.onerror = () => (img.style.display = 'none');
-  });
+    nextTick(() => {
+        // Scroll to the specific post if targetPostId is present
+        if (props.targetPostId) {
+            const targetElement = document.querySelector('#post-' + props.targetPostId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    });
+
+    document.querySelectorAll('img').forEach(img => {
+        img.onerror = () => (img.style.display = 'none');
+    });
 });
 
 function handlePageChange(page) {
