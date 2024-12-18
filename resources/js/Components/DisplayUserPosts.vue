@@ -23,7 +23,7 @@
                         </Link>
                     </h3>
                     <p class="text-sm text-gray-600 mt-1">
-                        Posted on: {{ formatDate(post.created_at) }}
+                        Posted on: {{ useFormatDate(post.created_at) }}
                     </p>
                     <FlattenedButton @click="toggleVisibility(index)">{{ showClose[index] }}</FlattenedButton>
                     <p v-if="visibility[index]" v-html="post.content" class="prose text-xs pl-5 mt-2"></p>
@@ -42,6 +42,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
+import { useFormatDate } from '@/Composables/useFormatDate';
 
 const props = defineProps({
     userId: {
@@ -99,16 +100,6 @@ const fetchPosts = async () => {
         console.error('Error fetching posts:', error);
     }
 };
-
-/**
- * Utility function to format date.
- * @param {string} dateString
- * @returns {string}
- */
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-}
 
 onMounted(fetchPosts);
 </script>

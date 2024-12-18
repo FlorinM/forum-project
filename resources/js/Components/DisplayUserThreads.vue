@@ -23,7 +23,7 @@
                         </Link>
                     </h3>
                     <p class="text-sm text-gray-600 mt-1">
-                        Started on: {{ formatDate(thread.created_at) }}
+                        Started on: {{ useFormatDate(thread.created_at) }}
                     </p>
                 </div>
 
@@ -39,6 +39,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { useFormatDate } from '@/Composables/useFormatDate';
 
 const props = defineProps({
     userId: {
@@ -75,16 +76,6 @@ const fetchThreads = async () => {
         console.error('Error fetching threads:', error);
     }
 };
-
-/**
- * Utility function to format date.
- * @param {string} dateString
- * @returns {string}
- */
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-}
 
 onMounted(fetchThreads);
 </script>
