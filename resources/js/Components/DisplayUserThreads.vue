@@ -18,7 +18,9 @@
                 <!-- Thread Content -->
                 <div>
                     <h3 class="text-lg font-medium text-blue-600 hover:text-blue-700">
-                        <a :href="thread.link">{{ thread.title }}</a>
+                        <Link :href="route('threads.show', [thread.category_id, thread.id])">
+                            {{ thread.title }}
+                        </Link>
                     </h3>
                     <p class="text-sm text-gray-600 mt-1">
                         Started on: {{ formatDate(thread.created_at) }}
@@ -36,6 +38,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     userId: {
