@@ -102,6 +102,51 @@ class PostController extends Controller
     }
 
     /**
+     * Display the thread and posts based on a specific post ID.
+     *
+     * @param int $postId The ID of the post to be displayed.
+     * @return \Inertia\Response The Inertia response containing the thread,
+     *         category, and paginated posts, along with the current page.
+     */
+    public function showByPostId($postId)
+    {
+        // Find the post by its ID
+        $post = Post::with('thread.category')->findOrFail($postId);
+
+        // Extract the thread and category from the post
+        $thread = $post->thread;
+        $category = $thread->category;
+
+        // Get the current page from the query string, default to page 1 if not set
+        $page = request()->query('page', 1);
+
+        // Determine the current page based on the post position
+        // Calculate the page number for the specific post
+        $postIndex = $thread->posts()
+            ->orderBy('created_at', 'asc')
+            ->pluck('id')
+            ->search($postId);
+
+        if ($postIndex !== false) {
+            // Calculate the page number by dividing the post index by the number of posts per page
+            $page = floor($postIndex / 10) + 1;
+        }
+
+        // Paginate the posts for the current thread
+        $posts = $thread->posts()
+            ->with('user')
+            ->orderBy('created_at', 'asc')
+            ->paginate(10, ['*'], 'page', $page);
+
+        return Inertia::render('Posts/Show', [
+            'category' => $category,
+            'thread' => $thread,
+            'posts' => $posts,
+            'currentPage' => $page,
+        ]);
+    }
+
+    /**
      * Removes nested blockquotes from the input HTML.
      *
      * This method processes the provided HTML input, searches for all <blockquote> elements,

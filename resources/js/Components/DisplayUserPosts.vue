@@ -18,7 +18,7 @@
                 <!-- Post Content -->
                 <div>
                     <h3 class="text-lg font-medium text-blue-600 hover:text-blue-700">
-                        <Link :href="route('threads.show', [post.thread.category.id, post.thread.id])">
+                        <Link :href="route('find.post', [post.id])">
                             Post in: {{ post.thread.title }}
                         </Link>
                     </h3>
