@@ -25,7 +25,7 @@
                     <p class="text-sm text-gray-600 mt-1">
                         Started on: {{ formatDate(post.created_at) }}
                     </p>
-                    <FlattenedButton @click="toggleVisibility(index)">Show</FlattenedButton>
+                    <FlattenedButton @click="toggleVisibility(index)">{{ showClose[index] }}</FlattenedButton>
                     <p v-if="visibility[index]" v-html="post.content" class="pl-5 mt-2"></p>
                 </div>
 
@@ -53,13 +53,25 @@ const props = defineProps({
 // State variable for storing visted user's posts
 const visitedUserPosts = ref([]);
 
+// State variables for expanding a post
 const visibility = ref([]);
-function toggleVisibility (index) {
-    if (visibility.value.length < index) {
-        visibility.value[index] = false;
-    }
+const showClose = ref([]);
+const length = ref(0);
 
+// Initialize visibility and showClose refs
+watch(() => visitedUserPosts.value, () => {
+    length.value = visitedUserPosts.value.length;
+
+    for (let i = 0; i < length.value; ++i) {
+        visibility.value[i] = false;
+        showClose.value[i] = 'Show';
+    }
+});
+
+// Show/close visibility of a post
+function toggleVisibility (index) {
     visibility.value[index] = !visibility.value[index];
+    showClose.value[index] = showClose.value[index] === 'Show' ? 'Close' : 'Show';
 }
 
 // Fetch posts from backend or sessionStorage
