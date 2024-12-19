@@ -77,6 +77,6 @@ function toggleVisibility (index) {
 }
 
 onMounted(async () => {
-        visitedUserPosts.value = await useFetchData('/visited-user-posts/' + props.userId);
+        visitedUserPosts.value = await useFetchData('/visited-user-posts/' + props.userId, 60000);
 });
 </script>

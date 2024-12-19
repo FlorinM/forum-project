@@ -53,6 +53,6 @@ const props = defineProps({
 const visitedUserThreads = ref([]);
 
 onMounted(async () => {
-        visitedUserThreads.value = await useFetchData('/visited-user-threads/' + props.userId);
+        visitedUserThreads.value = await useFetchData('/visited-user-threads/' + props.userId, 60000);
 });
 </script>
