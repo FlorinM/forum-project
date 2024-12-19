@@ -39,7 +39,7 @@ class VisitedUserController extends Controller
         $threads = Thread::where('user_id', $user->id)->latest()->take(20)->get();
 
         return response()->json([
-            'threads' => $threads,
+            'fetchedData' => $threads,
         ]);
     }
 
@@ -63,7 +63,7 @@ class VisitedUserController extends Controller
             ->get();
 
         return response()->json([
-            'posts' => $posts,
+            'fetchedData' => $posts,
         ]);
     }
 }

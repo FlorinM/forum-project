@@ -35,35 +35,13 @@
     import axios from 'axios';
     import { Link } from '@inertiajs/vue3';
     import FlattenedButton from '@/Components/FlattenedButton.vue';
+    import { useFetchData } from '@/Composables/useFetchData';
 
     // State variables
     const topics = ref([]);
     const currentPage = ref(1); // Start at page 1
     const topicsPerPage = 16;
     const totalPages = 5;
-
-    // Fetch topics from backend or sessionStorage
-    const fetchTopics = async () => {
-        // Check if topics are already stored in sessionStorage
-        const storedTopics = sessionStorage.getItem('topics');
-
-        if (storedTopics) {
-            // If topics are stored in sessionStorage, use them
-            topics.value = JSON.parse(storedTopics);
-            return; // Skip fetching data again
-        }
-
-        // If no topics in sessionStorage, fetch from the backend
-        try {
-            const response = await axios.get('/new-topics');
-            topics.value = response.data.threads || [];
-
-            // Store the fetched topics in sessionStorage for the rest of the session
-            sessionStorage.setItem('topics', JSON.stringify(topics.value));
-        } catch (error) {
-            console.error('Error fetching topics:', error);
-        }
-    };
 
     // Truncate long titles
     const truncateTitle = (title, maxLength = 30) => {
@@ -82,7 +60,9 @@
         currentPage.value = currentPage.value === totalPages ? 1 : currentPage.value + 1;
     };
 
-    onMounted(fetchTopics);
+onMounted(async () => {
+        topics.value = await useFetchData('/new-topics');
+});
 </script>
 
 <style scoped>

@@ -43,6 +43,7 @@ import { ref, onMounted, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
 import { useFormatDate } from '@/Composables/useFormatDate';
+import { useFetchData } from '@/Composables/useFetchData';
 
 const props = defineProps({
     userId: {
@@ -75,31 +76,7 @@ function toggleVisibility (index) {
     showClose.value[index] = showClose.value[index] === 'Show' ? 'Close' : 'Show';
 }
 
-// Fetch posts from backend or sessionStorage
-const fetchPosts = async () => {
-    // Make a variable name for cache
-    const cachedPosts = 'visitedUserPosts' + props.userId;
-
-    // Check if posts are already stored in sessionStorage
-    const storedPosts = sessionStorage.getItem(cachedPosts);
-
-    if (storedPosts) {
-        // If posts are stored in sessionStorage, use them
-        visitedUserPosts.value = JSON.parse(storedPosts);
-        return; // Skip fetching data again
-    }
-
-    // If no posts in sessionStorage, fetch from the backend
-    try {
-        const response = await axios.get('/visited-user-posts/' + props.userId);
-        visitedUserPosts.value = response.data.posts || [];
-
-        // Store the fetched posts in sessionStorage for the rest of the session
-        sessionStorage.setItem(cachedPosts, JSON.stringify(visitedUserPosts.value));
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
-};
-
-onMounted(fetchPosts);
+onMounted(async () => {
+        visitedUserPosts.value = await useFetchData('/visited-user-posts/' + props.userId);
+});
 </script>

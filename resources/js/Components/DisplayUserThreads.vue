@@ -40,6 +40,7 @@
 import { ref, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useFormatDate } from '@/Composables/useFormatDate';
+import { useFetchData } from '@/Composables/useFetchData';
 
 const props = defineProps({
     userId: {
@@ -51,31 +52,7 @@ const props = defineProps({
 // State variable for storing visted user's topics
 const visitedUserThreads = ref([]);
 
-// Fetch topics from backend or sessionStorage
-const fetchThreads = async () => {
-    // Make a variable name for cache
-    const cachedThreads = 'visitedUserThreads' + props.userId;
-
-    // Check if threads are already stored in sessionStorage
-    const storedThreads = sessionStorage.getItem(cachedThreads);
-
-    if (storedThreads) {
-        // If threads are stored in sessionStorage, use them
-        visitedUserThreads.value = JSON.parse(storedThreads);
-        return; // Skip fetching data again
-    }
-
-    // If no topics in sessionStorage, fetch from the backend
-    try {
-        const response = await axios.get('/visited-user-threads/' + props.userId);
-        visitedUserThreads.value = response.data.threads || [];
-
-        // Store the fetched threads in sessionStorage for the rest of the session
-        sessionStorage.setItem(cachedThreads, JSON.stringify(visitedUserThreads.value));
-    } catch (error) {
-        console.error('Error fetching threads:', error);
-    }
-};
-
-onMounted(fetchThreads);
+onMounted(async () => {
+        visitedUserThreads.value = await useFetchData('/visited-user-threads/' + props.userId);
+});
 </script>

@@ -14,7 +14,7 @@ class NewTopicsController extends Controller
 
         // Return the data in a proper format for the frontend to handle pagination
         return response()->json([
-            'threads' => $threads,
+            'fetchedData' => $threads,
         ]);
     }
 }
