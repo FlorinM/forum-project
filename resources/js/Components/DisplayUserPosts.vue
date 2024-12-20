@@ -25,7 +25,7 @@
                     <p class="text-sm text-gray-600 mt-1">
                         Posted on: {{ useFormatDate(post.created_at) }}
                     </p>
-                    <FlattenedButton @click="toggleVisibility(index)">{{ showClose[index] }}</FlattenedButton>
+                    <SmallButton @click="toggleVisibility(index)">{{ showClose[index] }}</SmallButton>
                     <p v-if="visibility[index]" v-html="post.content" class="prose text-xs pl-5 mt-2"></p>
                 </div>
 
@@ -41,7 +41,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import FlattenedButton from '@/Components/FlattenedButton.vue';
+import SmallButton from '@/Components/SmallButton.vue';
 import { useFormatDate } from '@/Composables/useFormatDate';
 import { useFetchData } from '@/Composables/useFetchData';
 
