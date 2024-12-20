@@ -7,7 +7,7 @@
                 <Avatar :avatarUrl="user.avatar_url" :altText="user.name"/>
             </div>
             <div class="col-span-9">
-                <h1 class="text-xl font-bold text-gray-800 inline-block">{{ user.name }}</h1>
+                <h1 class="text-xl font-bold text-gray-800 inline-block">{{ user.nickname }}</h1>
 
                 <FlattenedButton
                     v-if="$page.props.auth.user.id != user.id && !isMessageFormVisible"
@@ -33,7 +33,7 @@
                 </template>
 
                 <p class="text-sm text-gray-600 mt-4">
-                    {{ user.name }} is a 20-year-old woman with a vibrant personality and a deep passion for learning. Born and raised in a small town, she has always been curious and driven, eager to explore the world beyond her immediate surroundings. Jane is currently a student, pursuing a degree in environmental science, with a strong interest in sustainability and conservation. Her goal is to make a positive impact on the environment by contributing to innovative solutions for climate change and resource management.
+                    <div v-if="user.description">{{ user.description }}</div>
                 </p>
             </div>
         </div>
@@ -43,11 +43,12 @@
             <div class="bg-white p-6 rounded-md shadow-md mb-6 col-span-3 mr-4">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Info: </h2>
                 <div class="grid grid-cols-1 text-gray-600">
-                    <div><strong>Age:</strong> 20</div>
-                    <div><strong>Sex:</strong> F</div>
-                    <div><strong>Birthday:</strong> 23</div>
-                    <div><strong>Posts:</strong> 50</div>
-                    <div><strong>Threads Started:</strong> 9</div>
+                    <table>
+                        <tr v-for="(info, index) in infos">
+                            <td>{{ info.name }}:</td>
+                            <td><strong v-if="info.value">{{ info.value }}</strong><strong v-else>Unknown</strong></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
@@ -92,18 +93,29 @@ import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
 import DisplayUserThreads from '@/Components/DisplayUserThreads.vue';
 import DisplayUserPosts from '@/Components/DisplayUserPosts.vue';
+import { extractDayAndMonth, calculateAge } from '@/Utils/dateUtils';
+
+const props = defineProps({
+  user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
+});
 
 const routes = [
     {id: 1, name: 'Inbox', link: 'profile.edit'}, // Change with profile.inbox when you have route
     {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
 ];
 
+const age = props.user.birthday ? calculateAge(props.user.birthday) : null;
+const birthday = props.user.birthday ? extractDayAndMonth(props.user.birthday) : null;
+const infos = [
+    {name: 'Age', value: age},
+    {name: 'Gender', value: props.user.gender},
+    {name: 'Birthday', value: birthday},
+    {name: 'Posts', value: 20},
+    {name: 'Threads Started', value: 9},
+];
+
 const displayThreads = ref(false);
 const displayPosts = ref(false);
-
-const props = defineProps({
-  user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
-});
 
 // Create a Laravel Precognition Vue form
 const form = useForm('post', route('message.send'), {
