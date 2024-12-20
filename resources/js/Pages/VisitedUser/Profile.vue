@@ -48,6 +48,10 @@
                             <td>{{ info.name }}:</td>
                             <td><strong v-if="info.value">{{ info.value }}</strong><strong v-else>Unknown</strong></td>
                         </tr>
+                        <tr>
+                            <td>Signature:</td>
+                            <td><div class="text-xs italic">{{ props.user.signature }}</div></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -96,7 +100,18 @@ import DisplayUserPosts from '@/Components/DisplayUserPosts.vue';
 import { extractDayAndMonth, calculateAge } from '@/Utils/dateUtils';
 
 const props = defineProps({
-  user: Object,  // Expecting the full visited user data (name, avatar, bio, etc.)
+    user: {
+        type: Object, // Expecting the full visited user data (name, avatar, bio, etc.)
+        required: true,
+    },
+    totalPosts: {
+        type: Number,
+        default: 0,
+    },
+    totalThreads: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const routes = [
@@ -110,8 +125,8 @@ const infos = [
     {name: 'Age', value: age},
     {name: 'Gender', value: props.user.gender},
     {name: 'Birthday', value: birthday},
-    {name: 'Posts', value: 20},
-    {name: 'Threads Started', value: 9},
+    {name: 'Posts', value: props.totalPosts},
+    {name: 'Threads', value: props.totalThreads},
 ];
 
 const displayThreads = ref(false);

@@ -16,11 +16,24 @@ class VisitedUserController extends Controller
      * @param User $user The user whose profile is being viewed. This will be automatically injected by the route model binding.
      * @return \Inertia\Response Renders the profile page of the specified user.
      */
-    public function showProfile(User $user)
+    public function showProfile(?User $user)
     {
-        // You can add additional logic here, like checking if the user exists
+        // Check if the user exists, if not redirect back with a message
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Calculate the total number of posts the user has made
+        $totalPosts = Post::where('user_id', $user->id)->count();
+
+        // Calculate the total number of threads the user has started
+        $totalThreads = Thread::where('user_id', $user->id)->count();
+
+        // Return the profile page with the user, total posts, and total threads
         return Inertia::render('VisitedUser/Profile', [
             'user' => $user,
+            'totalPosts' => $totalPosts,
+            'totalThreads' => $totalThreads,
         ]);
     }
 
