@@ -7,14 +7,21 @@ if (! function_exists('breadcrumbs')) {
     /**
      * Generate breadcrumb data for a given category and optional thread.
      *
+     * @param  \App\Models\Category|int|null  $category
+     * @param  \App\Models\Thread|int|null  $thread
+     *
      * @return array The breadcrumb trail with names and IDs
      */
-    function breadcrumbs(): array {
+    function breadcrumbs($category = null, $thread = null): array {
         $breadcrumbs = [];
 
         // Retrieve the category and thread instances from route model binding
-        $category = request()->route('category');  // Automatically gets the category from the route
-        $thread = request()->route('thread');      // Automatically gets the thread from the route
+        if ($category === null) {
+            $category = request()->route('category');  // Automatically gets the category from the route
+        }
+        if ($thread === null) {
+            $thread = request()->route('thread');      // Automatically gets the thread from the route
+        }
 
         // Make sure $category and $thread are resolved
         if (is_numeric($category)) {

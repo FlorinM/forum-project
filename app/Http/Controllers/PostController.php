@@ -138,6 +138,9 @@ class PostController extends Controller
             ->orderBy('created_at', 'asc')
             ->paginate(10, ['*'], 'page', $page);
 
+        // Make sure the global prop breadcrumbs is shared via Inertia with latest value
+        Inertia::share('breadcrumbs', breadcrumbs($category, $thread));
+
         return Inertia::render('Posts/Show', [
             'category' => $category,
             'thread' => $thread,
