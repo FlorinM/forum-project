@@ -50,7 +50,7 @@
       </div>
     </nav>
 
-    <div class="gradient-bg">
+    <div class="left-0 w-full h-[350px] bg-gradient-to-b from-blue-600 to-blue-50 rounded-t-md z-10">
         <NewTopics />
 
         <div class="pt-20">
@@ -74,16 +74,3 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import NewTopics from '@/Components/NewTopics.vue';
 </script>
-
-<style scoped>
-.gradient-bg {
-    top: 100%; /* Position it right under the navbar */
-    left: 0;
-    width: 100%;
-    height: 350px; /* Set the height of the gradient */
-    background: linear-gradient(to bottom, rgba(37, 99, 235, 1), rgba(239, 246, 255, 1)); /* Blue to bg-blue-50 */
-    border-top-left-radius: 0.375rem; /* Match the navbar's rounded corners */
-    border-top-right-radius: 0.375rem; /* Match the navbar's rounded corners */
-    z-index: 10; /* Ensure it stays below the navbar but above other content */
-}
-</style>
