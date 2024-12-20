@@ -2,7 +2,7 @@
   <ForumLayout>
     <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
       <!-- Thread Title -->
-      <h1 class="text-center text-4xl font-bold text-gray-800 mb-6">{{ thread.title }}</h1>
+      <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">{{ thread.title }}</h1>
 
         <!-- Pagination top -->
         <Pagination

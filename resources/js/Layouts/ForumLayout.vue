@@ -53,7 +53,7 @@
     <div class="left-0 w-full h-[350px] bg-gradient-to-b from-blue-600 to-blue-50 rounded-t-md z-10">
         <NewTopics />
 
-        <div class="pt-20">
+        <div class="pt-20 max-w-[1000px] mx-auto">
             <Breadcrumbs></Breadcrumbs>
         </div>
     </div>
