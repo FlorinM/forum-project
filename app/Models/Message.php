@@ -17,6 +17,7 @@ class Message extends Model
     protected $fillable = [
         'sender_id',
         'receiver_id',
+        'discussion_id',
         'message',
         'read_at',
     ];
@@ -44,5 +45,13 @@ class Message extends Model
     public function receiver()
     {
         return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    /**
+     * Get the discussion that owns the message.
+     */
+    public function discussion()
+    {
+        return $this->belongsTo(Discussion::class, 'discussion_id');
     }
 }

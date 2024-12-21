@@ -77,5 +77,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+    // Discussions initiated by the user
+    public function initiatedDiscussions()
+    {
+        return $this->hasMany(Discussion::class, 'initiator_id');
+    }
+
+    // Discussions where the user is a participant
+    public function participatedDiscussions()
+    {
+        return $this->hasMany(Discussion::class, 'participant_id');
+    }
 }
 
