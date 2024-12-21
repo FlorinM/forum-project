@@ -11,6 +11,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\NewTopicsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VisitedUserController;
+use App\Http\Controllers\DiscussionController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -62,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('visited.user.threads');
     Route::get('/visited-user-posts/{user}', [VisitedUserController::class, 'fetchPosts'])
         ->name('visited.user.posts');
+
+    Route::get('/discussions-inbox/', [DiscussionController::class, 'inbox'])->name('discussions.inbox');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
