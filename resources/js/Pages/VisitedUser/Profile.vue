@@ -68,6 +68,18 @@
       <!-- Form with QuillEditor -->
       <div v-if="isMessageFormVisible">
         <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
+            <!-- Subject Input -->
+            <div class="flex flex-col mb-5">
+                <label for="subject" class="text-gray-700 font-semibold mb-2 w-4/5 text-left">Subject</label>
+                <input
+                    id="subject"
+                    v-model="form.subject"
+                    @input="form.validate('subject')"
+                    class="w-4/5 p-3 text-base border border-gray-300 rounded-md"
+                    required
+                    placeholder="Enter thread subject"
+                />
+            </div>
           <QuillEditor v-model="form.message" />
           <div class="mt-4 text-right">
             <button
@@ -79,6 +91,7 @@
             </button>
           </div>
         </form>
+        <div v-if="form.invalid('subject')" class="text-red-500 text-sm mt-2">{{ form.errors.subject }}</div>
         <div v-if="form.invalid('message')" class="text-red-500 text-sm mt-2">{{ form.errors.message }}</div>
         <div v-if="form.invalid('receiver_id')" class="text-red-500 text-sm mt-2">{{ form.errors.receiver_id }}</div>
     </div>
@@ -115,7 +128,7 @@ const props = defineProps({
 });
 
 const routes = [
-    {id: 1, name: 'Inbox', link: 'discussions.inbox'}, // Change with profile.inbox when you have route
+    {id: 1, name: 'Inbox', link: 'discussions.inbox'},
     {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
 ];
 
@@ -133,9 +146,10 @@ const displayThreads = ref(false);
 const displayPosts = ref(false);
 
 // Create a Laravel Precognition Vue form
-const form = useForm('post', route('message.send'), {
+const form = useForm('post', route('discussions.start'), {
     receiver_id: props.user.id,
-    message: '', // The content of the post
+    subject: '', // The subject of the discussion
+    message: '', // The content of the message
 });
 
 watch(() => form.message, () => {

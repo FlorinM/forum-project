@@ -65,6 +65,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('visited.user.posts');
 
     Route::get('/discussions-inbox/', [DiscussionController::class, 'inbox'])->name('discussions.inbox');
+    Route::post('/discussions-start/', [DiscussionController::class, 'store'])
+        ->name('discussions.start')
+        ->middleware([HandlePrecognitiveRequests::class]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
