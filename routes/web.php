@@ -64,10 +64,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/visited-user-posts/{user}', [VisitedUserController::class, 'fetchPosts'])
         ->name('visited.user.posts');
 
-    Route::get('/discussions-inbox/', [DiscussionController::class, 'inbox'])->name('discussions.inbox');
+    Route::get('/discussions/', [DiscussionController::class, 'show'])->name('discussions');
     Route::post('/discussions-start/', [DiscussionController::class, 'store'])
         ->name('discussions.start')
         ->middleware([HandlePrecognitiveRequests::class]);
+    Route::get('/discussions-inbox/{user}', [DiscussionController::class, 'inbox'])
+        ->name('discussions-inbox');
+    Route::get('/discussions-sent/{user}', [DiscussionController::class, 'sent'])
+        ->name('discussions-sent');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

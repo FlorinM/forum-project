@@ -128,7 +128,7 @@ const props = defineProps({
 });
 
 const routes = [
-    {id: 1, name: 'Inbox', link: 'discussions.inbox'},
+    {id: 1, name: 'Messages', link: 'discussions'},
     {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
 ];
 

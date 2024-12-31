@@ -1,15 +1,15 @@
 <template>
     <div class="bg-white p-6 rounded-md shadow-md overflow-scroll">
 
-        <!-- Empty Inbox Case -->
-        <p v-if="inbox.length === 0" class="text-gray-600">
-            Inbox is empty.
+        <!-- Empty Sent Case -->
+        <p v-if="sent.length === 0" class="text-gray-600">
+            Sent container is empty.
         </p>
 
-        <!-- Inbox List -->
+        <!-- Sent List -->
         <ul v-else class="divide-y divide-gray-200">
             <li
-                v-for="(discussion, index) in inbox"
+                v-for="(discussion, index) in sent"
                 :key="index"
                 class="py-4 flex items-start justify-between"
             >
@@ -17,7 +17,7 @@
                 <div>
                     <h3 class="text-m font-medium text-blue-600 hover:text-blue-700 flex">
                         <div>
-                            {{ discussion.initiator_nickname }}
+                            {{ discussion.participant_nickname }}
                         </div>
 
                         <div class="ml-4">
@@ -41,10 +41,10 @@ import { useFormatDate } from '@/Composables/useFormatDate';
 import { useFetchData } from '@/Composables/useFetchData';
 
 // State variable for storing discussions in Inbox
-const inbox = ref([]);
+const sent = ref([]);
 
 onMounted(async () => {
-        inbox.value = await useFetchData('/discussions-inbox/' + usePage().props.auth.user.id);
-        console.log(inbox.value);
+        sent.value = await useFetchData('/discussions-sent/' + usePage().props.auth.user.id);
+        console.log(sent.value);
 });
 </script>
