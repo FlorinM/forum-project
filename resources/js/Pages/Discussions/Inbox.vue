@@ -26,7 +26,7 @@
                     </h3>
 
                     <p class="text-sm text-gray-600 mt-1">
-                        Started on: {{ useFormatDate(discussion.created_at) }}
+                        Last message: {{ useFormatDate(discussion.last_message_at) }}
                     </p>
                 </div>
             </li>

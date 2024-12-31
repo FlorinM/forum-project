@@ -26,15 +26,22 @@ class DiscussionController extends BaseServiceController
     public function inbox() {
         $authUserId = Auth::id();
 
+        $latestMessages = DB::table('messages')
+            ->select('discussion_id', DB::raw('MAX(created_at) as last_message_at'))
+            ->groupBy('discussion_id');
+
         $inboxDiscussions = DB::table('discussions')
-            ->leftJoin('messages', 'discussions.id', '=', 'messages.discussion_id')
+            ->joinSub($latestMessages, 'latest_messages', function ($join) {
+                $join->on('discussions.id', '=', 'latest_messages.discussion_id');
+            })
             ->leftJoin('users', 'discussions.initiator_id', '=', 'users.id')
             ->where('discussions.participant_id', $authUserId)
-            ->orderBy('messages.created_at', 'desc')
+            ->orderBy('latest_messages.last_message_at', 'desc')
             ->take(50)
             ->get([
                 'discussions.*',
-                'users.nickname as initiator_nickname', // Select the nickname
+                'users.nickname as initiator_nickname',
+                'latest_messages.last_message_at',
             ]);
 
         return response()->json([
@@ -52,15 +59,22 @@ class DiscussionController extends BaseServiceController
     public function sent() {
         $authUserId = Auth::id();
 
+        $latestMessages = DB::table('messages')
+            ->select('discussion_id', DB::raw('MAX(created_at) as last_message_at'))
+            ->groupBy('discussion_id');
+
         $sentDiscussions = DB::table('discussions')
-            ->leftJoin('messages', 'discussions.id', '=', 'messages.discussion_id')
+            ->joinSub($latestMessages, 'latest_messages', function ($join) {
+                $join->on('discussions.id', '=', 'latest_messages.discussion_id');
+            })
             ->leftJoin('users', 'discussions.participant_id', '=', 'users.id')
             ->where('discussions.initiator_id', $authUserId)
-            ->orderBy('messages.created_at', 'desc')
+            ->orderBy('latest_messages.last_message_at', 'desc')
             ->take(50)
             ->get([
                 'discussions.*',
-                'users.nickname as participant_nickname', // Select the nickname
+                'users.nickname as participant_nickname',
+                'latest_messages.last_message_at',
             ]);
 
         return response()->json([
