@@ -25,9 +25,17 @@
                 </FlattenedButton>
 
                 <template v-if="$page.props.auth.user.id === user.id">
-                    <FlattenedButton v-for="rt in routes" :key="rt.id">
-                        <Link :href="route(rt.link)">
-                            {{ rt.name }}
+                    <FlattenedButton @click="display('inbox')">
+                        Inbox
+                    </FlattenedButton>
+
+                    <FlattenedButton @click="display('sent')">
+                        Sent
+                    </FlattenedButton>
+
+                    <FlattenedButton>
+                        <Link :href="route('profile.edit')">
+                            Edit Profile
                         </Link>
                     </FlattenedButton>
                 </template>
@@ -62,6 +70,14 @@
 
             <div v-if="displayPosts" class="col-span-7 mb-6">
                 <DisplayUserPosts :userId="props.user.id" />
+            </div>
+
+            <div v-if="displayInbox" class="col-span-7 mb-6">
+                <Inbox />
+            </div>
+
+            <div v-if="displaySent" class="col-span-7 mb-6">
+                <Sent />
             </div>
         </div>
 
@@ -110,6 +126,8 @@ import { Link } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
 import DisplayUserThreads from '@/Components/DisplayUserThreads.vue';
 import DisplayUserPosts from '@/Components/DisplayUserPosts.vue';
+import Inbox from '@/Pages/Discussions/Inbox.vue';
+import Sent from '@/Pages/Discussions/Sent.vue';
 import { extractDayAndMonth, calculateAge } from '@/Utils/dateUtils';
 
 const props = defineProps({
@@ -127,11 +145,6 @@ const props = defineProps({
     },
 });
 
-const routes = [
-    {id: 1, name: 'Messages', link: 'discussions'},
-    {id: 2, name: 'Edit my Profile', link: 'profile.edit'},
-];
-
 const age = props.user.birthday ? calculateAge(props.user.birthday) : null;
 const birthday = props.user.birthday ? extractDayAndMonth(props.user.birthday) : null;
 const infos = [
@@ -144,6 +157,8 @@ const infos = [
 
 const displayThreads = ref(false);
 const displayPosts = ref(false);
+const displayInbox = ref(false);
+const displaySent = ref(false);
 
 // Create a Laravel Precognition Vue form
 const form = useForm('post', route('discussions.start'), {
@@ -180,12 +195,36 @@ function openMessageForm () {
 };
 
 function display (value) {
-    if (value === 'threads') {
-        displayThreads.value = true;
-        displayPosts.value = false;
-    } else if (value === 'posts') {
-        displayThreads.value = false;
-        displayPosts.value = true;
+    switch (value) {
+        case 'threads':
+            displayThreads.value = true;
+            displayPosts.value = false;
+            displayInbox.value = false;
+            displaySent.value = false;
+            break;
+        case 'posts':
+            displayThreads.value = false;
+            displayPosts.value = true;
+            displayInbox.value = false;
+            displaySent.value = false;
+            break;
+        case 'inbox':
+            displayThreads.value = false;
+            displayPosts.value = false;
+            displayInbox.value = true;
+            displaySent.value = false;
+            break;
+        case 'sent':
+            displayThreads.value = false;
+            displayPosts.value = false;
+            displayInbox.value = false;
+            displaySent.value = true;
+            break;
+        default:
+            displayThreads.value = false;
+            displayPosts.value = false;
+            displayInbox.value = false;
+            displaySent.value = false;
     }
 }
 </script>
