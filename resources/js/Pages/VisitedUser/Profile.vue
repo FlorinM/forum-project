@@ -64,19 +64,19 @@
                 </div>
             </div>
 
-            <div v-if="displayThreads" class="col-span-7 mb-6">
+            <div v-if="show.threads" class="col-span-7 mb-6">
                 <DisplayUserThreads :userId="props.user.id" />
             </div>
 
-            <div v-if="displayPosts" class="col-span-7 mb-6">
+            <div v-if="show.posts" class="col-span-7 mb-6">
                 <DisplayUserPosts :userId="props.user.id" />
             </div>
 
-            <div v-if="displayInbox" class="col-span-7 mb-6">
+            <div v-if="show.inbox" class="col-span-7 mb-6">
                 <Inbox />
             </div>
 
-            <div v-if="displaySent" class="col-span-7 mb-6">
+            <div v-if="show.sent" class="col-span-7 mb-6">
                 <Sent />
             </div>
         </div>
@@ -155,11 +155,6 @@ const infos = [
     {name: 'Threads', value: props.totalThreads},
 ];
 
-const displayThreads = ref(false);
-const displayPosts = ref(false);
-const displayInbox = ref(false);
-const displaySent = ref(false);
-
 // Create a Laravel Precognition Vue form
 const form = useForm('post', route('discussions.start'), {
     receiver_id: props.user.id,
@@ -194,37 +189,25 @@ function openMessageForm () {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 };
 
+// Display Threads, Posts, Inbox or Sent hidden components
+const show = ref({
+    'threads': false,
+    'posts': false,
+    'inbox': false,
+    'sent': false,
+});
+
 function display (value) {
-    switch (value) {
-        case 'threads':
-            displayThreads.value = true;
-            displayPosts.value = false;
-            displayInbox.value = false;
-            displaySent.value = false;
-            break;
-        case 'posts':
-            displayThreads.value = false;
-            displayPosts.value = true;
-            displayInbox.value = false;
-            displaySent.value = false;
-            break;
-        case 'inbox':
-            displayThreads.value = false;
-            displayPosts.value = false;
-            displayInbox.value = true;
-            displaySent.value = false;
-            break;
-        case 'sent':
-            displayThreads.value = false;
-            displayPosts.value = false;
-            displayInbox.value = false;
-            displaySent.value = true;
-            break;
-        default:
-            displayThreads.value = false;
-            displayPosts.value = false;
-            displayInbox.value = false;
-            displaySent.value = false;
+    if (value != 'threads' && value != 'posts' && value != 'inbox' && value != 'sent') {
+        return;
+    }
+
+    for (const key in show.value) {
+        if (value === key) {
+            show.value[key] = true;
+        } else {
+            show.value[key] = false;
+        }
     }
 }
 </script>

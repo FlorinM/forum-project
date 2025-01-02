@@ -1,5 +1,7 @@
 <template>
     <div class="bg-white p-6 rounded-md shadow-md overflow-scroll">
+        <!-- Header -->
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Inbox messages</h2>
 
         <!-- Empty Inbox Case -->
         <p v-if="inbox.length === 0" class="text-gray-600">

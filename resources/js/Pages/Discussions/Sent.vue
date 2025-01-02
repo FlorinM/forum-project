@@ -1,5 +1,7 @@
 <template>
     <div class="bg-white p-6 rounded-md shadow-md overflow-scroll">
+        <!-- Header -->
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Sent messages</h2>
 
         <!-- Empty Sent Case -->
         <p v-if="sent.length === 0" class="text-gray-600">
