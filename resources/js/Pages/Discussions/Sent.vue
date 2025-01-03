@@ -23,7 +23,9 @@
                         </div>
 
                         <div class="ml-4">
-                            {{ discussion.subject }}
+                            <Link :href="route('discussions.show', [discussion.id])">
+                                {{ discussion.subject }}
+                            </Link>
                         </div>
                     </h3>
 

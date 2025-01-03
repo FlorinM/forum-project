@@ -17,6 +17,27 @@ class DiscussionController extends BaseServiceController
     }
 
     /**
+     * Display the specified discussion and its messages.
+     *
+     * This method retrieves all the messages associated with the given discussion
+     * and also loads the related initiator and participant for the discussion.
+     * The data is then passed to the front-end using Inertia.js to render the
+     * 'Discussions/Discussion' component.
+     *
+     * @param  \App\Models\Discussion  $discussion  The discussion to be shown.
+     * @return \Inertia\Response  The Inertia response to render the discussion page.
+     */
+    public function showDiscussion (Discussion $discussion) {
+        $messages = Message::where('discussion_id', $discussion->id)->get();
+        $discussion->load(['initiator', 'participant']);
+
+        return Inertia::render('Discussions/Discussion', [
+            'messages' => $messages,
+            'discussion' => $discussion,
+        ]);
+    }
+
+    /**
      * Fetches the inbox discussions for the authenticated user.
      * Joins discussions with messages and users to include the last message's order
      * and the initiator's nickname. Returns the discussions ordered by the latest message.

@@ -72,6 +72,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('discussions-inbox');
     Route::get('/discussions-sent/{user}', [DiscussionController::class, 'sent'])
         ->name('discussions-sent');
+    Route::get('/discussions-show/{discussion}', [DiscussionController::class, 'showDiscussion'])
+        ->name('discussions.show');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
