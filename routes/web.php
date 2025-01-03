@@ -74,6 +74,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('discussions-sent');
     Route::get('/discussions-show/{discussion}', [DiscussionController::class, 'showDiscussion'])
         ->name('discussions.show');
+
+    Route::post('/messages-send/{discussion}', [MessageController::class, 'sendMessage'])
+        ->name('send.message')
+        ->middleware([HandlePrecognitiveRequests::class]);
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
