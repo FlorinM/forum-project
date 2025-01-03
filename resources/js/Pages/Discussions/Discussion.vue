@@ -37,6 +37,7 @@
                     </div>
                 </form>
                 <div v-if="form.invalid('receiver_id')" class="text-red-500 text-sm mt-2">{{ form.errors.receiver_id }}</div>
+                <div v-if="form.invalid('discussion_id')" class="text-red-500 text-sm mt-2">{{ form.errors.discussion_id }}</div>
                 <div v-if="form.invalid('message')" class="text-red-500 text-sm mt-2">{{ form.errors.message }}</div>
             </div>
         </div>
@@ -67,8 +68,9 @@ const receiverId = usePage().props.auth.user.id === props.discussion.initiator_i
                    props.discussion.initiator_id;
 
 // Create a Laravel Precognition Vue form
-const form = useForm('post', route('send.message', [props.discussion.id]), {
+const form = useForm('post', route('send.message'), {
     receiver_id: receiverId,
+    discussion_id: props.discussion.id,
     message: '', // The content of the message
 });
 

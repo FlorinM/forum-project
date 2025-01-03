@@ -24,6 +24,7 @@ class SendMessageRequest extends FormRequest
     {
         return [
             'receiver_id' => ['required', 'exists:users,id', 'not_in:' . auth()->id()],
+            'discussion_id' => ['required', 'exists:discussions,id'],
             'message' => ['required', 'string'],
         ];
     }

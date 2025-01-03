@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
-use App\Models\Discussion;
 use Illuminate\Http\Request;
 use App\Http\Requests\SendMessageRequest;
 
@@ -16,7 +15,7 @@ class MessageController extends BaseServiceController
      * @param  App\Http\Requests\SendMessageRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function sendMessage(SendMessageRequest $request, Discussion $discussion)
+    public function sendMessage(SendMessageRequest $request)
     {
         if (config('quill_use_image_handler')) {
             // Extract images from the string and replace with urls
@@ -32,7 +31,7 @@ class MessageController extends BaseServiceController
         Message::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $request->input('receiver_id'),
-            'discussion_id' => $discussion->id,
+            'discussion_id' => $request->input('discussion_id'),
             'message' => $message,
         ]);
 
