@@ -16,7 +16,7 @@
             <!-- Messages List -->
             <div class="list-none p-0">
                 <Message
-                    v-for="message in messages"
+                    v-for="message in refMessages"
                     :key="message.id"
                     :message="message"
                 />
@@ -51,16 +51,20 @@ import Avatar from '@/Components/Avatar.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { usePage } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
+import Echo from '@/echo';
 
 const props = defineProps({
     messages: {
-        type: Object,
+        type: Array,
     },
     discussion: {
         type: Object,
     },
 });
+
+// Make `messages` reactive for broadcasting implementation
+const refMessages = ref(props.messages);
 
 // The receiver of the message is always the other interlocutor not the auth user
 const receiverId = usePage().props.auth.user.id === props.discussion.initiator_id ?
@@ -86,4 +90,13 @@ function submitReply() {
     },
   });
 }
+
+// Listen to the private discussion channel
+Echo.private(`discussion.${props.discussion.id}`)
+    .listen('.MessageCreated', (event) => {
+        refMessages.value.push(event.model);  // Add the new message to the UI
+    })
+    .error((error) => {
+        console.error('Subscription error:', error);
+    });
 </script>

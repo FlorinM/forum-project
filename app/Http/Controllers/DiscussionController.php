@@ -32,7 +32,7 @@ class DiscussionController extends BaseServiceController
         $discussion->load(['initiator', 'participant']);
 
         return Inertia::render('Discussions/Discussion', [
-            'messages' => $messages,
+            'messages' => $messages->toArray(),
             'discussion' => $discussion,
         ]);
     }

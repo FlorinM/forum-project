@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 
 class Message extends Model
 {
     use HasFactory;
+    use BroadcastsEvents;
 
     /**
      * The attributes that are mass assignable.
@@ -53,5 +56,13 @@ class Message extends Model
     public function discussion()
     {
         return $this->belongsTo(Discussion::class, 'discussion_id');
+    }
+
+    /**
+     * Define the private channel for broadcasting.
+     */
+    public function broadcastOn(): array
+    {
+        return [new PrivateChannel("discussion.{$this->discussion_id}")];
     }
 }
