@@ -17,7 +17,7 @@ class MessageController extends BaseServiceController
      */
     public function sendMessage(SendMessageRequest $request)
     {
-        if (config('quill_use_image_handler')) {
+        if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $message = $this->imageExtractorService->extractAndReplaceImages($request->input('message'));
         } else {
