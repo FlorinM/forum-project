@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -104,6 +105,50 @@ class User extends Authenticatable implements FilamentUser
     public function participatedDiscussions()
     {
         return $this->hasMany(Discussion::class, 'participant_id');
+    }
+
+    /**
+     * Ban the user for a given number of days.
+     *
+     * @param int $days
+     * @return void
+     */
+    public function ban(int $days)
+    {
+        // Calculate the future ban expiration date
+        $banUntil = Carbon::now()->addDays($days);
+
+        // Set the is_banned timestamp
+        $this->is_banned = $banUntil;
+        $this->save();
+    }
+
+    /**
+     * Unban the user.
+     *
+     * @return void
+     */
+    public function unban()
+    {
+        // Set is_banned to null to unban the user
+        $this->is_banned = null;
+        $this->save();
+    }
+
+    /**
+     * Check if the user is currently banned.
+     *
+     * @return bool
+     */
+    public function isBanned(): bool
+    {
+        // If is_banned is set and is in the future, the user is banned
+        if ($this->is_banned) {
+            return $this->is_banned->isFuture();
+        }
+
+        // If is_banned is NULL or in the past, the user is not banned
+        return false;
     }
 }
 
