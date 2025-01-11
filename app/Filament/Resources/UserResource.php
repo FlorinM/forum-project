@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Tables\Actions\ActionGroup;
 
 class UserResource extends Resource
 {
@@ -86,34 +87,34 @@ class UserResource extends Resource
                 ->visible(fn () => auth()->user()->hasRole('Admin')),
         ])
         ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\Action::make('ban')
-                ->label('Ban')
-                ->icon('heroicon-o-lock-closed')
-                ->requiresConfirmation()
-                ->action(fn (User $record) => $record->ban(30)) // Adjust ban duration as needed
-                ->visible(fn (User $record) => !$record->isBanned()),
-            Tables\Actions\Action::make('unban')
-                ->label('Unban')
-                ->icon('heroicon-o-check-circle')
-                ->requiresConfirmation()
-                ->action(fn (User $record) => $record->unban())
-                ->visible(fn (User $record) => $record->isBanned()),
-            Tables\Actions\Action::make('Promote to Moderator')
-                ->action(fn (User $record) => $record->promoteToModerator())
-                ->requiresConfirmation()
-                ->color('success')
-                ->visible(fn (User $record) => $record->hasRole('User') && auth()->user()->hasRole('Admin')),
-            Tables\Actions\Action::make('Demote to User')
-                ->action(fn (User $record) => $record->demoteToUser())
-                ->requiresConfirmation()
-                ->color('danger')
-                ->visible(fn (User $record) => $record->hasRole('Moderator') && auth()->user()->hasRole('Admin')),
+            Tables\Actions\ActionGroup::make([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('ban')
+                    ->label('Ban')
+                    ->icon('heroicon-o-lock-closed')
+                    ->requiresConfirmation()
+                    ->action(fn (User $record) => $record->ban(30)) // Adjust ban duration as needed
+                    ->visible(fn (User $record) => !$record->isBanned()),
+                Tables\Actions\Action::make('unban')
+                    ->label('Unban')
+                    ->icon('heroicon-o-check-circle')
+                    ->requiresConfirmation()
+                    ->action(fn (User $record) => $record->unban())
+                    ->visible(fn (User $record) => $record->isBanned()),
+                Tables\Actions\Action::make('Promote to Moderator')
+                    ->action(fn (User $record) => $record->promoteToModerator())
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->visible(fn (User $record) => $record->hasRole('User') && auth()->user()->hasRole('Admin')),
+                Tables\Actions\Action::make('Demote to User')
+                    ->action(fn (User $record) => $record->demoteToUser())
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->visible(fn (User $record) => $record->hasRole('Moderator') && auth()->user()->hasRole('Admin')),
+            ])
         ])
         ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
+            Tables\Actions\DeleteBulkAction::make(),
         ]);
     }
 
