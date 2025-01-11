@@ -116,6 +116,10 @@ class User extends Authenticatable implements FilamentUser
      */
     public function ban(int $days)
     {
+        if (!auth()->user()->hasRole('Moderator')) {
+            throw UnauthorizedException::forRoles(['Moderator']);
+        }
+
         // Calculate the future ban expiration date
         $banUntil = Carbon::now()->addDays($days);
 
@@ -131,6 +135,10 @@ class User extends Authenticatable implements FilamentUser
      */
     public function unban()
     {
+        if (!auth()->user()->hasRole('Moderator')) {
+            throw UnauthorizedException::forRoles(['Moderator']);
+        }
+
         // Set is_banned to null to unban the user
         $this->is_banned = null;
         $this->save();
