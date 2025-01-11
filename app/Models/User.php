@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Carbon\Carbon;
@@ -149,6 +150,30 @@ class User extends Authenticatable implements FilamentUser
 
         // If is_banned is NULL or in the past, the user is not banned
         return false;
+    }
+
+    public function promoteToModerator(): void
+    {
+        if (!auth()->user()->hasRole('Admin')) {
+            throw UnauthorizedException::forRoles(['Admin']);
+        }
+
+        if ($this->hasRole('User')) {
+            $this->removeRole('User');
+            $this->assignRole('Moderator');
+        }
+    }
+
+    public function demoteToUser(): void
+    {
+        if (!auth()->user()->hasRole('Admin')) {
+            throw UnauthorizedException::forRoles(['Admin']);
+        }
+
+        if ($this->hasRole('Moderator')) {
+            $this->removeRole('Moderator');
+            $this->assignRole('User');
+        }
     }
 }
 

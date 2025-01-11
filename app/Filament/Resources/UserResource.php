@@ -80,6 +80,10 @@ class UserResource extends Resource
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
+
+            Tables\Columns\TextColumn::make('roles.name')
+                ->label('Role')
+                ->visible(fn () => auth()->user()->hasRole('Admin')),
         ])
         ->actions([
             Tables\Actions\EditAction::make(),
@@ -95,6 +99,16 @@ class UserResource extends Resource
                 ->requiresConfirmation()
                 ->action(fn (User $record) => $record->unban())
                 ->visible(fn (User $record) => $record->isBanned()),
+            Tables\Actions\Action::make('Promote to Moderator')
+                ->action(fn (User $record) => $record->promoteToModerator())
+                ->requiresConfirmation()
+                ->color('success')
+                ->visible(fn (User $record) => $record->hasRole('User') && auth()->user()->hasRole('Admin')),
+            Tables\Actions\Action::make('Demote to User')
+                ->action(fn (User $record) => $record->demoteToUser())
+                ->requiresConfirmation()
+                ->color('danger')
+                ->visible(fn (User $record) => $record->hasRole('Moderator') && auth()->user()->hasRole('Admin')),
         ])
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
