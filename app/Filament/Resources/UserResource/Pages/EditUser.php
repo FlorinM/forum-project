@@ -19,7 +19,7 @@ class EditUser extends EditRecord
 
     protected function beforeSave (): void
     {
-        if (!auth()->user()->can('edit', $this)) {
+        if (!auth()->user()->can('edit', $this->record)) {
             abort(403, 'You are not authorized to edit this user.');
         }
     }
