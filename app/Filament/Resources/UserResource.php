@@ -88,7 +88,8 @@ class UserResource extends Resource
         ])
         ->actions([
             Tables\Actions\ActionGroup::make([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (User $record) => auth()->user()->hasRole('Admin')),
                 Tables\Actions\Action::make('ban')
                     ->label('Ban')
                     ->icon('heroicon-o-lock-closed')

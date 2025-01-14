@@ -97,4 +97,22 @@ class UserPolicy
         // Other roles can't unban anyone
         return false;
     }
+
+    /**
+     * Determine if the authenticated user can edit another user.
+     *
+     * @param \App\Models\User $authUser
+     * @param \App\Models\User $targetUser
+     * @return bool
+     */
+    public function edit(User $authUser, User $targetUser): bool
+    {
+        // Admins can edit anyone except other Admins
+        if ($authUser->hasRole('Admin')) {
+            return !$targetUser->hasRole('Admin');
+        }
+
+        // Other roles can't edit anyone
+        return false;
+    }
 }

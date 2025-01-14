@@ -16,4 +16,11 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function beforeSave (): void
+    {
+        if (!auth()->user()->can('edit', $this)) {
+            abort(403, 'You are not authorized to edit this user.');
+        }
+    }
 }
