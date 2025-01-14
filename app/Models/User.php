@@ -62,8 +62,8 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        // Check if the user has the 'admin' role (or any other role)
-        return $this->hasRole('Admin');
+        // Check if the user has the 'Admin' or 'Moderator' roles
+        return $this->hasRole('Admin') || $this->hasRole('Moderator');
     }
 
     // Relationship with Categories
