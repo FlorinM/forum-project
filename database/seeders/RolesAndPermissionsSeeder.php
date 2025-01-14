@@ -31,6 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'move_category',
             'delete_user',
             'promote_user',
+            'edit_user',
         ];
 
         // Create permissions

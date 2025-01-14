@@ -107,6 +107,11 @@ class UserPolicy
      */
     public function edit(User $authUser, User $targetUser): bool
     {
+        // First, check if the authenticated user has the "edit_user" permission
+        if (!$authUser->can('edit_user')) {
+            return false;
+        }
+
         // Admins can edit anyone except other Admins
         if ($authUser->hasRole('Admin')) {
             return !$targetUser->hasRole('Admin');
@@ -125,6 +130,11 @@ class UserPolicy
      */
     public function delete(User $authUser, User $targetUser): bool
     {
+        // First, check if the authenticated user has the "delete_user" permission
+        if (!$authUser->can('delete_user')) {
+            return false;
+        }
+
         // Admins can delete anyone except other Admins
         if ($authUser->hasRole('Admin')) {
             return !$targetUser->hasRole('Admin');
