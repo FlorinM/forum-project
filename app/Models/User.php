@@ -116,8 +116,8 @@ class User extends Authenticatable implements FilamentUser
      */
     public function ban(int $days)
     {
-        if (!auth()->user()->hasRole('Moderator')) {
-            throw UnauthorizedException::forRoles(['Moderator']);
+        if (!auth()->user()->can('ban', $this)) {
+            abort(403, 'You are not authorized to ban this user.');
         }
 
         // Calculate the future ban expiration date
@@ -135,8 +135,8 @@ class User extends Authenticatable implements FilamentUser
      */
     public function unban()
     {
-        if (!auth()->user()->hasRole('Moderator')) {
-            throw UnauthorizedException::forRoles(['Moderator']);
+        if (!auth()->user()->can('unban', $this)) {
+            abort(403, 'You are not authorized to unban this user.');
         }
 
         // Set is_banned to null to unban the user
@@ -162,8 +162,8 @@ class User extends Authenticatable implements FilamentUser
 
     public function promoteToModerator(): void
     {
-        if (!auth()->user()->hasRole('Admin')) {
-            throw UnauthorizedException::forRoles(['Admin']);
+        if (!auth()->user()->can('promoteToModerator', $this)) {
+            abort(403, 'You are not authorized to promote this user.');
         }
 
         if ($this->hasRole('User')) {
@@ -174,8 +174,8 @@ class User extends Authenticatable implements FilamentUser
 
     public function demoteToUser(): void
     {
-        if (!auth()->user()->hasRole('Admin')) {
-            throw UnauthorizedException::forRoles(['Admin']);
+        if (!auth()->user()->can('demoteToUser', $this)) {
+            abort(403, 'You are not authorized to demote this user.');
         }
 
         if ($this->hasRole('Moderator')) {
