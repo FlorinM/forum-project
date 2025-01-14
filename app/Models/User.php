@@ -153,7 +153,7 @@ class User extends Authenticatable implements FilamentUser
     {
         // If is_banned is set and is in the future, the user is banned
         if ($this->is_banned) {
-            return $this->is_banned->isFuture();
+            return \Carbon\Carbon::parse($this->is_banned)->isFuture();
         }
 
         // If is_banned is NULL or in the past, the user is not banned
