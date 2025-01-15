@@ -9,7 +9,7 @@ class Thread extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'user_id', 'title', 'content'];
+    protected $fillable = ['category_id', 'user_id', 'title', 'content', 'approved', 'reported'];
 
     /**
      * Define the relationship between the thread and the category it belongs to.
