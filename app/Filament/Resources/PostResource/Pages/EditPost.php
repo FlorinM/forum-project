@@ -13,7 +13,20 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->visible(fn () => auth()->user()->can('delete', $this->record))
+                ->before(function () {
+                    if (!auth()->user()->can('delete', $this->record)) {
+                        abort(403, 'You are not authorized to delete this post.');
+                    }
+            }),
         ];
+    }
+
+    protected function beforeSave (): void
+    {
+        if (!auth()->user()->can('edit', $this->record)) {
+            abort(403, 'You are not authorized to edit this post.');
+        }
     }
 }
