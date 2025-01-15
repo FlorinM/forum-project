@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['thread_id', 'user_id', 'title', 'content'];
+    protected $fillable = ['thread_id', 'user_id', 'title', 'content', 'approved', 'reported'];
 
     /**
      * Define the relationship between the post and the thread it belongs to.
