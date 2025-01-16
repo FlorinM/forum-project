@@ -13,7 +13,13 @@ class EditCategory extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->visible(fn () => auth()->user()->can('delete', $this->record))
+                ->before(function () {
+                    if (!auth()->user()->can('delete', $this->record)) {
+                        abort(403, 'You are not authorized to delete this category.');
+                    }
+                }),
         ];
     }
 }

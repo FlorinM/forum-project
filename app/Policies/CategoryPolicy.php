@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class CategoryPoicy
+class CategoryPolicy
 {
     /**
      * Determine if the authenticated user can edit a post.

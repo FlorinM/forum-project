@@ -24,6 +24,21 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!auth->user()->can('move', $this->record)) {
+            unset($data['parent_id']);
+        }
+
+        if (!auth->user()->can('edit', $this->record)) {
+            unset($data['user_id']);
+            unset($data['name']);
+            unset($data['description']);
+        }
+
+        return $data;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -31,20 +46,28 @@ class CategoryResource extends Resource
             Select::make('parent_id')
                 ->relationship('parent', 'name')
                 ->nullable()
-                ->label('Parent Category'),
+                ->label('Parent Category')
+                ->visible(fn ($record) => auth()->user()->can('move', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('move', $record)),
 
             Select::make('user_id')
                 ->relationship('user', 'name')
                 ->required()
-                ->label('User'),
+                ->label('User')
+                ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
 
             TextInput::make('name')
                 ->required()
-                ->label('Category Name'),
+                ->label('Category Name')
+                ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
 
             Textarea::make('description')
                 ->nullable()
-                ->label('Description'),
+                ->label('Description')
+                ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
         ]);
     }
 
@@ -87,7 +110,9 @@ class CategoryResource extends Resource
                 ->label('By Parent Category'),
         ])
         ->actions([
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
         ])
         ->bulkActions([
             DeleteBulkAction::make(),
