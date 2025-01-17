@@ -23,6 +23,28 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!auth()->user()->can('move', $this->record)) {
+            unset($data['thread_id']);
+        }
+
+        if (!auth()->user()->can('edit', $this->record)) {
+            unset($data['content']);
+            unset($data['reported']);
+        }
+
+        if (fn () => true) {// No one can change the creator of a post
+            unset($data['user_id']);
+        }
+
+        if (!auth()->user()->can('approve', $this->record)) {
+            unset($data['approved']);
+        }
+
+        return $data;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -30,23 +52,33 @@ class PostResource extends Resource
             Select::make('thread_id')
                 ->relationship('thread', 'title')
                 ->required()
-                ->label('Thread'),
+                ->label('Thread')
+                ->visible(fn () => auth()->user()->can('move', Post::class))
+                ->disabled(fn () => !auth()->user()->can('move', Post::class)),
 
             Select::make('user_id')
                 ->relationship('user', 'name')
                 ->required()
-                ->label('User'),
+                ->label('User')
+                ->visible(fn () => auth()->user()->can('edit', Post::class))
+                ->disabled(fn () => true), // No one can change the creator of a post
 
             Textarea::make('content')
                 ->required()
                 ->label('Content')
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->visible(fn () => auth()->user()->can('edit', Post::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Post::class)),
 
             Forms\Components\Checkbox::make('approved')
-                ->label('Approved'),
+                ->label('Approved')
+                ->visible(fn () => auth()->user()->can('approve', Post::class))
+                ->disabled(fn () => !auth()->user()->can('approve', Post::class)),
 
             Forms\Components\Checkbox::make('reported')
-                ->label('Reported'),
+                ->label('Reported')
+                ->visible(fn () => auth()->user()->can('edit', Post::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Post::class)),
         ]);
     }
 
@@ -113,7 +145,9 @@ class PostResource extends Resource
                 ->label('By User'),
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                    ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),

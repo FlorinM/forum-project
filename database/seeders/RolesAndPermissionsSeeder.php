@@ -17,6 +17,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_thread',
             'delete_thread',
             'move_thread',
+            'move_post',
             'edit_post',
             'delete_post',
             'ban_user',
@@ -24,6 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'approve_registration',
             'approve_report',
             'approve_thread',
+            'approve_post',
             'create_category',
             'edit_category',
             'delete_category',
@@ -60,6 +62,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'approve_registration',
             'approve_report',
             'approve_thread',
+            'approve_post',
         ];
         $moderator->givePermissionTo($moderatorPermissions);
 
