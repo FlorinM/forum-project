@@ -39,6 +39,12 @@ class CategoryResource extends Resource
         return $data;
     }
 
+    public static function canCreate(): bool
+    {
+        // Restrict the "New post" button visibility
+        return auth()->user()->can('edit', Category::class);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

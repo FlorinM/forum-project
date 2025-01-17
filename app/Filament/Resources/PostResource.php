@@ -45,6 +45,12 @@ class PostResource extends Resource
         return $data;
     }
 
+    public static function canCreate(): bool
+    {
+        // Restrict the "New post" button visibility
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -44,6 +44,12 @@ class ThreadResource extends Resource
         return $data;
     }
 
+    public static function canCreate(): bool
+    {
+        // Restrict the "New thread" button visibility
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

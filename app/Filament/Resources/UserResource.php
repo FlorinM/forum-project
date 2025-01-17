@@ -45,7 +45,7 @@ class UserResource extends Resource
     public static function canCreate(): bool
     {
         // Restrict the "New User" button visibility
-        return auth()->user()->can('edit', User::class);
+        return false;
     }
 
     public static function form(Form $form): Form
