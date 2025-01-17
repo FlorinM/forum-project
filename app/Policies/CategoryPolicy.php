@@ -15,7 +15,7 @@ class CategoryPolicy
     public function edit(User $authUser): bool
     {
         // Check if the authenticated user has the "edit_category" permission
-        if ($authUser->can('edit_category')) {
+        if ($authUser->hasPermissionTo('edit_category')) {
             return true;
         }
 
@@ -31,7 +31,7 @@ class CategoryPolicy
     public function delete(User $authUser): bool
     {
         // Check if the authenticated user has the "delete_category" permission
-        if ($authUser->can('delete_category')) {
+        if ($authUser->hasPermissionTo('delete_category')) {
             return true;
         }
 
@@ -47,7 +47,7 @@ class CategoryPolicy
     public function create(User $authUser): bool
     {
         // Check if the authenticated user has the "create_category" permission
-        if ($authUser->can('create_category')) {
+        if ($authUser->hasPermissionTo('create_category')) {
             return true;
         }
 
@@ -63,7 +63,7 @@ class CategoryPolicy
     public function move(User $authUser): bool
     {
         // Check if the authenticated user has the "move_category" permission
-        if ($authUser->can('move_category')) {
+        if ($authUser->hasPermissionTo('move_category')) {
             return true;
         }
 

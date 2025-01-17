@@ -15,7 +15,7 @@ class PostPolicy
     public function edit(User $authUser): bool
     {
         // Check if the authenticated user has the "edit_post" permission
-        if ($authUser->can('edit_post')) {
+        if ($authUser->hasPermissionTo('edit_post')) {
             return true;
         }
 
@@ -31,7 +31,7 @@ class PostPolicy
     public function delete(User $authUser): bool
     {
         // Check if the authenticated user has the "delete_post" permission
-        if ($authUser->can('delete_post')) {
+        if ($authUser->hasPermissionTo('delete_post')) {
             return true;
         }
 
@@ -47,7 +47,7 @@ class PostPolicy
     public function create(User $authUser): bool
     {
         // Check if the authenticated user has the "create_post" permission
-        if ($authUser->can('create_post')) {
+        if ($authUser->hasPermissionTo('create_post')) {
             return true;
         }
 

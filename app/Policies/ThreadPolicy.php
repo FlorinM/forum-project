@@ -15,7 +15,7 @@ class ThreadPolicy
     public function edit(User $authUser): bool
     {
         // Check if the authenticated user has the "edit_thread" permission
-        if ($authUser->can('edit_thread')) {
+        if ($authUser->hasPermissionTo('edit_thread')) {
             return true;
         }
 
@@ -31,7 +31,7 @@ class ThreadPolicy
     public function delete(User $authUser): bool
     {
         // Check if the authenticated user has the "delete_thread" permission
-        if ($authUser->can('delete_thread')) {
+        if ($authUser->hasPermissionTo('delete_thread')) {
             return true;
         }
 
@@ -47,7 +47,7 @@ class ThreadPolicy
     public function create(User $authUser): bool
     {
         // Check if the authenticated user has the "create_thread" permission
-        if ($authUser->can('create_thread')) {
+        if ($authUser->hasPermissionTo('create_thread')) {
             return true;
         }
 

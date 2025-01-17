@@ -16,7 +16,7 @@ class UserPolicy
     public function promoteToModerator(User $authUser, User $targetUser): bool
     {
         // Check if the authenticated user has the "promote_users" permission
-        if (!$authUser->can('promote_user')) {
+        if (!$authUser->hasPermissionTo('promote_user')) {
             return false;
         }
 
@@ -34,7 +34,7 @@ class UserPolicy
     public function demoteToUser(User $authUser, User $targetUser): bool
     {
         // Check if the authenticated user has the "promote_users" permission
-        if (!$authUser->can('promote_user')) {
+        if (!$authUser->hasPermissionTo('promote_user')) {
             return false;
         }
 
@@ -52,7 +52,7 @@ class UserPolicy
     public function ban(User $authUser, User $targetUser): bool
     {
         // First, check if the authenticated user has the "ban_user" permission
-        if (!$authUser->can('ban_user')) {
+        if (!$authUser->hasPermissionTo('ban_user')) {
             return false;
         }
 
@@ -80,7 +80,7 @@ class UserPolicy
     public function unban(User $authUser, User $targetUser): bool
     {
         // First, check if the authenticated user has the "unban_user" permission
-        if (!$authUser->can('unban_user')) {
+        if (!$authUser->hasPermissionTo('unban_user')) {
             return false;
         }
 
@@ -108,7 +108,7 @@ class UserPolicy
     public function edit(User $authUser, User $targetUser): bool
     {
         // First, check if the authenticated user has the "edit_user" permission
-        if (!$authUser->can('edit_user')) {
+        if (!$authUser->hasPermissionTo('edit_user')) {
             return false;
         }
 
@@ -131,7 +131,7 @@ class UserPolicy
     public function delete(User $authUser, User $targetUser): bool
     {
         // First, check if the authenticated user has the "delete_user" permission
-        if (!$authUser->can('delete_user')) {
+        if (!$authUser->hasPermissionTo('delete_user')) {
             return false;
         }
 
