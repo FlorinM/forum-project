@@ -15,13 +15,17 @@ class UserPolicy
      */
     public function promoteToModerator(User $authUser, User $targetUser): bool
     {
-        // Check if the authenticated user has the "promote_users" permission
+        // Check if the authenticated user has the "promote_user" permission
         if (!$authUser->hasPermissionTo('promote_user')) {
             return false;
         }
 
-        // Only Admin can promote users to Moderator
-        return $authUser->hasRole('Admin');
+        // Only regular users can be promoted to moderators
+        if (!$targetUser->hasRole('User')) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -33,13 +37,17 @@ class UserPolicy
      */
     public function demoteToUser(User $authUser, User $targetUser): bool
     {
-        // Check if the authenticated user has the "promote_users" permission
+        // Check if the authenticated user has the "promote_user" permission
         if (!$authUser->hasPermissionTo('promote_user')) {
             return false;
         }
 
-        // Only Admin can demote users to regular User
-        return $authUser->hasRole('Admin');
+        // Only moderators can be demoted to users
+        if (!$targetUser->hasRole('Moderator')) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -49,10 +57,15 @@ class UserPolicy
      * @param \App\Models\User $targetUser
      * @return bool
      */
-    public function ban(User $authUser, User $targetUser): bool
+    public function ban(User $authUser, ?User $targetUser = null): bool
     {
         // First, check if the authenticated user has the "ban_user" permission
         if (!$authUser->hasPermissionTo('ban_user')) {
+            return false;
+        }
+
+        // Nothing to ban
+        if ($targetUser === null) {
             return false;
         }
 
@@ -105,11 +118,16 @@ class UserPolicy
      * @param \App\Models\User $targetUser
      * @return bool
      */
-    public function edit(User $authUser, User $targetUser): bool
+    public function edit(User $authUser, ?User $targetUser = null): bool
     {
         // First, check if the authenticated user has the "edit_user" permission
         if (!$authUser->hasPermissionTo('edit_user')) {
             return false;
+        }
+
+        // New user case, in admin panel
+        if ($targetUser === null) {
+            return true;
         }
 
         // Admins can edit anyone except other Admins

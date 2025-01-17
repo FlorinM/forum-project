@@ -18,36 +18,101 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!auth()->user()->can('edit', $this->record)) {
+            unset($data['name']);
+            unset($data['nickname']);
+            unset($data['email']);
+            unset($data['avatar_url']);
+            unset($data['email_verified_at']);
+            unset($data['password']);
+            unset($data['birthday']);
+            unset($data['gender']);
+            unset($data['description']);
+            unset($data['signature']);
+        }
+
+        if (!auth()->user()->can('ban', $this->record) ||
+            !auth()->user()->can('unban', $this->record)) {
+
+            unset($data['is_banned']);
+        }
+
+        return $data;
+    }
+
+    public static function canCreate(): bool
+    {
+        // Restrict the "New User" button visibility
+        return auth()->user()->can('edit', User::class);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
         ->schema([
             Forms\Components\TextInput::make('name')
                 ->required()
-                ->maxLength(255),
+                ->maxLength(255)
+                ->visible(fn () => auth()->user()->can('edit', User::class))
+                ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\TextInput::make('nickname')
                  ->required()
-                 ->maxLength(255),
+                 ->maxLength(255)
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\TextInput::make('email')
                  ->email()
                  ->required()
-                 ->maxLength(255),
+                 ->maxLength(255)
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\TextInput::make('avatar_url')
                  ->maxLength(255)
-                 ->default(null),
-            Forms\Components\DateTimePicker::make('email_verified_at'),
+                 ->default(null)
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
+            Forms\Components\DateTimePicker::make('email_verified_at')
+                ->visible(fn () => auth()->user()->can('edit', User::class))
+                ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\TextInput::make('password')
                  ->password()
                  ->required()
-                 ->maxLength(255),
-            Forms\Components\DatePicker::make('birthday'),
-            Forms\Components\TextInput::make('gender'),
+                 ->maxLength(255)
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
+            Forms\Components\DatePicker::make('birthday')
+                ->visible(fn () => auth()->user()->can('edit', User::class))
+                ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
+            Forms\Components\TextInput::make('gender')
+                ->visible(fn () => auth()->user()->can('edit', User::class))
+                ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\Textarea::make('description')
-                 ->columnSpanFull(),
+                 ->columnSpanFull()
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
             Forms\Components\TextInput::make('signature')
                  ->maxLength(255)
-                 ->default(null),
-            Forms\Components\DateTimePicker::make('is_banned'),
+                 ->default(null)
+                 ->visible(fn () => auth()->user()->can('edit', User::class))
+                 ->disabled(fn () => !auth()->user()->can('edit', User::class)),
+
+            Forms\Components\DateTimePicker::make('is_banned')
+                ->visible(fn () => auth()->user()->can('ban', User::class) ||
+                          fn () => auth()->user()->can('unban', User::class))
+                ->disabled(fn () => !auth()->user()->can('ban', User::class) ||
+                           fn () => !auth()->user()->can('unban', User::class)
+                ),
         ]);
     }
 
@@ -89,29 +154,41 @@ class UserResource extends Resource
         ->actions([
             Tables\Actions\ActionGroup::make([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn (User $record) => auth()->user()->hasRole('Admin')),
+                    ->visible(fn (User $record) => auth()->user()->can('edit', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('edit', $record)),
+
                 Tables\Actions\Action::make('ban')
                     ->label('Ban')
                     ->icon('heroicon-o-lock-closed')
                     ->requiresConfirmation()
                     ->action(fn (User $record) => $record->ban(30)) // Adjust ban duration as needed
-                    ->visible(fn (User $record) => !$record->isBanned()),
+                    ->visible(fn (User $record) => !$record->isBanned() &&
+                              fn (User $record) => auth()->user()->can('ban', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('ban', $record)),
+
                 Tables\Actions\Action::make('unban')
                     ->label('Unban')
                     ->icon('heroicon-o-check-circle')
                     ->requiresConfirmation()
                     ->action(fn (User $record) => $record->unban())
-                    ->visible(fn (User $record) => $record->isBanned()),
+                    ->visible(fn (User $record) => $record->isBanned() &&
+                              fn (User $record) => auth()->user()->can('unban', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('unban', $record)),
+
                 Tables\Actions\Action::make('Promote to Moderator')
                     ->action(fn (User $record) => $record->promoteToModerator())
                     ->requiresConfirmation()
                     ->color('success')
-                    ->visible(fn (User $record) => $record->hasRole('User') && auth()->user()->hasRole('Admin')),
+                    ->visible(fn (User $record) => auth()->user()->can('promoteToModerator', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('promoteToModerator', $record)),
+
+
                 Tables\Actions\Action::make('Demote to User')
                     ->action(fn (User $record) => $record->demoteToUser())
                     ->requiresConfirmation()
                     ->color('danger')
-                    ->visible(fn (User $record) => $record->hasRole('Moderator') && auth()->user()->hasRole('Admin')),
+                    ->visible(fn (User $record) => auth()->user()->can('demoteToUser', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('demoteToUser', $record)),
             ])
         ])
         ->bulkActions([
