@@ -24,6 +24,26 @@ class ThreadResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-oval-left';
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!auth()->user()->can('move', $this->record)) {
+            unset($data['category_id']);
+        }
+
+        if (!auth()->user()->can('edit', $this->record)) {
+            unset($data['user_id']);
+            unset($data['title']);
+            unset($data['content']);
+            unset($data['reported']);
+        }
+
+        if (!auth()->user()-can('approve', $this->record)) {
+            unset($data['approved']);
+        }
+
+        return $data;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -31,27 +51,39 @@ class ThreadResource extends Resource
             Select::make('category_id')
                 ->relationship('category', 'name')
                 ->required()
-                ->label('Category'),
+                ->label('Category')
+                ->visible(fn () => auth()->user()->can('move', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('move', Thread::class)),
 
             Select::make('user_id')
                 ->relationship('user', 'name')
                 ->required()
-                ->label('User'),
+                ->label('User')
+                ->visible(fn () => auth()->user()->can('edit', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Thread::class)),
 
             TextInput::make('title')
                 ->required()
-                ->label('Title'),
+                ->label('Title')
+                ->visible(fn () => auth()->user()->can('edit', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Thread::class)),
 
             Textarea::make('content')
                 ->required()
                 ->label('Content')
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->visible(fn () => auth()->user()->can('edit', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Thread::class)),
 
             Forms\Components\Checkbox::make('approved')
-                ->label('Approved'),
+                ->label('Approved')
+                ->visible(fn () => auth()->user()->can('approve', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('approve', Thread::class)),
 
             Forms\Components\Checkbox::make('reported')
-                ->label('Reported'),
+                ->label('Reported')
+                ->visible(fn () => auth()->user()->can('edit', Thread::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Thread::class)),
         ]);
     }
 
@@ -120,7 +152,9 @@ class ThreadResource extends Resource
                 ->label('By User'),
         ])
         ->actions([
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn ($record) => auth()->user()->can('edit', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
         ])
         ->bulkActions([
             DeleteBulkAction::make(),

@@ -53,4 +53,36 @@ class ThreadPolicy
 
         return false;
     }
+
+    /**
+     * Determine if the authenticated user can approve a post.
+     *
+     * @param \App\Models\User $authUser
+     * @return bool
+     */
+    public function approve(User $authUser): bool
+    {
+        // Check if the authenticated user has the "approve_thread" permission
+        if ($authUser->hasPermissionTo('approve_thread')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the authenticated user can move a post.
+     *
+     * @param \App\Models\User $authUser
+     * @return bool
+     */
+    public function move(User $authUser): bool
+    {
+        // Check if the authenticated user has the "move_thread" permission
+        if ($authUser->hasPermissionTo('move_thread')) {
+            return true;
+        }
+
+        return false;
+    }
 }
