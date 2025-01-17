@@ -47,27 +47,28 @@ class CategoryResource extends Resource
                 ->relationship('parent', 'name')
                 ->nullable()
                 ->label('Parent Category')
-                ->visible(fn ($record) => auth()->user()->can('move', $record))
-                ->disabled(fn ($record) => !auth()->user()->can('move', $record)),
+                ->visible(fn () => auth()->user()->can('move', Category::class))
+                ->disabled(fn () => !auth()->user()->can('move', Category::class)),
 
             Select::make('user_id')
+                ->default(auth()->id())
                 ->relationship('user', 'name')
                 ->required()
                 ->label('User')
-                ->visible(fn ($record) => auth()->user()->can('edit', $record))
-                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+                ->visible(fn () => auth()->user()->can('create', Category::class))
+                ->disabled(fn () => true), // The creator is always the auth user
 
             TextInput::make('name')
                 ->required()
                 ->label('Category Name')
-                ->visible(fn ($record) => auth()->user()->can('edit', $record))
-                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+                ->visible(fn () => auth()->user()->can('edit', Category::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Category::class)),
 
             Textarea::make('description')
                 ->nullable()
                 ->label('Description')
-                ->visible(fn ($record) => auth()->user()->can('edit', $record))
-                ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+                ->visible(fn () => auth()->user()->can('edit', Category::class))
+                ->disabled(fn () => !auth()->user()->can('edit', Category::class)),
         ]);
     }
 
