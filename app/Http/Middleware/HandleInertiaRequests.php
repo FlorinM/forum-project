@@ -39,6 +39,13 @@ class HandleInertiaRequests extends Middleware
             'canRegister' => Route::has('register'),
             'breadcrumbs' => breadcrumbs(),
             'baseUrl' => config('app.url'),
+
+            // Share Laravel's flash messages with Inertia
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'banMessage' => fn () => $request->session()->get('banMessage'),
+            ],
         ];
     }
 }

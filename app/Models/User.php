@@ -183,5 +183,19 @@ class User extends Authenticatable implements FilamentUser
             $this->assignRole('User');
         }
     }
+
+    /**
+     * Get the remaining ban duration as a human-readable string.
+     *
+     * @return string|null Returns the ban expiration date and time or null if not banned.
+     */
+    public function getBanDuration(): ?string
+    {
+        if ($this->isBanned()) {
+            return Carbon::parse($this->is_banned)->toDayDateTimeString();
+        }
+
+        return null; // Not banned
+    }
 }
 

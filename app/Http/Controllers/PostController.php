@@ -46,6 +46,19 @@ class PostController extends BaseServiceController
      */
     public function store(StorePostRequest $request, Category $category, Thread $thread)
     {
+        $authUser = auth()->user();
+
+        // Check if the user is banned
+        if ($authUser->isBanned()) {
+            // Get the ban expiration message
+            $banMessage = "You are banned from posting. Your ban will be lifted on " . $authUser->getBanDuration();
+
+            // Redirect back with the ban message
+            return back()->with([
+                'banMessage' => $banMessage,
+            ]);
+        }
+
         if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
