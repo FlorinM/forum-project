@@ -24,6 +24,12 @@
 
             <!-- Reply Form -->
             <div class="mt-6">
+
+                <!-- Display Ban Message if Present -->
+                <div v-if="$page.props.flash.banMessage" class="text-red-500 text-sm font-semibold mb-4">
+                    {{ $page.props.flash.banMessage }}
+                </div>
+
                 <form ref="replyForm" @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
                     <QuillEditor v-model="form.message" />
                     <div class="mt-4 text-right">

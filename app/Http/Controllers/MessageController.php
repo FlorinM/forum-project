@@ -17,6 +17,19 @@ class MessageController extends BaseServiceController
      */
     public function sendMessage(SendMessageRequest $request)
     {
+        $authUser = auth()->user();
+
+        // Check if the user is banned
+        if ($authUser->isBanned()) {
+            // Get the ban expiration message
+            $banMessage = "You are banned from sending messages. Your ban will be lifted on " . $authUser->getBanDuration();
+
+            // Redirect back with the ban message
+            return back()->with([
+                'banMessage' => $banMessage,
+            ]);
+        }
+
         if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $message = $this->imageExtractorService->extractAndReplaceImages($request->input('message'));
