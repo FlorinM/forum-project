@@ -33,10 +33,13 @@
               <DropdownLink :href="route('profile.edit')" class="text-gray-700 hover:bg-gray-200">
                 Profile
               </DropdownLink>
-              <DropdownLink v-if="$page.props.auth.user.roles.includes('Admin') || $page.props.auth.user.roles.includes('Moderator')"
-                href="/admin" class="text-gray-700 hover:bg-gray-200">
-                Admin Panel
-              </DropdownLink>
+              <template v-if="isAdminOrModerator">
+                <DropdownLink
+                    @click.prevent="goToAdminPanel" class="text-gray-700 hover:bg-gray-200 cursor-pointer"
+                >
+                  Admin Panel
+                </DropdownLink>
+              </template>
               <DropdownLink :href="route('logout')" method="post" as="button" class="text-gray-700 hover:bg-gray-200">
                 Log Out
               </DropdownLink>
@@ -77,4 +80,15 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import NewTopics from '@/Components/NewTopics.vue';
+import { usePage } from '@inertiajs/vue3';
+
+// Check if the user has Admin or Moderator role
+const isAdminOrModerator = usePage().props.auth.user && (
+  usePage().props.auth.user.roles.includes('Admin') || usePage().props.auth.user.roles.includes('Moderator')
+);
+
+function goToAdminPanel() {
+  // This forces a full-page reload to the Filament admin panel
+  window.location.href = '/admin';
+}
 </script>
