@@ -161,7 +161,17 @@ class UserResource extends Resource
                     ->label('Ban')
                     ->icon('heroicon-o-lock-closed')
                     ->requiresConfirmation()
-                    ->action(fn (User $record) => $record->ban(30)) // Adjust ban duration as needed
+                    ->form([
+                        Forms\Components\TextInput::make('days')
+                        ->label('Ban Duration (Days)')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->placeholder('Enter number of days'),
+                    ])
+                    ->action(function (User $record, array $data) {
+                        $record->ban($data['days']); // Use the entered number of days
+                    })
                     ->visible(fn (User $record) => !$record->isBanned() &&
                               fn (User $record) => auth()->user()->can('ban', $record))
                     ->disabled(fn (User $record) => !auth()->user()->can('ban', $record)),
