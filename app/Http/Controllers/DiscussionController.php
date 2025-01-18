@@ -110,6 +110,19 @@ class DiscussionController extends BaseServiceController
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StartDiscussionRequest $request) {
+        $authUser = auth()->user();
+
+        // Check if the user is banned
+        if ($authUser->isBanned()) {
+            // Get the ban expiration message
+            $banMessage = "You are banned from starting new discussions. Your ban will be lifted on " . $authUser->getBanDuration();
+
+            // Redirect back with the ban message
+            return back()->with([
+                'banMessage' => $banMessage,
+            ]);
+        }
+
         // At this point the input is already validated via Laravel Precognition
         // Create the discussion
         $discussion = Discussion::create([

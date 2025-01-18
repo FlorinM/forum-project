@@ -81,6 +81,11 @@
             </div>
         </div>
 
+      <!-- Display Ban Message if Present -->
+      <div v-if="$page.props.flash.banMessage" class="text-red-500 text-sm font-semibold mb-4">
+          {{ $page.props.flash.banMessage }}
+      </div>
+
       <!-- Form with QuillEditor -->
       <div v-if="isMessageFormVisible">
         <form @submit.prevent="submitReply" class="bg-white p-5 rounded-md shadow-md border">
