@@ -33,7 +33,11 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? [
+                    'id' => $request->user()->id,
+                    'name' => $request->user()->name,
+                    'roles' => $request->user()->getRoleNames(), // Include roles
+                ] : null,
             ],
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),

@@ -33,6 +33,10 @@
               <DropdownLink :href="route('profile.edit')" class="text-gray-700 hover:bg-gray-200">
                 Profile
               </DropdownLink>
+              <DropdownLink v-if="$page.props.auth.user.roles.includes('Admin') || $page.props.auth.user.roles.includes('Moderator')"
+                href="/admin" class="text-gray-700 hover:bg-gray-200">
+                Admin Panel
+              </DropdownLink>
               <DropdownLink :href="route('logout')" method="post" as="button" class="text-gray-700 hover:bg-gray-200">
                 Log Out
               </DropdownLink>
