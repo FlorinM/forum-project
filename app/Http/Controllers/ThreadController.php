@@ -37,6 +37,19 @@ class ThreadController extends BaseServiceController
      */
     public function store(StoreThreadRequest $request, $categoryId)
     {
+        $authUser = auth()->user();
+
+        // Check if the user is banned
+        if ($authUser->isBanned()) {
+            // Get the ban expiration message
+            $banMessage = "You are banned from creating new threads. Your ban will be lifted on " . $authUser->getBanDuration();
+
+            // Redirect back with the ban message
+            return back()->with([
+                'banMessage' => $banMessage,
+            ]);
+        }
+
         // At this point the input is validated
         $thread = Thread::create([
             'category_id' => $categoryId,

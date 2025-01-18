@@ -3,6 +3,11 @@
     <div class="max-w-3xl mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
       <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Create New Thread in {{ category.name }}</h1>
 
+        <!-- Display Ban Message if Present -->
+        <div v-if="$page.props.flash.banMessage" class="text-red-500 text-sm font-semibold mb-4">
+            {{ $page.props.flash.banMessage }}
+        </div>
+
       <form @submit.prevent="submitForm" class="flex flex-col gap-4">
         <!-- Title Input -->
         <div class="flex flex-col items-center">
