@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,6 +32,12 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
+            'captcha' => ['required', function ($attribute, $value, $fail) {
+                if ($value !== Session::get('captcha')) {
+                    Session::forget('captcha'); // Clear old CAPTCHA on failure
+                    $fail('The CAPTCHA is incorrect.');
+                }
+            }],
             'name' => 'required|string|max:255',
             'nickname' => 'required|string|max:15',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,

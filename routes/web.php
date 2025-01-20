@@ -12,6 +12,7 @@ use App\Http\Controllers\NewTopicsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VisitedUserController;
 use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\CaptchaController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -85,6 +86,7 @@ Route::get('/categories/{category}/threads/{thread}', [PostController::class, 's
 Route::get('/post/{post}', [PostController::class, 'showByPostId'])->name('find.post');
 Route::get('/categories/{category}/subcategories', [CategoryController::class, 'showSubcategories'])->name('categories.subcategories');
 Route::get('/new-topics', [NewTopicsController::class, 'index'])->name('new-topics.index');
+Route::get('/captcha', [CaptchaController::class, 'generate']);
 
 
 

@@ -5,8 +5,17 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import FlattenedButton from '@/Components/FlattenedButton.vue';
+import { ref } from 'vue';
+
+const captchaUrl = ref('/captcha'); // Initial URL
+
+const reloadCaptcha = () => {
+    captchaUrl.value = `/captcha?rand=${Math.random()}`; // Generate new CAPTCHA
+};
 
 const form = useForm({
+    captcha: '',
     name: '',
     nickname: '',
     email: '',
@@ -16,7 +25,10 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => {
+            form.reset('password', 'password_confirmation');
+            reloadCaptcha();
+        },
     });
 };
 </script>
@@ -28,6 +40,22 @@ const submit = () => {
         <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Register</h1>
 
         <form @submit.prevent="submit">
+            <div>
+                <img :src="captchaUrl" alt="Captcha" />
+                <FlattenedButton @click="reloadCaptcha">Reload Captcha</FlattenedButton>
+                <InputLabel for="captcha" value="Captcha" />
+
+                <TextInput
+                    id="captcha"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.captcha"
+                    required
+                />
+
+                <InputError class="mt-2" :message="form.errors.captcha" />
+            </div>
+
             <div>
                 <InputLabel for="name" value="Name" />
 
