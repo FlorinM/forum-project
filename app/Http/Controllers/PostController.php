@@ -48,36 +48,56 @@ class PostController extends BaseServiceController
     {
         $authUser = auth()->user();
 
-        // Check if the user is banned
+        // Check if the user is banned and handle the response
         if ($authUser->isBanned()) {
-            // Get the ban expiration message
-            $banMessage = "You are banned from posting. Your ban will be lifted on " . $authUser->getBanDuration();
-
-            // Redirect back with the ban message
             return back()->with([
-                'banMessage' => $banMessage,
+                'banMessage' => "You are banned from posting. Your ban will be lifted on " . $authUser->getBanDuration(),
             ]);
         }
 
-        // Check if the user is a "NewUser"
-        if ($authUser->hasRole('NewUser')) {
-            // Number of approved posts required for a newUser
-            $minim = config('user.min_approved_posts_for_new_user');
-
-            // Fetch the last 10 posts of the user
-            $recentPosts = $authUser->posts()->latest()->take($minim)->get();
-
-            // Check if any of the posts are not approved
-            $hasUnapprovedPosts = $recentPosts->contains(fn($post) => !$post->approved);
-
-            // If the user has unapproved posts, block the action
-            if ($hasUnapprovedPosts) {
-                return back()->with([
-                    'errorNewUserMessage' => 'You cannot post until your last post is approved.',
-                ]);
-            }
+        // Check if the user is a "NewUser" and if their posts are approved
+        if ($authUser->hasRole('NewUser') && $this->hasUnapprovedPosts($authUser)) {
+            return back()->with([
+                'errorNewUserMessage' => 'You cannot post until your last post is approved.',
+            ]);
         }
 
+        // Prepare and sanitize the post content
+        $content = $this->prepareContent($request);
+
+        // Create the new post
+        $this->createNewPost($thread, $content);
+
+        return back(); // Redirect back to the thread view
+    }
+
+    /**
+     * Check if the user has any unapproved posts.
+     *
+     * This method checks the most recent posts of a user (up to a configured minimum number)
+     * to determine if any of them are unapproved. It is used to enforce posting restrictions
+     * for users who have not yet had enough approved posts (e.g., a "NewUser" role).
+     *
+     * @param \App\Models\User $user The user whose posts are being checked.
+     * @return bool Returns true if the user has any unapproved posts, otherwise false.
+     */
+    private function hasUnapprovedPosts($user)
+    {
+        // Number of approved posts required for a newUser
+        $minim = config('user.min_approved_posts_for_new_user');
+
+        $recentPosts = $user->posts()->latest()->take($minim)->get();
+        return $recentPosts->contains(fn($post) => !$post->approved);
+    }
+
+    /**
+     * Prepare and sanitize the post content.
+     *
+     * @param \Illuminate\Http\Request $request The validated incoming request containing the post content.
+     * @return string The sanitized and processed content ready to be saved in the database.
+     */
+    private function prepareContent(Request $request)
+    {
         if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
@@ -91,14 +111,33 @@ class PostController extends BaseServiceController
         // Remove nested <blockquote>...</blockquote> if any
         $content = $this->removeNestedBlockquotes($content);
 
-        // Create the new post
+        return $content;
+    }
+
+    /**
+     * Create a new post and set the 'approved' field to false (or true if the user is not a 'NewUser').
+     *
+     * This method creates a new post associated with the given thread. It checks if the authenticated user
+     * has the 'NewUser' role, and if so, the post's 'approved' field is set to false (indicating it needs approval).
+     * If the user is not a 'NewUser', the 'approved' field is set to true, allowing the post to be automatically approved.
+     *
+     * @param \App\Models\Thread $thread The thread to which the post will be associated.
+     * @param string $content The content of the post being created.
+     * @return void
+     */
+    private function createNewPost(Thread $thread, String $content): void
+    {
+        $approved = false;
+        if (!auth()->user()->hasRole('NewUser')) {
+            $approved = true;
+        }
+
         $thread->posts()->create([
-            'user_id' => auth()->id(), // Use the currently authenticated user
+            'user_id' => auth()->id(),
             'thread_id' => $thread->id,
             'content' => $content,
+            'approved' => $approved,
         ]);
-
-        return back(); // Redirect back to the thread view
     }
 
     /**
