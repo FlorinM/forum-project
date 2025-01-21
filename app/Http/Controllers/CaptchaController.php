@@ -33,9 +33,28 @@ class CaptchaController extends Controller
      */
     private string $fontPath;
 
+    /**
+     * CaptchaController constructor.
+     *
+     * Randomly selects one of two available fonts to increase CAPTCHA variety.
+     * This helps make the CAPTCHA harder for bots to decode by introducing
+     * variability in the text appearance.
+     *
+     * The selection is determined using a cryptographically secure random integer.
+     * Font paths are dynamically set based on the selection.
+     */
     public function __construct()
     {
-        $this->fontPath = public_path('/storage/TTF/tlc_mink_by_jpreckless2444_ddk56uv.otf.ttf');
+        // Randomly select one of two fonts for CAPTCHA variety
+        $randomBoolean = random_int(0, 1) === 1;
+
+        if ($randomBoolean) {
+            // Use the first font (Mink)
+            $this->fontPath = public_path('/storage/TTF/tlc_mink_by_jpreckless2444_ddk56uv.otf.ttf');
+        } else {
+            // Use the second font (Short Baby)
+            $this->fontPath = public_path('/storage/TTF/Short Baby.ttf');
+        }
     }
 
     /**
