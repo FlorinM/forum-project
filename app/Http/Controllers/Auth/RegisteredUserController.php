@@ -33,9 +33,17 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'captcha' => ['required', function ($attribute, $value, $fail) {
-                if ($value !== Session::get('captcha')) {
-                    Session::forget('captcha'); // Clear old CAPTCHA on failure
-                    $fail('The CAPTCHA is incorrect.');
+                // Retrieve the numbers stored in the session
+                $captchaNumbers = Session::get('captcha_numbers', []);
+
+                // Calculate the sum of the numbers
+                $calculatedSum = array_sum($captchaNumbers);
+
+                // Check if the provided sum matches the calculated sum
+                if ((int) $value !== $calculatedSum) {
+                    // Clear the session data if CAPTCHA is incorrect
+                    Session::forget('captcha_numbers');
+                    $fail('The sum of the CAPTCHA numbers is incorrect.');
                 }
             }],
             'name' => 'required|string|max:255',

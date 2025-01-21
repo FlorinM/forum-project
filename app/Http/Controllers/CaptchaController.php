@@ -45,18 +45,19 @@ class CaptchaController extends Controller
      */
     public function generate()
     {
-        // Generate and store CAPTCHA code
-        $code = $this->generateCaptchaCode();
-        $this->storeCaptchaCode($code);
+        // Generate CAPTCHA text
+        $captchaText = $this->generateCaptchaCode();
 
-        // Create CAPTCHA image
+        // Extract numbers from the CAPTCHA text
+        $numbers = $this->extractNumbersFromCaptcha($captchaText);
+
+        // Store numbers in the session
+        Session::put('captcha_numbers', $numbers);
+
+        // Generate and store the CAPTCHA image (existing logic)
         $image = $this->createImage();
-
-        // Add noise to the image
         $this->addNoise($image);
-
-        // Add CAPTCHA text with distortion
-        $this->addCaptchaText($image, $code);
+        $this->addCaptchaText($image, $captchaText);
 
         // Output the image as PNG
         $response = $this->outputImageAsPng($image);
@@ -192,5 +193,17 @@ class CaptchaController extends Controller
         $contents = ob_get_clean();
 
         return response($contents)->header('Content-Type', 'image/png');
+    }
+
+    /**
+     * Extract numbers from the CAPTCHA text.
+     *
+     * @param string $captchaText
+     * @return array
+     */
+    private function extractNumbersFromCaptcha(string $captchaText): array
+    {
+        preg_match_all('/\d+/', $captchaText, $matches);
+        return $matches[0]; // Return the numbers as an array
     }
 }

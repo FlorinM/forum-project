@@ -71,9 +71,10 @@ const submit = () => {
 
                 <TextInput
                     id="captcha"
-                    type="text"
+                    type="number"
                     class="mt-1 block w-full"
                     v-model="form.captcha"
+                    placeholder="Enter the sum of the numbers"
                     required
                 />
 
