@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
+use Spatie\Permission\Models\Role;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -58,6 +59,12 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // Assign the "NewUser" role to the user
+        $newUserRole = Role::where('name', 'NewUser')->first();
+        if ($newUserRole) {
+            $user->assignRole($newUserRole);
+        }
 
         event(new Registered($user));
 

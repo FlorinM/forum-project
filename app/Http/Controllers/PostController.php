@@ -59,6 +59,25 @@ class PostController extends BaseServiceController
             ]);
         }
 
+        // Check if the user is a "NewUser"
+        if ($authUser->hasRole('NewUser')) {
+            // Number of approved posts required for a newUser
+            $minim = config('user.min_approved_posts_for_new_user');
+
+            // Fetch the last 10 posts of the user
+            $recentPosts = $authUser->posts()->latest()->take($minim)->get();
+
+            // Check if any of the posts are not approved
+            $hasUnapprovedPosts = $recentPosts->contains(fn($post) => !$post->approved);
+
+            // If the user has unapproved posts, block the action
+            if ($hasUnapprovedPosts) {
+                return back()->with([
+                    'errorNewUserMessage' => 'You cannot post until your last post is approved.',
+                ]);
+            }
+        }
+
         if (config('quill.use_image_handler')) {
             // Extract images from the string and replace with urls
             $content = $this->imageExtractorService->extractAndReplaceImages($request->input('content'));
