@@ -51,10 +51,13 @@ class CaptchaController extends Controller
         // Extract numbers from the CAPTCHA text
         $numbers = $this->extractNumbersFromCaptcha($captchaText);
 
-        // Store numbers in the session
-        Session::put('captcha_numbers', $numbers);
+        // Use session ID as the cache key for storing numbers
+        $cacheKey = 'captcha_numbers_' . session()->getId();
 
-        // Generate and store the CAPTCHA image (existing logic)
+        // Store numbers in the cache (expires in 5 minutes, you can adjust as needed)
+        cache()->put($cacheKey, $numbers, now()->addMinutes(5));
+
+        // Generate and store the CAPTCHA image
         $image = $this->createImage();
         $this->addNoise($image);
         $this->addCaptchaText($image, $captchaText);
