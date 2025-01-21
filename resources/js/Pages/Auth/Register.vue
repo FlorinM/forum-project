@@ -8,10 +8,28 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import FlattenedButton from '@/Components/FlattenedButton.vue';
 import { ref } from 'vue';
 
+// Ref to store the error message when 429 is triggered
+const captchaError = ref(null);
+
 const captchaUrl = ref('/captcha'); // Initial URL
 
-const reloadCaptcha = () => {
-    captchaUrl.value = `/captcha?rand=${Math.random()}`; // Generate new CAPTCHA
+const reloadCaptcha = async () => {
+    try {
+        const randomQueryParam = `rand=${Math.random()}`;
+        const response = await fetch(`/captcha?${randomQueryParam}`);
+
+        if (response.status === 429) {
+            captchaError.value = 'Too many CAPTCHA requests. Please try again later.';
+        } else if (response.ok) {
+            captchaUrl.value = `/captcha?${randomQueryParam}`;
+            captchaError.value = ''; // Clear any previous error
+        } else {
+            captchaError.value = 'An unexpected error occurred. Please try again.';
+        }
+    } catch (error) {
+        console.error('Error reloading CAPTCHA:', error);
+        captchaError.value = 'An unexpected error occurred. Please try again.';
+    }
 };
 
 const form = useForm({
@@ -41,7 +59,13 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <img :src="captchaUrl" alt="Captcha" />
+                <template v-if="captchaError">
+                    <InputError class="mt-2" :message="captchaError" />
+                </template>
+                <template v-else>
+                    <img :src="captchaUrl" alt="Captcha" />
+                </template>
+
                 <FlattenedButton @click="reloadCaptcha">Reload Captcha</FlattenedButton>
                 <InputLabel for="captcha" value="Captcha" />
 

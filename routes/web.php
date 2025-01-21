@@ -86,7 +86,7 @@ Route::get('/categories/{category}/threads/{thread}', [PostController::class, 's
 Route::get('/post/{post}', [PostController::class, 'showByPostId'])->name('find.post');
 Route::get('/categories/{category}/subcategories', [CategoryController::class, 'showSubcategories'])->name('categories.subcategories');
 Route::get('/new-topics', [NewTopicsController::class, 'index'])->name('new-topics.index');
-Route::get('/captcha', [CaptchaController::class, 'generate']);
+Route::get('/captcha', [CaptchaController::class, 'generate'])->middleware('throttle:10,1');
 
 
 
