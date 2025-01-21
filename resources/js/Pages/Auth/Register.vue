@@ -32,6 +32,16 @@ const reloadCaptcha = async () => {
     }
 };
 
+const questionPhrases = [
+  "What is the sum of the numbers?",
+  "Add the numbers together:",
+  "Find the total sum of these digits:",
+  "Enter the sum of the numbers:",
+];
+
+const question = ref('');
+question.value = questionPhrases[Math.floor(Math.random() * questionPhrases.length)];
+
 const form = useForm({
     captcha: '',
     name: '',
@@ -74,7 +84,7 @@ const submit = () => {
                     type="number"
                     class="mt-1 block w-full"
                     v-model="form.captcha"
-                    placeholder="Enter the sum of the numbers"
+                    :placeholder="question"
                     required
                 />
 
