@@ -33,6 +33,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete_user',
             'promote_user',
             'edit_user',
+            'send_message',
         ];
 
         // Create permissions
@@ -63,15 +64,21 @@ class RolesAndPermissionsSeeder extends Seeder
             'approve_report',
             'approve_thread',
             'approve_post',
+            'send_message',
         ];
         $moderator->givePermissionTo($moderatorPermissions);
 
         $userPermissions = [
             'create_thread',
             'create_post',
+            'send_message',
         ];
         $user->givePermissionTo($userPermissions);
 
-        // NewUser has no special permissions initially
+        $newUserPermissions = [
+            'create_thread',
+            'create_post',
+        ];
+        $newUser->givePermissionTo($newUserPermissions);
     }
 }
