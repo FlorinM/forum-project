@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Discussion;
 use App\Models\Message;
+use App\Models\User;
 use App\Http\Requests\StartDiscussionRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -109,49 +110,96 @@ class DiscussionController extends BaseServiceController
      * @param  \App\Http\Requests\StartDiscussionRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StartDiscussionRequest $request) {
+    public function store(StartDiscussionRequest $request)
+    {
         $authUser = auth()->user();
 
-        // Check if the user is banned
-        if ($authUser->isBanned()) {
-            // Get the ban expiration message
-            $banMessage = "You are banned from starting new discussions. Your ban will be lifted on " . $authUser->getBanDuration();
+        // Handle banned user
+        if ($redirect = $this->handleBannedUser($authUser)) {
+            return $redirect;
+        }
 
-            // Redirect back with the ban message
+        // Check if the user has the permission to send new messages
+        if (!$authUser->can('send_message')) {
             return back()->with([
-                'banMessage' => $banMessage,
+                'errorSendMessage' => 'You are not ready to send private messages.',
             ]);
         }
 
-        // At this point the input is already validated via Laravel Precognition
         // Create the discussion
-        $discussion = Discussion::create([
+        $discussion = $this->createDiscussion($request);
+
+        // Process and sanitize the message
+        $messageContent = $this->prepareMessageContent($request);
+
+        // Create the first message in the discussion
+        $this->createInitialMessage($request, $discussion, $messageContent);
+
+        return back();
+    }
+
+    /**
+     * Handle banned user logic.
+     *
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
+    private function handleBannedUser(User $user)
+    {
+        return $this->userService->ifBanned($user, "You are banned from starting new discussions.");
+    }
+
+    /**
+     * Create a new discussion.
+     *
+     * @param \App\Http\Requests\StartDiscussionRequest $request
+     * @return \App\Models\Discussion
+     */
+    private function createDiscussion(StartDiscussionRequest $request): Discussion
+    {
+        return Discussion::create([
             'initiator_id' => auth()->id(),
             'participant_id' => $request->input('receiver_id'),
             'subject' => $request->input('subject'),
             'initiator_deleted_at' => null,
             'participant_deleted_at' => null,
         ]);
+    }
 
-        // If the input uses Quill editor with default image handler
+    /**
+     * Prepare and sanitize the message content.
+     *
+     * @param \App\Http\Requests\StartDiscussionRequest $request
+     * @return string
+     */
+    private function prepareMessageContent(StartDiscussionRequest $request): string
+    {
         if (config('quill_use_image_handler')) {
-            // Extract images from the string and replace with urls
+            // Extract and replace images
             $message = $this->imageExtractorService->extractAndReplaceImages($request->input('message'));
         } else {
             $message = $request->input('message');
         }
 
-        // Sanitize the content using the service
-        $message = $this->sanitizationService->sanitize($message);
+        // Sanitize the message
+        return $this->sanitizationService->sanitize($message);
+    }
 
-        // Create the message
+    /**
+     * Create the initial message in the discussion.
+     *
+     * @param \App\Http\Requests\StartDiscussionRequest $request
+     * @param \App\Models\Discussion $discussion
+     * @param string $messageContent
+     * @return void
+     */
+    private function createInitialMessage(StartDiscussionRequest $request, Discussion $discussion, string $messageContent): void
+    {
         Message::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $request->input('receiver_id'),
             'discussion_id' => $discussion->id,
-            'message' => $message,
+            'message' => $messageContent,
         ]);
-
-        return back();
     }
 }
