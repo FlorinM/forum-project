@@ -39,43 +39,111 @@ class ThreadController extends BaseServiceController
     {
         $authUser = auth()->user();
 
-        // Check if the user is banned
-        if ($authUser->isBanned()) {
-            // Get the ban expiration message
-            $banMessage = "You are banned from creating new threads. Your ban will be lifted on " . $authUser->getBanDuration();
+        // Check if the user is banned using UserService
+        if ($redirect = $this->userService->ifBanned($authUser, "You are banned from creating new threads.")) {
+            return $redirect;
+        }
 
-            // Redirect back with the ban message
+        // Check if the user is a "NewUser" and if their posts/threads are approved
+        if ($authUser->hasRole('NewUser') &&
+            ($this->userService->hasUnapprovedPosts($authUser) ||
+             $this->userService->hasUnapprovedThreads($authUser))
+        ) {
             return back()->with([
-                'banMessage' => $banMessage,
+                'errorNewUserMessage' => 'You cannot start new threads until your previous post/thread is approved.',
             ]);
         }
 
-        // At this point the input is validated
-        $thread = Thread::create([
-            'category_id' => $categoryId,
-            'user_id' => auth()->id(),
-            'title' => $request->get('title'),
-            'content' => $request->get('content'), // This is for the thread description
-        ]);
+        // Create the thread
+        $thread = $this->createThread($authUser, $request, $categoryId);
 
-        // Now create the first post for this thread
-        if (config('quill.use_image_handler')) {
-            // Extract images from the string and replace with urls
-            $postContent = $this->imageExtractorService->extractAndReplaceImages($request->input('postContent'));
-        } else {
-            $postContent = $request->input('postContent');
+        // Prepare and sanitize the first post content
+        $postContent = $this->preparePostContent($request);
+
+        // Create the first post for the thread
+        $this->createFirstPost($authUser, $thread, $postContent);
+
+        // Redirect to the thread view
+        return $this->redirectToThread($categoryId, $thread);
+    }
+
+    /**
+     * Create a new thread in the specified category.
+     *
+     * @param \App\Models\User $authUser The authenticated user
+     * @param StoreThreadRequest $request The validated request data
+     * @param int $categoryId The category ID
+     * @return \App\Models\Thread The created thread
+     */
+    private function createThread($authUser, StoreThreadRequest $request, $categoryId): Thread
+    {
+        $approved = false;
+        if (!auth()->user()->hasRole('NewUser')) {
+            $approved = true;
         }
 
-        // Sanitize the content using the service
-        $postContent = $this->sanitizationService->sanitize($postContent);
+        return Thread::create([
+            'category_id' => $categoryId,
+            'user_id' => $authUser->id,
+            'title' => $request->get('title'),
+            'content' => $request->get('content'), // Thread description
+            'approved' => $approved,
+        ]);
+    }
+
+    /**
+     * Prepare and sanitize the content for the first post.
+     *
+     * @param StoreThreadRequest $request The validated request data
+     * @return string The sanitized content
+     */
+    private function preparePostContent(StoreThreadRequest $request): string
+    {
+        if (config('quill.use_image_handler')) {
+            // Extract images and replace them with URLs
+            $content = $this->imageExtractorService->extractAndReplaceImages($request->input('postContent'));
+        } else {
+            $content = $request->input('postContent');
+        }
+
+        // Sanitize the content
+        return $this->sanitizationService->sanitize($content);
+    }
+
+    /**
+     * Create the first post for the thread.
+     *
+     * @param \App\Models\User $authUser The authenticated user
+     * @param \App\Models\Thread $thread The created thread
+     * @param string $postContent The content of the first post
+     * @return void
+     */
+    private function createFirstPost($authUser, Thread $thread, string $postContent): void
+    {
+        $approved = false;
+        if (!auth()->user()->hasRole('NewUser')) {
+            $approved = true;
+        }
+
         Post::create([
             'thread_id' => $thread->id,
-            'user_id' => auth()->id(),
+            'user_id' => $authUser->id,
             'content' => $postContent,
+            'approved' => $approved,
         ]);
+    }
 
-        // Redirect or return response
-        return redirect()->route('threads.show', [$categoryId, $thread->id])
+    /**
+     * Redirect to the newly created thread.
+     *
+     * @param int $categoryId The category ID
+     * @param \App\Models\Thread $thread The created thread
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function redirectToThread(int $categoryId, Thread $thread)
+    {
+        return redirect()
+            ->route('threads.show', [$categoryId, $thread->id])
             ->with('success', 'Thread created successfully');
     }
 }

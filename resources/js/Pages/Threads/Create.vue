@@ -8,6 +8,11 @@
             {{ $page.props.flash.banMessage }}
         </div>
 
+        <!-- Display New User Error Message if Present -->
+        <div v-if="$page.props.flash.errorNewUserMessage" class="text-red-500 text-sm font-semibold mb-4">
+            {{ $page.props.flash.errorNewUserMessage }}
+         </div>
+
       <form @submit.prevent="submitForm" class="flex flex-col gap-4">
         <!-- Title Input -->
         <div class="flex flex-col items-center">

@@ -22,6 +22,21 @@ class UserService
     }
 
     /**
+     * Check if the user has any unapproved threads.
+     *
+     * @param \App\Models\User $user The user to check.
+     * @return bool True if the user has unapproved threads, false otherwise.
+     */
+    public function hasUnapprovedThreads(User $user): bool
+    {
+        // Fetch all threads created by the user
+        $allThreads = $user->threads()->get();
+
+        // Check if any thread is unapproved
+        return $allThreads->contains(fn($thread) => !$thread->approved);
+    }
+
+    /**
      * Handle the case when a user is banned.
      *
      * @param \App\Models\User $user The user to check.
