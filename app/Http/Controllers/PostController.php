@@ -48,17 +48,15 @@ class PostController extends BaseServiceController
     {
         $authUser = auth()->user();
 
-        // Check if the user is banned and handle the response
-        if ($authUser->isBanned()) {
-            return back()->with([
-                'banMessage' => "You are banned from posting. Your ban will be lifted on " . $authUser->getBanDuration(),
-            ]);
+        // Use the UserService to handle bans
+        if ($redirect = $this->userService->ifBanned($authUser, 'You are banned from posting.')) {
+            return $redirect; // Return the redirect response directly if user is banned
         }
 
         // Check if the user is a "NewUser" and if their posts are approved
-        if ($authUser->hasRole('NewUser') && $this->hasUnapprovedPosts($authUser)) {
+        if ($authUser->hasRole('NewUser') && $this->userService->hasUnapprovedPosts($authUser)) {
             return back()->with([
-                'errorNewUserMessage' => 'You cannot post until your last post is approved.',
+                'errorNewUserMessage' => 'You cannot post until your previous post is approved.',
             ]);
         }
 
@@ -69,25 +67,6 @@ class PostController extends BaseServiceController
         $this->createNewPost($thread, $content);
 
         return back(); // Redirect back to the thread view
-    }
-
-    /**
-     * Check if the user has any unapproved posts.
-     *
-     * This method checks the most recent posts of a user (up to a configured minimum number)
-     * to determine if any of them are unapproved. It is used to enforce posting restrictions
-     * for users who have not yet had enough approved posts (e.g., a "NewUser" role).
-     *
-     * @param \App\Models\User $user The user whose posts are being checked.
-     * @return bool Returns true if the user has any unapproved posts, otherwise false.
-     */
-    private function hasUnapprovedPosts($user)
-    {
-        // Number of approved posts required for a newUser
-        $minim = config('user.min_approved_posts_for_new_user');
-
-        $recentPosts = $user->posts()->latest()->take($minim)->get();
-        return $recentPosts->contains(fn($post) => !$post->approved);
     }
 
     /**
