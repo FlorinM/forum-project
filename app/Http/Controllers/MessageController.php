@@ -20,37 +20,70 @@ class MessageController extends BaseServiceController
         $authUser = auth()->user();
 
         // Check if the user is banned
-        if ($authUser->isBanned()) {
-            // Get the ban expiration message
-            $banMessage = "You are banned from sending messages. Your ban will be lifted on " . $authUser->getBanDuration();
+        if ($redirect = $this->handleBannedUser($authUser, "You are banned from sending messages.")) {
+            return $redirect;
+        }
 
-            // Redirect back with the ban message
+        // Check if the user has the permission to send new messages
+        if (!$authUser->can('send_message')) {
             return back()->with([
-                'banMessage' => $banMessage,
+                'errorSendMessage' => 'You are not ready to send private messages.',
             ]);
         }
 
-        if (config('quill.use_image_handler')) {
-            // Extract images from the string and replace with urls
-            $message = $this->imageExtractorService->extractAndReplaceImages($request->input('message'));
-        } else {
-            $message = $request->input('message');
-        }
+        // Prepare and sanitize the message content
+        $messageContent = $this->prepareMessageContent($request->input('message'));
 
-        // Sanitize the content using the service
-        $message = $this->sanitizationService->sanitize($message);
-
-        // Create the message
-        Message::create([
-            'sender_id' => auth()->id(),
-            'receiver_id' => $request->input('receiver_id'),
-            'discussion_id' => $request->input('discussion_id'),
-            'message' => $message,
-        ]);
+        // Save the message
+        $this->createMessage($request, $messageContent);
 
         // Optionally notify the receiver (e.g., real-time or email notifications)
 
         // Return the response
         return back();
+    }
+
+    /**
+     * Handle banned user logic.
+     *
+     * @param User $authUser The authenticated user.
+     * @param string $banMessage The ban message to display.
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
+    private function handleBannedUser(User $authUser, string $banMessage)
+    {
+        return $this->userService->ifBanned($authUser, $banMessage);
+    }
+
+    /**
+     * Prepare and sanitize the message content.
+     *
+     * @param string $message The raw message content.
+     * @return string The sanitized and processed message.
+     */
+    private function prepareMessageContent(string $message): string
+    {
+        if (config('quill.use_image_handler')) {
+            $message = $this->imageExtractorService->extractAndReplaceImages($message);
+        }
+
+        return $this->sanitizationService->sanitize($message);
+    }
+
+    /**
+     * Create the message and save it to the database.
+     *
+     * @param SendMessageRequest $request The request containing message data.
+     * @param string $messageContent The sanitized message content.
+     * @return void
+     */
+    private function createMessage(SendMessageRequest $request, string $messageContent): void
+    {
+        Message::create([
+            'sender_id' => auth()->id(),
+            'receiver_id' => $request->input('receiver_id'),
+            'discussion_id' => $request->input('discussion_id'),
+            'message' => $messageContent,
+        ]);
     }
 }
