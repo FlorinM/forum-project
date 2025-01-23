@@ -53,4 +53,38 @@ class UserService
 
         return null;
     }
+
+    /**
+     * Promote the user to a "User" role if they are eligible.
+     *
+     * This method checks if the user has met the requirements to be promoted
+     * from "NewUser" to "User", based on the number of approved posts they have.
+     * If the conditions are met, the user’s role is updated accordingly.
+     *
+     * @param \App\Models\User $user The user instance to check and potentially promote.
+     */
+    public function promoteIfEligible(User $user): void
+    {
+        $minApprovedPosts = config('user.min_approved_posts_for_new_user');
+
+        // Check if the user is already promoted or is banned
+        if (!$user->hasRole('NewUser') || $user->isBanned()) {
+            return;
+        }
+
+        // Check if the user has enough posts
+        if ($user->posts()->count() < $minApprovedPosts) {
+            return;
+        }
+
+        // Get the last 10 posts and check if all are approved
+        $recentPosts = $user->posts()->latest()->take($minApprovedPosts)->get();
+        if ($recentPosts->contains(fn($post) => !$post->approved)) {
+            return;
+        }
+
+        // Promote the user to 'User' role
+        $user->removeRole('NewUser');
+        $user->assignRole('User');
+    }
 }
