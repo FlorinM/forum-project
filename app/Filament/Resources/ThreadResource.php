@@ -37,7 +37,7 @@ class ThreadResource extends Resource
             unset($data['reported']);
         }
 
-        if (!auth()->user()-can('approve', $this->record)) {
+        if (!auth()->user()->can('approve', $this->record)) {
             unset($data['approved']);
         }
 

@@ -7,7 +7,9 @@ use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\Post;
+use App\Models\Thread;
 use App\Observers\PostObserver;
+use App\Observers\ThreadObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
         Post::observe(PostObserver::class);
+        Thread::observe(ThreadObserver::class);
     }
 }
