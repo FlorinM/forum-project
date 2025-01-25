@@ -154,6 +154,14 @@ class PostResource extends Resource
                 EditAction::make()
                     ->visible(fn ($record) => auth()->user()->can('edit', $record))
                     ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+
+                    // A Visit action, that will open a new tab with
+                    // the post at its place in forum
+                    Tables\Actions\Action::make('visit')
+                    ->label('Visit')
+                    ->icon('heroicon-o-link') // Add an icon for better UI
+                    ->url(fn ($record) => route('find.post', $record->id)) // Generate the URL dynamically
+                    ->openUrlInNewTab(), // Opens the link in a new tab
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),
