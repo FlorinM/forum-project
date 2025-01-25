@@ -142,12 +142,14 @@ function submitReply() {
 onMounted(() => {
     nextTick(() => {
         // Scroll to the specific post if targetPostId is present
-        if (props.targetPostId) {
-            const targetElement = document.querySelector('#post-' + props.targetPostId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
+        setTimeout(() => {
+            if (props.targetPostId) {
+                const targetElement = document.querySelector('#post-' + props.targetPostId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }}, 100
+        );
     });
 
     document.querySelectorAll('img').forEach(img => {
