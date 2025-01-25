@@ -20,6 +20,12 @@ class EditCategory extends EditRecord
                         abort(403, 'You are not authorized to delete this category.');
                     }
                 }),
+
+            Actions\Action::make('visit')
+                ->label('Visit')
+                ->url(fn ($record) => route('categories.subcategories', $record->id))
+                ->openUrlInNewTab()
+                ->icon('heroicon-o-link'),
         ];
     }
 }

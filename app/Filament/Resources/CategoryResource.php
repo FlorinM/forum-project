@@ -120,6 +120,13 @@ class CategoryResource extends Resource
             EditAction::make()
                 ->visible(fn ($record) => auth()->user()->can('edit', $record))
                 ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+
+            Tables\Actions\Action::make('visit')
+                ->label('Visit')
+                ->url(fn ($record) => route('categories.subcategories', $record->id))
+                ->openUrlInNewTab()
+                ->icon('heroicon-o-link')
+                ->color('primary'),
         ])
         ->bulkActions([
             DeleteBulkAction::make(),
