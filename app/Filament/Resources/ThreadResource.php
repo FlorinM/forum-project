@@ -161,6 +161,12 @@ class ThreadResource extends Resource
             EditAction::make()
                 ->visible(fn ($record) => auth()->user()->can('edit', $record))
                 ->disabled(fn ($record) => !auth()->user()->can('edit', $record)),
+
+                Tables\Actions\Action::make('visit')
+                ->label('Visit')
+                ->url(fn ($record) => route('threads.show', ['category' => $record->category->id, 'thread' => $record->id]))
+                ->openUrlInNewTab()
+                ->icon('heroicon-o-link'),
         ])
         ->bulkActions([
             DeleteBulkAction::make(),

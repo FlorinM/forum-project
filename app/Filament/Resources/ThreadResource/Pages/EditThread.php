@@ -20,6 +20,12 @@ class EditThread extends EditRecord
                         abort(403, 'You are not authorized to delete this thread.');
                     }
                 }),
+
+            Actions\Action::make('visit')
+                ->label('Visit')
+                ->url(fn () => route('threads.show', ['category' => $this->record->category->id, 'thread' => $this->record->id]))
+                ->openUrlInNewTab()
+                ->icon('heroicon-o-link'),
         ];
     }
 
