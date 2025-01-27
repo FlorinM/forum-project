@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
+use App\Models\Report;
+use App\Enums\ReportStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,7 +33,6 @@ class PostResource extends Resource
 
         if (!auth()->user()->can('edit', $this->record)) {
             unset($data['content']);
-            unset($data['reported']);
         }
 
         if (fn () => true) {// No one can change the creator of a post
@@ -80,11 +81,6 @@ class PostResource extends Resource
                 ->label('Approved')
                 ->visible(fn () => auth()->user()->can('approve', Post::class))
                 ->disabled(fn () => !auth()->user()->can('approve', Post::class)),
-
-            Forms\Components\Checkbox::make('reported')
-                ->label('Reported')
-                ->visible(fn () => auth()->user()->can('edit', Post::class))
-                ->disabled(fn () => !auth()->user()->can('edit', Post::class)),
         ]);
     }
 
@@ -111,9 +107,13 @@ class PostResource extends Resource
                 ->label('Approved')
                 ->sortable(),
 
-            BooleanColumn::make('reported')  // Use BooleanColumn to display boolean values
+            BooleanColumn::make('reported')
                 ->label('Reported')
-                ->sortable(),
+                ->sortable()
+                ->getStateUsing(function ($record) {
+                    // Check if there is any 'pending' report related to this post
+                    return $record->reports()->where('status', ReportStatus::Pending->value)->exists();
+                }),
 
             TextColumn::make('created_at')
                 ->label('Created At')
@@ -134,13 +134,23 @@ class PostResource extends Resource
                 ])
                 ->default(0),  // Default state (filter for "No")
 
-            SelectFilter::make('reported') // Use SelectFilter for boolean-like filtering
+            SelectFilter::make('reported')
                 ->label('Reported')
                 ->options([
                     1 => 'Yes',
                     0 => 'No',
                 ])
-                ->default(0),  // Default state (filter for "No")
+                ->query(function ($query, $state) {
+                    if ($state === 1) {
+                        // Filter for posts with pending reports
+                        return $query->whereHas('reports', function ($query) {
+                            $query->where('status', ReportStatus::Pending->value); // Use the enum case value
+                        });
+                    }
+
+                    return $query;  // Don't filter anything if state is 0 (Not reported)
+                })
+                ->default(1),  // Default to "Yes" (reported)
 
             SelectFilter::make('thread_id')
                 ->relationship('thread', 'title')
