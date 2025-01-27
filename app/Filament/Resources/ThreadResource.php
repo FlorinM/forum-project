@@ -34,7 +34,6 @@ class ThreadResource extends Resource
             unset($data['user_id']);
             unset($data['title']);
             unset($data['content']);
-            unset($data['reported']);
         }
 
         if (!auth()->user()->can('approve', $this->record)) {
@@ -85,11 +84,6 @@ class ThreadResource extends Resource
                 ->label('Approved')
                 ->visible(fn () => auth()->user()->can('approve', Thread::class))
                 ->disabled(fn () => !auth()->user()->can('approve', Thread::class)),
-
-            Forms\Components\Checkbox::make('reported')
-                ->label('Reported')
-                ->visible(fn () => auth()->user()->can('edit', Thread::class))
-                ->disabled(fn () => !auth()->user()->can('edit', Thread::class)),
         ]);
     }
 
@@ -118,10 +112,6 @@ class ThreadResource extends Resource
                 ->label('Approved')
                 ->sortable(),
 
-            BooleanColumn::make('reported')
-                ->label('Reported')
-                ->sortable(),
-
             TextColumn::make('created_at')
                 ->label('Created At')
                 ->dateTime()
@@ -140,14 +130,6 @@ class ThreadResource extends Resource
                     0 => 'No',
             ])
             ->default(0),
-
-            SelectFilter::make('reported')
-                ->label('Reported')
-                ->options([
-                    1 => 'Yes',
-                    0 => 'No',
-                ])
-                ->default(0),
 
             SelectFilter::make('category_id')
                 ->relationship('category', 'name')
