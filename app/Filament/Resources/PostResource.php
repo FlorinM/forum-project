@@ -174,7 +174,34 @@ class PostResource extends Resource
                     ->openUrlInNewTab(), // Opens the link in a new tab
             ])
             ->bulkActions([
-                DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('smartDelete')
+                    ->label('Delete Selected')
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-trash')
+                    ->visible(fn () => auth()->user()->can('delete', Post::class))
+                    ->action(function ($records) {
+                        foreach ($records as $post) {
+                            try {
+                                $post->forceDelete();
+                            } catch (\Exception $e) {
+                                // If a hard delete fails due to foreign key constraint, fallback to soft delete
+                                $post->deleted_at = now();
+                                $post->save();
+
+                                // Check if there are reports related to this post
+                                $hasReports = Report::where('post_id', $post->id)->exists();
+
+                                if ($hasReports) {
+                                    Report::where('post_id', $post->id)
+                                        ->where('status', ReportStatus::Pending->value)
+                                        ->update([
+                                            'status' => ReportStatus::Accepted->value,
+                                            'decision_reason' => 'Action: deleted',
+                                        ]);
+                                }
+                            }
+                        }
+                }),
             ])
             ->defaultSort('created_at', 'desc');
     }

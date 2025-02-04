@@ -5,6 +5,8 @@ namespace App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use App\Models\Report;
+use App\Enums\ReportStatus;
 
 class EditPost extends EditRecord
 {
@@ -19,7 +21,30 @@ class EditPost extends EditRecord
                     if (!auth()->user()->can('delete', $this->record)) {
                         abort(403, 'You are not authorized to delete this post.');
                     }
-            }),
+            })
+            ->action(function () {
+                $post = $this->record;
+
+                try {
+                    $post->forceDelete(); // Attempt hard delete
+                } catch (\Exception $e) {
+                    // If hard delete fails, apply soft delete manually
+                    $post->deleted_at = now();
+                    $post->save();
+
+                    // Check if there are reports related to this post
+                    $hasReports = Report::where('post_id', $post->id)->exists();
+
+                    if ($hasReports) {
+                        Report::where('post_id', $post->id)
+                            ->where('status', ReportStatus::Pending->value)
+                            ->update([
+                                'status' => ReportStatus::Accepted->value,
+                                'decision_reason' => 'Action: deleted',
+                            ]);
+                        }
+                    }
+                }),
 
             // Add a "Visit Post" action here
             Actions\Action::make('visit')

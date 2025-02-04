@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Report;
+use App\Enums\ReportStatus;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['thread_id', 'user_id', 'title', 'content', 'approved', 'reported'];
+    protected $fillable = ['thread_id', 'user_id', 'title', 'content', 'approved'];
 
     /**
      * Define the relationship between the post and the thread it belongs to.
