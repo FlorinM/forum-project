@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\ReportStatus;
 
@@ -17,6 +18,7 @@ class Report extends Model
      */
     protected $fillable = [
         'post_id',
+        'reporter_id',
         'content',
         'status',
         'decision_reason',
@@ -29,6 +31,7 @@ class Report extends Model
      */
     protected $casts = [
         'post_id' => 'integer',
+        'reporter_id' => 'integer',
         'status' => ReportStatus::class, // Cast to enum
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -42,6 +45,16 @@ class Report extends Model
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    /**
+     * Define the relationship with the User model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function reporter(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
 

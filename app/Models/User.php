@@ -110,6 +110,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Discussion::class, 'participant_id');
     }
 
+    // Relationship with Reports
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class);
+    }
+
     /**
      * Ban the user for a given number of days.
      *
