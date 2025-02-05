@@ -34,6 +34,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'promote_user',
             'edit_user',
             'send_message',
+            'solve_report_user_reported',
+            'solve_report_moderator_reported',
+            'solve_report_admin_reported',
         ];
 
         // Create permissions
@@ -42,13 +45,42 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         // Create roles and assign existing permissions
+        $superAdmin = Role::firstOrCreate(['name' => 'SuperAdmin']);
         $admin = Role::firstOrCreate(['name' => 'Admin']);
         $moderator = Role::firstOrCreate(['name' => 'Moderator']);
         $user = Role::firstOrCreate(['name' => 'User']);
         $newUser = Role::firstOrCreate(['name' => 'NewUser']);
 
         // Assign permissions to roles
-        $admin->givePermissionTo(Permission::all());
+        $superAdmin->givePermissionTo(Permission::all());
+
+        $adminPermissions = [
+            'create_thread',
+            'create_post',
+            'edit_thread',
+            'delete_thread',
+            'move_thread',
+            'move_post',
+            'edit_post',
+            'delete_post',
+            'ban_user',
+            'unban_user',
+            'approve_registration',
+            'approve_report',
+            'approve_thread',
+            'approve_post',
+            'create_category',
+            'edit_category',
+            'delete_category',
+            'move_category',
+            'delete_user',
+            'promote_user',
+            'edit_user',
+            'send_message',
+            'solve_report_user_reported',
+            'solve_report_moderator_reported',
+        ];
+        $admin->givePermissionTo($adminPermissions);
 
         $moderatorPermissions = [
             'create_thread',
@@ -65,6 +97,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'approve_thread',
             'approve_post',
             'send_message',
+            'solve_report_user_reported',
         ];
         $moderator->givePermissionTo($moderatorPermissions);
 
