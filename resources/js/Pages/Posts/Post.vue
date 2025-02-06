@@ -22,19 +22,37 @@
           >
             Quote
           </button>
+
+          <button
+            @click="isReportModalOpen = true"
+            class="report-btn text-right py-1 px-3 bg-red-500 text-white text-sm rounded hover:bg-red-600 focus:outline-none"
+          >
+            Report
+          </button>
         </div>
       </div>
 
     </div>
   </div>
+
+  <!-- Import and use Report modal -->
+  <Report
+    :postId="post.id"
+    :isOpen="isReportModalOpen"
+    @close="isReportModalOpen = false"
+  />
 </template>
 
 <script setup>
 import Avatar from '@/Components/Avatar.vue';
 import { Link } from '@inertiajs/vue3';
+import Report from '@/Components/Report.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
   post: Object, // Post data
   quotePost: Function, // Quote method passed from the parent
 });
+
+const isReportModalOpen = ref(false);
 </script>

@@ -13,6 +13,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VisitedUserController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\CaptchaController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -79,6 +80,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/messages-send/', [MessageController::class, 'sendMessage'])
         ->name('send.message')
         ->middleware([HandlePrecognitiveRequests::class]);
+
+    Route::post('/reports', [ReportController::class, 'store'])
+        ->name('report.post');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
