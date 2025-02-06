@@ -15,6 +15,19 @@ class ReportController extends Controller
             'content' => 'required|string|min:5',
         ]);
 
+        // Check if the user has already reported this post
+        $existingReport = Report::where('post_id', $request->post_id)
+            ->where('reporter_id', Auth::id())
+            ->first();
+
+        if ($existingReport) {
+            return back()->with('report', [
+                'message' => 'You have already reported this post.',
+                'post_id' => $request->post_id,
+                'type' => 'error',
+            ]);
+        }
+
         Report::create([
             'post_id' => $request->post_id,
             'reporter_id' => Auth::id(), // Get logged-in user
@@ -22,6 +35,10 @@ class ReportController extends Controller
             'status' => 'pending', // Default status
         ]);
 
-        return back()->with('success', 'Report submitted successfully.');
+        return back()->with('report', [
+            'message' => 'Report submitted successfully.',
+            'post_id' => $request->post_id,
+            'type' => 'success',
+        ]);
     }
 }

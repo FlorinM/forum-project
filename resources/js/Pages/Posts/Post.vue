@@ -31,7 +31,18 @@
           </button>
         </div>
       </div>
+    </div>
 
+    <!-- Toast Notification -->
+    <div
+        v-if="successMessage && post.id === $page.props.flash.report.post_id"
+        :class="{
+            'text-blue-500': $page.props.flash.report.type === 'success',
+            'text-red-500': $page.props.flash.report.type === 'error',
+        }"
+        class="bg-blue-50 py-2 px-4 rounded shadow-md transition-opacity duration-300"
+    >
+        {{ successMessage }}
     </div>
   </div>
 
@@ -47,7 +58,8 @@
 import Avatar from '@/Components/Avatar.vue';
 import { Link } from '@inertiajs/vue3';
 import Report from '@/Components/Report.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
   post: Object, // Post data
@@ -55,4 +67,22 @@ const props = defineProps({
 });
 
 const isReportModalOpen = ref(false);
+
+const successMessage = ref(null);
+// Watch for Inertia flash messages
+watch(
+  () => usePage().props.flash.report,
+  (report) => {
+    if (report && report.message) {
+      successMessage.value = report.message;
+      setTimeout(() => {
+        successMessage.value = null;
+        if (usePage().props.flash.report) {
+            usePage().props.flash.report = null;
+        }
+      }, 6000);
+    }
+  },
+  { immediate: true }
+);
 </script>

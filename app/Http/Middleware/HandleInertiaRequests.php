@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                 'banMessage' => fn () => $request->session()->get('banMessage'),
                 'errorNewUserMessage' => fn () => $request->session()->get('errorNewUserMessage'),
                 'errorSendMessage' => fn () => $request->session()->get('errorSendMessage'),
+                'report' => fn () => $request->session()->get('report'),
             ],
         ];
     }
