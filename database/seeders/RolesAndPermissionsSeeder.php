@@ -23,7 +23,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'ban_user',
             'unban_user',
             'approve_registration',
-            'approve_report',
             'approve_thread',
             'approve_post',
             'create_category',
@@ -37,6 +36,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'solve_report_user_reported',
             'solve_report_moderator_reported',
             'solve_report_admin_reported',
+            'report_post',
         ];
 
         // Create permissions
@@ -66,7 +66,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'ban_user',
             'unban_user',
             'approve_registration',
-            'approve_report',
             'approve_thread',
             'approve_post',
             'create_category',
@@ -79,6 +78,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'send_message',
             'solve_report_user_reported',
             'solve_report_moderator_reported',
+            'report_post',
         ];
         $admin->givePermissionTo($adminPermissions);
 
@@ -93,11 +93,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'ban_user',
             'unban_user',
             'approve_registration',
-            'approve_report',
             'approve_thread',
             'approve_post',
             'send_message',
             'solve_report_user_reported',
+            'report_post',
         ];
         $moderator->givePermissionTo($moderatorPermissions);
 
@@ -105,6 +105,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'create_thread',
             'create_post',
             'send_message',
+            'report_post',
         ];
         $user->givePermissionTo($userPermissions);
 

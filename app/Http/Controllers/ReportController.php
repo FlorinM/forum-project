@@ -15,6 +15,15 @@ class ReportController extends Controller
             'content' => 'required|string|min:5',
         ]);
 
+        // Check if the user has permission to report posts
+        if (!Auth::user()->can('report_post')) {
+            return back()->with('report', [
+                'message' => 'You do not have permission to report posts.',
+                'post_id' => $request->post_id,
+                'type' => 'error',
+            ]);
+        }
+
         // Check if the user has already reported this post
         $existingReport = Report::where('post_id', $request->post_id)
             ->where('reporter_id', Auth::id())
