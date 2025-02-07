@@ -24,6 +24,25 @@ class ReportResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Reports';
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if (!auth()->user()->can('solve', $this->record)) {
+            unset($data['post_id']);
+            unset($data['reporter_id']);
+            unset($data['content']);
+            unset($data['status']);
+            unset($data['decision_reason']);
+        }
+
+        return $data;
+    }
+
+    public static function canCreate(): bool
+    {
+        // Restrict the "New report" button visibility
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -32,11 +51,13 @@ class ReportResource extends Resource
                 ->label('Reporter')
                 ->relationship('reporter', 'name')
                 ->required()
+                ->visible(fn ($record) => auth()->user()->can('solve', $record))
                 ->disabled(),
 
             Textarea::make('content')
                 ->label('Report Content')
                 ->required()
+                ->visible(fn ($record) => auth()->user()->can('solve', $record))
                 ->disabled(),
 
             Select::make('status')
@@ -47,10 +68,14 @@ class ReportResource extends Resource
                     'rejected' => 'Rejected',
                 ])
                 ->default('pending')
+                ->visible(fn ($record) => auth()->user()->can('solve', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('solve', $record))
                 ->required(),
 
             Textarea::make('decision_reason')
                 ->label('Decision Reason')
+                ->visible(fn ($record) => auth()->user()->can('solve', $record))
+                ->disabled(fn ($record) => !auth()->user()->can('solve', $record))
                 ->required(),
         ]);
     }
@@ -66,6 +91,7 @@ class ReportResource extends Resource
                 ->wrap()
                 ->searchable(),
             TextColumn::make('reporter.name')->label('Reporter')->searchable(),
+            TextColumn::make('post.user.name')->label('Reported')->searchable(),
             TextColumn::make('status')->sortable()->searchable(),
             TextColumn::make('created_at')->label('Created')->dateTime()->sortable(),
             TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable(),
@@ -79,8 +105,12 @@ class ReportResource extends Resource
                 ]),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()
+                    ->visible(fn ($record) => auth()->user()->can('solve', $record))
+                    ->disabled(fn ($record) => !auth()->user()->can('solve', $record)),
+                DeleteAction::make()
+                    ->visible(fn ($record) => auth()->user()->can('solve', $record))
+                    ->disabled(fn ($record) => !auth()->user()->can('solve', $record)),
 
                 // A Visit action, that will open a new tab with
                 // the post at its place in forum
