@@ -18,14 +18,14 @@
         <div v-if="$page.props.auth.user" class="flex justify-end">
           <button
             @click="quotePost(post)"
-            class="quote-btn text-right py-1 px-3 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none"
+            class="quote-btn text-right py-0.5 px-3 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none"
           >
             Quote
           </button>
 
           <button
             @click="isReportModalOpen = true"
-            class="report-btn text-right py-1 px-3 bg-red-500 text-white text-sm rounded hover:bg-red-600 focus:outline-none"
+            class="report-btn text-right py-0.5 px-3 ml-0.5 bg-red-500 text-white text-sm rounded hover:bg-red-600 focus:outline-none"
           >
             Report
           </button>
