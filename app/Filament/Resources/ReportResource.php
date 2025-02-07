@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReportResource\Pages;
 use App\Models\Report;
+use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -27,19 +28,16 @@ class ReportResource extends Resource
     {
         return $form
         ->schema([
-            Select::make('post_id')
-                ->label('Post')
-                ->relationship('post', 'content')
-                ->required(),
-
             Select::make('reporter_id')
                 ->label('Reporter')
                 ->relationship('reporter', 'name')
-                ->required(),
+                ->required()
+                ->disabled(),
 
             Textarea::make('content')
                 ->label('Report Content')
-                ->required(),
+                ->required()
+                ->disabled(),
 
             Select::make('status')
                 ->label('Status')
@@ -53,7 +51,7 @@ class ReportResource extends Resource
 
             Textarea::make('decision_reason')
                 ->label('Decision Reason')
-                ->nullable(),
+                ->required(),
         ]);
     }
 
@@ -62,7 +60,11 @@ class ReportResource extends Resource
         return $table
         ->columns([
             TextColumn::make('id')->sortable(),
-            TextColumn::make('post.content')->label('Post')->searchable(),
+            TextColumn::make('post.content')
+                ->label('Post')
+                ->limit(50)
+                ->wrap()
+                ->searchable(),
             TextColumn::make('reporter.name')->label('Reporter')->searchable(),
             TextColumn::make('status')->sortable()->searchable(),
             TextColumn::make('created_at')->label('Created')->dateTime()->sortable(),
@@ -79,6 +81,14 @@ class ReportResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+
+                // A Visit action, that will open a new tab with
+                // the post at its place in forum
+                Tables\Actions\Action::make('visit')
+                    ->label('Visit Post')
+                    ->icon('heroicon-o-link') // Add an icon for better UI
+                    ->url(fn ($record) => route('find.post', $record->post->id)) // Generate the URL dynamically
+                    ->openUrlInNewTab(), // Opens the link in a new tab
             ]);
     }
 
