@@ -15,7 +15,7 @@
             <div
                 v-for="topic in paginatedTopics"
                 :key="topic.id"
-                class="topic-item text-xs p-4 border rounded-md"
+                class="topic-item bg-blue-100 text-xs p-4 border rounded-md"
             >
                 <span class="w-1 h-1 bg-blue-500 rounded-full"></span>&nbsp;
                 <Link
