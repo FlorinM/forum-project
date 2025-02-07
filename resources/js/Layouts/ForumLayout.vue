@@ -69,7 +69,10 @@
     <div class="py-6">
       <slot />
     </div>
-    <Breadcrumbs></Breadcrumbs>
+
+    <div class="pt-20 max-w-[1000px] mx-auto">
+        <Breadcrumbs></Breadcrumbs>
+    </div>
   </div>
 </template>
 
