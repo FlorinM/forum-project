@@ -29,6 +29,9 @@ class CategoryController extends Controller
         // Fetch the latest posts for each thread
         $latestPostInThreads = $this->getLatestPostsForThreads($threads);
 
+        // Get the post count for each thread and add it to the response
+        $postCounts = $this->getPostCountsForThreads($threads);
+
         // Return the view with the necessary data
         return Inertia::render('Categories/Subcategories', [
             'category' => $category,
@@ -36,6 +39,7 @@ class CategoryController extends Controller
             'threads' => $threads,
             'latestPosts' => $latestPosts,
             'latestPostInThreads' => $latestPostInThreads,
+            'postCounts' => $postCounts, // Send the number of posts for each thread
         ]);
     }
 
@@ -122,5 +126,22 @@ class CategoryController extends Controller
         }
 
         return $latestPostInThreads;
+    }
+
+    /**
+     * Get the number of posts for each thread.
+     *
+     * @param \Illuminate\Support\Collection $threads
+     * @return array
+     */
+    protected function getPostCountsForThreads($threads)
+    {
+        $postCounts = [];
+
+        foreach ($threads as $thread) {
+            $postCounts[] = $thread->posts()->count();
+        }
+
+        return $postCounts;
     }
 }

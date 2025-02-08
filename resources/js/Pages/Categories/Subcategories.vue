@@ -78,8 +78,12 @@
               </Link>
             </div>
 
+            <div class="col-span-1 mt-5 text-xs text-blue-500">
+                {{ postCounts[index] }} replies
+            </div>
+
             <!-- Display Latest Post for Each Subcategory -->
-            <div v-if="latestPostInThreads[index]" class="col-span-3 mt-3 text-xs text-blue-500">
+            <div v-if="latestPostInThreads[index]" class="col-span-2 mt-3 text-xs text-blue-500">
               <div v-if="$page.props.auth.user" class="hover:underline">
                 <Link :href="route('visited.user.show', latestPostInThreads[index]?.user?.id)">
                   {{ latestPostInThreads[index]?.user?.nickname }}
@@ -111,6 +115,7 @@ const props = defineProps({
   threads: Array, // The threads for the current category passed to the component
   latestPosts: Array, // The latest posts for each subcategory
   latestPostInThreads: Array, // The latest posts for each thread in current category
+  postCounts: Array, // The number of posts for each thread in threads
 });
 
 console.log('POSTS', props.latestPosts);
