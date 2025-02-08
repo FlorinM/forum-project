@@ -102,7 +102,11 @@ class ReportResource extends Resource
                 ->label('Post')
                 ->limit(50)
                 ->wrap()
-                ->searchable(),
+                ->searchable()
+                ->getStateUsing(function ($record) {
+                    $post = $record->post()->withTrashed()->first(); // Manually fetch post with trashed
+                    return $post?->content ?? 'N/A';
+                }),
             TextColumn::make('reporter.name')->label('Reporter')->searchable(),
             TextColumn::make('reported_user')
                 ->label('Reported')
