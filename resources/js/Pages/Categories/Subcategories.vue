@@ -22,8 +22,12 @@
             </Link>
           </div>
 
+            <div class="col-span-1 mt-5 text-xs text-blue-500">
+                {{ threadCounts[index] }} threads
+            </div>
+
           <!-- Display Latest Post for Each Subcategory -->
-          <div v-if="latestPosts[index]" class="col-span-3 text-xs text-blue-500">
+          <div v-if="latestPosts[index]" class="col-span-2 text-xs text-blue-500">
             <div class="hover:underline">
               <Link :href="route('threads.show', [subcategory.id, latestPosts[index]?.thread?.id])">
                 {{ latestPosts[index]?.thread?.title }}
@@ -120,6 +124,7 @@ const props = defineProps({
   latestPosts: Array, // The latest posts for each subcategory
   latestPostInThreads: Array, // The latest posts for each thread in current category
   postCounts: Array, // The number of posts for each thread in threads
+  threadCounts: Array, // The number of threads for each subcategory in subcategories
 });
 
 console.log('POSTS', props.latestPosts);
