@@ -117,7 +117,10 @@ class ReportResource extends Resource
                 Tables\Actions\Action::make('visit')
                     ->label('Visit Post')
                     ->icon('heroicon-o-link') // Add an icon for better UI
-                    ->url(fn ($record) => route('find.post', $record->post()->withTrashed()->first()?->id)) // Generate the URL dynamically
+                    ->url(fn ($record) => route('find.post', $record->post()->withTrashed()->first()?->id))
+                        // Generate the URL dynamically
+                    ->visible(fn ($record) => $record->post && !$record->post->trashed())
+                        // Only show if the post exists and is not soft deleted
                     ->openUrlInNewTab(), // Opens the link in a new tab
             ]);
     }
