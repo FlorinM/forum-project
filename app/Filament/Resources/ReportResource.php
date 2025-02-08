@@ -43,6 +43,19 @@ class ReportResource extends Resource
         return false;
     }
 
+    /**
+     * Modify the query to include soft-deleted posts and their related users.
+     *
+     * @param EloquentBuilder $query The base query for retrieving reports.
+     * @return EloquentBuilder The modified query with soft-deleted posts and user relationships loaded.
+     */
+    public static function query(EloquentBuilder $query): EloquentBuilder
+    {
+        return $query->with([
+            'post' => fn ($q) => $q->withTrashed()->with('user')
+        ]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -91,7 +104,14 @@ class ReportResource extends Resource
                 ->wrap()
                 ->searchable(),
             TextColumn::make('reporter.name')->label('Reporter')->searchable(),
-            TextColumn::make('post.user.name')->label('Reported')->searchable(),
+            TextColumn::make('reported_user')
+                ->label('Reported')
+                ->sortable()
+                ->searchable()
+                ->getStateUsing(function ($record) {
+                    $post = $record->post()->withTrashed()->first(); // Manually fetch post with trashed
+                    return $post?->user?->name ?? 'N/A';
+                }),
             TextColumn::make('status')->sortable()->searchable(),
             TextColumn::make('created_at')->label('Created')->dateTime()->sortable(),
             TextColumn::make('updated_at')->label('Updated')->dateTime()->sortable(),
