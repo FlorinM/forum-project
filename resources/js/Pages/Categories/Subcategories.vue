@@ -65,16 +65,34 @@
 
         <ul class="list-none p-0">
           <li
-            v-for="thread in threads"
+            v-for="(thread, index) in threads"
             :key="thread.id"
-            class="w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+            class="w-full grid grid-cols-10 mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
           >
-            <Link
-              :href="route('threads.show', [category.id, thread.id])"
-              class="block text-sm text-blue-600 w-full text-left p-5"
-            >
-              {{ thread.title }} (Created by User ID: {{ thread.user_id }})
-            </Link>
+            <div class="col-span-7">
+              <Link
+                :href="route('threads.show', [category.id, thread.id])"
+                class="block text-sm text-blue-600 w-full text-left p-5"
+              >
+                {{ thread.title }} (Created by User ID: {{ thread.user_id }})
+              </Link>
+            </div>
+
+            <!-- Display Latest Post for Each Subcategory -->
+            <div v-if="latestPostInThreads[index]" class="col-span-3 mt-3 text-xs text-blue-500">
+              <div v-if="$page.props.auth.user" class="hover:underline">
+                <Link :href="route('visited.user.show', latestPostInThreads[index]?.user?.id)">
+                  {{ latestPostInThreads[index]?.user?.nickname }}
+                </Link>
+              </div>
+
+              <div class="hover:underline">
+                <Link :href="route('find.post', latestPostInThreads[index]?.id)">
+                  {{ new Date(latestPostInThreads[index]?.created_at).toLocaleString() }}
+                </Link>
+              </div>
+            </div>
+
           </li>
         </ul>
       </div>
@@ -92,6 +110,7 @@ const props = defineProps({
   subcategories: Array, // The first-level subcategories passed to this component
   threads: Array, // The threads for the current category passed to the component
   latestPosts: Array, // The latest posts for each subcategory
+  latestPostInThreads: Array, // The latest posts for each thread in current category
 });
 
 console.log('POSTS', props.latestPosts);

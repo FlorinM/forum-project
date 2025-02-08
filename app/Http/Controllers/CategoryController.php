@@ -43,12 +43,27 @@ class CategoryController extends Controller
             $latestPosts[$index] = $latestPost;
         }
 
+        // Initialize an array to hold the latest posts for each thread in current category
+        $latestPostInThreads = [];
+
+        foreach ($threads as $thread) {
+            // Get the latest post for the current thread with user relation
+            $latestPost = \App\Models\Post::where('thread_id', $thread->id)
+                ->latest('created_at')
+                ->with('user')
+                ->first();
+
+            // Store in the array with thread ID as the key
+            $latestPostInThreads[] = $latestPost;
+        }
+
         // Return the view with subcategories, threads, and the latest post data for each subcategory
         return Inertia::render('Categories/Subcategories', [
             'category' => $category,
             'subcategories' => $subcategories,
             'threads' => $threads,  // Keep the threads as is
             'latestPosts' => $latestPosts,  // Send the latest post data for each subcategory
+            'latestPostInThreads' => $latestPostInThreads, // Send the latest post for each thread in current category
         ]);
     }
 }
