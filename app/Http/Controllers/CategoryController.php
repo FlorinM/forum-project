@@ -19,8 +19,22 @@ class CategoryController extends Controller
         // Fetch the subcategories (immediate subcategories)
         $subcategories = $category->subcategories;
 
-        // Fetch the threads for the current category (eager load the user for each thread)
-        $threads = $category->threads()->with('user')->get();
+        // Fetch the threads for the current category, ordered by the latest post's created_at
+        $threads = $category
+            ->threads()
+            ->select('threads.*')
+            ->addSelect(
+                \DB::raw('(
+                    SELECT created_at
+                    FROM posts
+                    WHERE posts.thread_id = threads.id
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                ) AS latest_post_created_at')
+            )  // Add latest post's created_at as a subquery
+            ->orderByDesc('latest_post_created_at') // Order by the latest post's created_at
+            ->with('user') // Eager load the user for each thread
+            ->get();
 
         // Initialize an array to hold the latest posts for each subcategory
         $latestPosts = [];
