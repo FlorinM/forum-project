@@ -14,7 +14,10 @@ class ReportPolicy
      */
     public function solve(User $authUser, Report $report) {
         // Fetch the reported user based on the reporter_id in the report
-        $reportedUser = $report->post->user;
+        //$reportedUser = $report->post->user;
+
+        // Fetch the reported user, including soft-deleted posts
+        $reportedUser = $report->post()->withTrashed()->first()?->user;
 
         // Check if the reported user exists
         if (!$reportedUser) {
