@@ -22,11 +22,33 @@ class CategoryController extends Controller
         // Fetch the threads for the current category (eager load the user for each thread)
         $threads = $category->threads()->with('user')->get();
 
-        // Return the view and pass the category, its subcategories, and threads
+        // Initialize an array to hold the latest posts for each subcategory
+        $latestPosts = [];
+
+        // Loop through each subcategory to fetch the latest post data
+        foreach ($subcategories as $index => $subcategory) {
+            // Get the latest post for the current subcategory (by created_at)
+            $latestPost = \App\Models\Post::whereHas('thread', function ($query) use ($subcategory) {
+                $query->where('category_id', $subcategory->id);
+            })
+            ->latest('created_at') // Get the latest post
+            ->first(); // Get only the first (most recent) post
+
+            // Lazy load the user and thread relationships for the latest post
+            if ($latestPost) {
+                $latestPost->load('thread', 'user'); // Lazy load thread and user relationships
+            }
+
+            // Add the latest post to the $latestPosts array, synchronized with $subcategories
+            $latestPosts[$index] = $latestPost;
+        }
+
+        // Return the view with subcategories, threads, and the latest post data for each subcategory
         return Inertia::render('Categories/Subcategories', [
             'category' => $category,
             'subcategories' => $subcategories,
-            'threads' => $threads,  // Pass the threads to the view
+            'threads' => $threads,  // Keep the threads as is
+            'latestPosts' => $latestPosts,  // Send the latest post data for each subcategory
         ]);
     }
 }

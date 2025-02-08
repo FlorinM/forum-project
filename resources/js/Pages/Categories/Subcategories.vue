@@ -6,17 +6,38 @@
       <!-- Display Subcategories -->
       <ul class="list-none p-0">
         <li
-          v-for="subcategory in subcategories"
+          v-for="(subcategory, index) in subcategories"
           :key="subcategory.id"
-          class="w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+          class="w-full mb-1 grid grid-cols-10 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
         >
           <!-- Link to subcategory page -->
-          <Link
-            :href="route('categories.subcategories', subcategory.id)"
-            class="block text-sm text-blue-600 w-full text-left p-5"
-          >
-            {{ subcategory.name }} (Created by User ID: {{ subcategory.user_id }})
-          </Link>
+          <div class="col-span-7">
+            <Link
+              :href="route('categories.subcategories', subcategory.id)"
+              class="block text-sm text-blue-600 w-full text-left p-5"
+            >
+              {{ subcategory.name }}
+            </Link>
+          </div>
+
+          <!-- Display Latest Post for Each Subcategory -->
+          <div v-if="latestPosts[index]" class="col-span-3 text-xs text-blue-500">
+            <div class="hover:underline">
+              <Link :href="route('threads.show', [subcategory.id, latestPosts[index]?.thread?.id])">
+                {{ latestPosts[index]?.thread?.title }}
+              </Link>
+            </div>
+            <div class="hover:underline">
+              <Link :href="route('find.post', latestPosts[index].id)">
+                {{ new Date(latestPosts[index]?.created_at).toLocaleString() }}
+              </Link>
+            </div>
+            <div v-if="$page.props.auth.user" class="hover:underline">
+              <Link :href="route('visited.user.show', latestPosts[index]?.user?.id)">
+                By {{ latestPosts[index]?.user?.nickname }}
+              </Link>
+            </div>
+          </div>
 
           <!-- Render first-level subcategories using CategoryItem component -->
           <ul v-if="subcategory.subcategories && subcategory.subcategories.length" class="pl-5">
@@ -70,5 +91,8 @@ const props = defineProps({
   category: Object, // The current category passed to this component
   subcategories: Array, // The first-level subcategories passed to this component
   threads: Array, // The threads for the current category passed to the component
+  latestPosts: Array, // The latest posts for each subcategory
 });
+
+console.log('POSTS', props.latestPosts);
 </script>
