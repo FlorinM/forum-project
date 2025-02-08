@@ -1,7 +1,9 @@
 <template>
   <ForumLayout>
     <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
-      <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Subcategories of {{ category.name }}</h1>
+      <h2 v-if="subcategories.length > 0" class="text-center text-2xl font-bold text-gray-800 mb-6">
+        Subcategories of {{ category.name }}
+      </h2>
 
       <!-- Display Subcategories -->
       <ul class="list-none p-0">
@@ -61,7 +63,9 @@
 
       <!-- Display Threads for the Current Category -->
       <div v-if="threads.length" class="mt-6">
-        <h2 class="text-center text-2xl font-bold text-gray-800 mb-4">Threads in {{ category.name }}</h2>
+        <h2 v-if="threads.length > 0" class="text-center text-2xl font-bold text-gray-800 mb-4">
+          Threads in {{ category.name }}
+        </h2>
 
         <ul class="list-none p-0">
           <li
