@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200">
+  <div class="w-full mb-1 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200">
     <Link
       :href="route('categories.subcategories', category.id)"
       class="block text-sm text-blue-600 w-full text-left pl-5 pt-3 pb-3"

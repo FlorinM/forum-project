@@ -10,7 +10,7 @@
         <li
           v-for="(subcategory, index) in subcategories"
           :key="subcategory.id"
-          class="w-full mb-1 grid grid-cols-10 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+          class="w-full mb-1 grid grid-cols-10 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
         >
           <!-- Link to subcategory page -->
           <div class="col-span-7">
@@ -75,7 +75,7 @@
           <li
             v-for="(thread, index) in threads"
             :key="thread.id"
-            class="w-full grid grid-cols-10 mb-1 bg-white border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
+            class="w-full grid grid-cols-10 mb-1 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
           >
             <div class="col-span-7">
               <Link
