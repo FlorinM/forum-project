@@ -31,6 +31,9 @@
 
             <template #content>
               <DropdownLink :href="route('profile.edit')" class="text-gray-700 hover:bg-gray-200">
+                Edit Profile
+              </DropdownLink>
+              <DropdownLink :href="route('visited.user.show', $page.props.auth.user.id)" class="text-gray-700 hover:bg-gray-200">
                 Profile
               </DropdownLink>
               <template v-if="isAdminOrModerator">
