@@ -86,7 +86,7 @@
               </Link>
 
               <div class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0">
-                    Started by {{ thread.user.nickname }} at {{ new Date(thread.created_at).toLocaleString() }}
+                    Started by {{ thread.user.nickname }} at {{ useFormatDate(thread.created_at) }}
               </div>
             </div>
 
@@ -120,6 +120,7 @@
 import { Link } from '@inertiajs/vue3'; // Importing Link from Inertia
 import CategoryItem from '@/Components/CategoryItem.vue'; // Import the CategoryItem component
 import ForumLayout from '@/Layouts/ForumLayout.vue';
+import { useFormatDate } from '@/Composables/useFormatDate';
 
 const props = defineProps({
   category: Object, // The current category passed to this component
