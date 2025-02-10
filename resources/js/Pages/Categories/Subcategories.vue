@@ -80,10 +80,14 @@
             <div class="col-span-7">
               <Link
                 :href="route('threads.show', [category.id, thread.id])"
-                class="block text-sm text-blue-600 w-full text-left p-5"
+                class="block text-sm text-blue-600 w-full text-left pl-5 pt-2 pb-0"
               >
-                {{ thread.title }} (Created by User ID: {{ thread.user_id }})
+                {{ thread.title }}
               </Link>
+
+              <div class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0">
+                    Started by {{ thread.user.nickname }} at {{ new Date(thread.created_at).toLocaleString() }}
+              </div>
             </div>
 
             <div class="col-span-1 mt-5 text-xs text-blue-500">
