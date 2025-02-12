@@ -16,7 +16,7 @@
     </div>
 
     <!-- Display Latest Post for current category -->
-    <div v-if="latestPost" class="col-span-2 text-xs text-blue-500">
+    <div v-if="latestPost" class="col-span-2 content-center text-xs text-blue-500">
       <div class="hover:underline">
         <Link :href="route('threads.show', [category.id, latestPost?.thread?.id])">
           {{ latestPost?.thread?.title }}
