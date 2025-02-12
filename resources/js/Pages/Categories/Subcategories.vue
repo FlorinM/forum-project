@@ -6,55 +6,13 @@
       </h2>
 
       <!-- Display Subcategories -->
-      <ul class="list-none p-0">
-        <li
-          v-for="(subcategory, index) in subcategories"
-          :key="subcategory.id"
-          class="w-full mb-1 grid grid-cols-10 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
-        >
-          <!-- Link to subcategory page -->
-          <div class="col-span-7">
-            <Link
-              :href="route('categories.subcategories', subcategory.id)"
-              class="block text-sm text-blue-600 w-full text-left p-5"
-            >
-              {{ subcategory.name }}
-            </Link>
-          </div>
-
-            <div class="col-span-1 mt-5 text-xs text-blue-500">
-                {{ threadCounts[index] }} threads
-            </div>
-
-          <!-- Display Latest Post for Each Subcategory -->
-          <div v-if="latestPosts[index]" class="col-span-2 text-xs text-blue-500">
-            <div class="hover:underline">
-              <Link :href="route('threads.show', [subcategory.id, latestPosts[index]?.thread?.id])">
-                {{ latestPosts[index]?.thread?.title }}
-              </Link>
-            </div>
-            <div class="hover:underline">
-              <Link :href="route('find.post', latestPosts[index].id)">
-                {{ new Date(latestPosts[index]?.created_at).toLocaleString() }}
-              </Link>
-            </div>
-            <div v-if="$page.props.auth.user" class="hover:underline">
-              <Link :href="route('visited.user.show', latestPosts[index]?.user?.id)">
-                By {{ latestPosts[index]?.user?.nickname }}
-              </Link>
-            </div>
-          </div>
-
-          <!-- Render first-level subcategories using CategoryItem component -->
-          <ul v-if="subcategory.subcategories && subcategory.subcategories.length" class="pl-5">
-            <CategoryItem
-              v-for="subcat in subcategory.subcategories"
-              :key="subcat.id"
-              :category="subcat"
-            />
-          </ul>
-        </li>
-      </ul>
+      <CategoryItem
+        v-for="(subcat, index) in subcategories"
+        :key="subcat.id"
+        :category="subcat"
+        :latestPost="latestPosts[index]"
+        :nrOfThreads="threadCounts[index]"
+      />
 
       <!-- New Thread Button (only visible to authenticated users) -->
       <Link
@@ -126,11 +84,17 @@ const props = defineProps({
   category: Object, // The current category passed to this component
   subcategories: Array, // The first-level subcategories passed to this component
   threads: Array, // The threads for the current category passed to the component
-  latestPosts: Array, // The latest posts for each subcategory
-  latestPostInThreads: Array, // The latest posts for each thread in current category
-  postCounts: Array, // The number of posts for each thread in threads
-  threadCounts: Array, // The number of threads for each subcategory in subcategories
-});
 
-console.log('POSTS', props.latestPosts);
+  // The latest post for each subcategory, synced with subcategories
+  latestPosts: Array,
+
+  // The latest post for each thread in current category, synced with threads
+  latestPostInThreads: Array,
+
+  // The number of posts for each thread in threads, synced with threads
+  postCounts: Array,
+
+  // The number of threads for each subcategory in subcategories, synced with subcategories
+  threadCounts: Array,
+});
 </script>
