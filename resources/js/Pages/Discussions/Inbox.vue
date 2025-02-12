@@ -4,9 +4,7 @@
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Inbox messages</h2>
 
         <!-- Empty Inbox Case -->
-        <p v-if="inbox.length === 0" class="text-gray-600">
-            Inbox is empty.
-        </p>
+        <p v-if="inbox.length === 0" class="text-gray-600">Inbox is empty.</p>
 
         <!-- Inbox List -->
         <ul v-else class="divide-y divide-gray-200">
@@ -17,20 +15,27 @@
             >
                 <!-- Discussion Data -->
                 <div>
-                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700 flex">
+                    <h3
+                        class="text-m font-medium text-blue-600 hover:text-blue-700 flex"
+                    >
                         <div>
                             {{ discussion.initiator_nickname }}
                         </div>
 
                         <div class="ml-4">
-                            <Link :href="route('discussions.show', [discussion.id])">
+                            <Link
+                                :href="
+                                    route('discussions.show', [discussion.id])
+                                "
+                            >
                                 {{ discussion.subject }}
                             </Link>
                         </div>
                     </h3>
 
                     <p class="text-sm text-gray-600 mt-1">
-                        Last message: {{ useFormatDate(discussion.last_message_at) }}
+                        Last message:
+                        {{ useFormatDate(discussion.last_message_at) }}
                     </p>
                 </div>
             </li>
@@ -48,7 +53,9 @@ import { useFetchData } from '@/Composables/useFetchData';
 const inbox = ref([]);
 
 onMounted(async () => {
-        inbox.value = await useFetchData('/discussions-inbox/' + usePage().props.auth.user.id);
-        console.log(inbox.value);
+    inbox.value = await useFetchData(
+        '/discussions-inbox/' + usePage().props.auth.user.id,
+    );
+    console.log(inbox.value);
 });
 </script>

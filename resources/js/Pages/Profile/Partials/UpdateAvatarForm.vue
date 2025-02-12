@@ -1,9 +1,7 @@
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Update Avatar
-            </h2>
+            <h2 class="text-lg font-medium text-gray-900">Update Avatar</h2>
 
             <p class="mt-1 text-sm text-gray-600">
                 Choose a profile picture to personalize your account.
@@ -13,7 +11,9 @@
         <form @submit.prevent="updateAvatar" class="mt-6 space-y-6">
             <!-- Avatar Preview -->
             <div class="flex items-center justify-center">
-                <div class="w-24 h-24 rounded-full overflow-hidden border border-gray-300">
+                <div
+                    class="w-24 h-24 rounded-full overflow-hidden border border-gray-300"
+                >
                     <img
                         v-if="avatarUrl"
                         :src="avatarUrl"
@@ -55,7 +55,9 @@
                 <p class="text-sm text-gray-600 mt-2">
                     If you wish, you can remove your avatar.
                 </p>
-                <PrimaryButton @click.prevent="removeAvatar">Remove Avatar</PrimaryButton>
+                <PrimaryButton @click.prevent="removeAvatar"
+                    >Remove Avatar</PrimaryButton
+                >
             </div>
 
             <div class="flex items-center gap-4">
@@ -85,9 +87,9 @@ import { useForm } from 'laravel-precognition-vue-inertia';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { usePage } from '@inertiajs/vue3'
+import { usePage } from '@inertiajs/vue3';
 
-const props = defineProps ({
+const props = defineProps({
     avatar: {
         type: [null, String],
         default: null,

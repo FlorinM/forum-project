@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref} from 'vue';
+import { ref } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -53,13 +53,17 @@ const closeModal = () => {
 const submitReport = () => {
     if (!reportContent.value.trim()) return;
 
-    router.post('/reports', {
-        post_id: props.postId,
-        reporter_id: usePage().props.auth.user.id, // Authenticated user ID
-        content: reportContent.value.trim(),
-    }, {
-        preserveScroll: true, // Keep user on the same page
-        onSuccess: () => closeModal(),
-    });
+    router.post(
+        '/reports',
+        {
+            post_id: props.postId,
+            reporter_id: usePage().props.auth.user.id, // Authenticated user ID
+            content: reportContent.value.trim(),
+        },
+        {
+            preserveScroll: true, // Keep user on the same page
+            onSuccess: () => closeModal(),
+        },
+    );
 };
 </script>

@@ -17,20 +17,27 @@
             >
                 <!-- Discussion Data -->
                 <div>
-                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700 flex">
+                    <h3
+                        class="text-m font-medium text-blue-600 hover:text-blue-700 flex"
+                    >
                         <div>
                             {{ discussion.participant_nickname }}
                         </div>
 
                         <div class="ml-4">
-                            <Link :href="route('discussions.show', [discussion.id])">
+                            <Link
+                                :href="
+                                    route('discussions.show', [discussion.id])
+                                "
+                            >
                                 {{ discussion.subject }}
                             </Link>
                         </div>
                     </h3>
 
                     <p class="text-sm text-gray-600 mt-1">
-                        Last message: {{ useFormatDate(discussion.last_message_at) }}
+                        Last message:
+                        {{ useFormatDate(discussion.last_message_at) }}
                     </p>
                 </div>
             </li>
@@ -48,7 +55,9 @@ import { useFetchData } from '@/Composables/useFetchData';
 const sent = ref([]);
 
 onMounted(async () => {
-        sent.value = await useFetchData('/discussions-sent/' + usePage().props.auth.user.id);
-        console.log(sent.value);
+    sent.value = await useFetchData(
+        '/discussions-sent/' + usePage().props.auth.user.id,
+    );
+    console.log(sent.value);
 });
 </script>

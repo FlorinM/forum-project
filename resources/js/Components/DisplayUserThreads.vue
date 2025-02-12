@@ -1,5 +1,7 @@
 <template>
-    <div class="bg-white p-6 rounded-md shadow-md overflow-scroll max-h-[500px]">
+    <div
+        class="bg-white p-6 rounded-md shadow-md overflow-scroll max-h-[500px]"
+    >
         <!-- Header -->
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Threads</h2>
 
@@ -17,8 +19,17 @@
             >
                 <!-- Thread Content -->
                 <div>
-                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700">
-                        <Link :href="route('threads.show', [thread.category_id, thread.id])">
+                    <h3
+                        class="text-m font-medium text-blue-600 hover:text-blue-700"
+                    >
+                        <Link
+                            :href="
+                                route('threads.show', [
+                                    thread.category_id,
+                                    thread.id,
+                                ])
+                            "
+                        >
                             {{ thread.title }}
                         </Link>
                     </h3>
@@ -53,6 +64,9 @@ const props = defineProps({
 const visitedUserThreads = ref([]);
 
 onMounted(async () => {
-        visitedUserThreads.value = await useFetchData('/visited-user-threads/' + props.userId, 60000);
+    visitedUserThreads.value = await useFetchData(
+        '/visited-user-threads/' + props.userId,
+        60000,
+    );
 });
 </script>

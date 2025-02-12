@@ -19,12 +19,14 @@ const reloadCaptcha = async () => {
         const response = await fetch(`/captcha?${randomQueryParam}`);
 
         if (response.status === 429) {
-            captchaError.value = 'Too many CAPTCHA requests. Please try again later.';
+            captchaError.value =
+                'Too many CAPTCHA requests. Please try again later.';
         } else if (response.ok) {
             captchaUrl.value = `/captcha?${randomQueryParam}`;
             captchaError.value = ''; // Clear any previous error
         } else {
-            captchaError.value = 'An unexpected error occurred. Please try again.';
+            captchaError.value =
+                'An unexpected error occurred. Please try again.';
         }
     } catch (error) {
         console.error('Error reloading CAPTCHA:', error);
@@ -33,14 +35,15 @@ const reloadCaptcha = async () => {
 };
 
 const questionPhrases = [
-  "What is the sum of the numbers?",
-  "Add the numbers together:",
-  "Find the total sum of these digits:",
-  "Enter the sum of the numbers:",
+    'What is the sum of the numbers?',
+    'Add the numbers together:',
+    'Find the total sum of these digits:',
+    'Enter the sum of the numbers:',
 ];
 
 const question = ref('');
-question.value = questionPhrases[Math.floor(Math.random() * questionPhrases.length)];
+question.value =
+    questionPhrases[Math.floor(Math.random() * questionPhrases.length)];
 
 const form = useForm({
     captcha: '',
@@ -65,7 +68,9 @@ const submit = () => {
     <GuestLayout>
         <Head title="Register" />
 
-        <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Register</h1>
+        <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">
+            Register
+        </h1>
 
         <form @submit.prevent="submit">
             <div>
@@ -76,7 +81,9 @@ const submit = () => {
                     <img :src="captchaUrl" alt="Captcha" />
                 </template>
 
-                <FlattenedButton @click="reloadCaptcha">Reload Captcha</FlattenedButton>
+                <FlattenedButton @click="reloadCaptcha"
+                    >Reload Captcha</FlattenedButton
+                >
                 <InputLabel for="captcha" value="Captcha" />
 
                 <TextInput

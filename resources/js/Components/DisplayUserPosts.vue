@@ -1,5 +1,7 @@
 <template>
-    <div class="bg-white p-6 rounded-md shadow-md overflow-scroll max-h-[500px]">
+    <div
+        class="bg-white p-6 rounded-md shadow-md overflow-scroll max-h-[500px]"
+    >
         <!-- Header -->
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Posts</h2>
 
@@ -17,7 +19,9 @@
             >
                 <!-- Post Content -->
                 <div>
-                    <h3 class="text-m font-medium text-blue-600 hover:text-blue-700">
+                    <h3
+                        class="text-m font-medium text-blue-600 hover:text-blue-700"
+                    >
                         <Link :href="route('find.post', [post.id])">
                             Post in: {{ post.thread.title }}
                         </Link>
@@ -25,8 +29,14 @@
                     <p class="text-sm text-gray-600 mt-1">
                         Posted on: {{ useFormatDate(post.created_at) }}
                     </p>
-                    <SmallButton @click="toggleVisibility(index)">{{ showClose[index] }}</SmallButton>
-                    <p v-if="visibility[index]" v-html="post.content" class="prose text-xs pl-5 mt-2"></p>
+                    <SmallButton @click="toggleVisibility(index)">{{
+                        showClose[index]
+                    }}</SmallButton>
+                    <p
+                        v-if="visibility[index]"
+                        v-html="post.content"
+                        class="prose text-xs pl-5 mt-2"
+                    ></p>
                 </div>
 
                 <!-- Optional Number Display -->
@@ -61,22 +71,29 @@ const showClose = ref([]);
 const length = ref(0);
 
 // Initialize visibility and showClose refs
-watch(() => visitedUserPosts.value, () => {
-    length.value = visitedUserPosts.value.length;
+watch(
+    () => visitedUserPosts.value,
+    () => {
+        length.value = visitedUserPosts.value.length;
 
-    for (let i = 0; i < length.value; ++i) {
-        visibility.value[i] = false;
-        showClose.value[i] = 'Show';
-    }
-});
+        for (let i = 0; i < length.value; ++i) {
+            visibility.value[i] = false;
+            showClose.value[i] = 'Show';
+        }
+    },
+);
 
 // Show/close visibility of a post
-function toggleVisibility (index) {
+function toggleVisibility(index) {
     visibility.value[index] = !visibility.value[index];
-    showClose.value[index] = showClose.value[index] === 'Show' ? 'Close' : 'Show';
+    showClose.value[index] =
+        showClose.value[index] === 'Show' ? 'Close' : 'Show';
 }
 
 onMounted(async () => {
-        visitedUserPosts.value = await useFetchData('/visited-user-posts/' + props.userId, 60000);
+    visitedUserPosts.value = await useFetchData(
+        '/visited-user-posts/' + props.userId,
+        60000,
+    );
 });
 </script>
