@@ -19,13 +19,15 @@
             <div class="text-sm pl-4">{{ category.description }}</div>
           </Link>
 
-          <ul v-if="category.subcategories && category.subcategories.length">
+          <template v-if="category.subcategories && category.subcategories.length">
             <CategoryItem
               v-for="subcat in category.subcategories"
               :key="subcat.id"
               :category="subcat"
+              :latestPost="latestPosts[category.id][subcat.id]"
+              :nrOfThreads="threadCounts[category.id][subcat.id]"
             />
-          </ul>
+          </template>
         </li>
       </ul>
     </div>
@@ -39,6 +41,13 @@ import ForumLayout from '@/Layouts/ForumLayout.vue';
 import CategoryItem from '@/Components/CategoryItem.vue';
 
 const props = defineProps({
-  categories: Array, // Expecting an array of categories, including their direct subcategories
+  // Expecting an array of categories, including their direct subcategories
+  categories: Array,
+
+  // The latest post in each subcategory, synced with categories
+  latestPosts: Array,
+
+  // The number of threads in each subcategory, synced with categories
+  threadCounts: Array,
 });
 </script>

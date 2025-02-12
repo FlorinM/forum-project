@@ -20,9 +20,39 @@ class HomeController extends Controller
             ->with('subcategories')
             ->get();
 
-        // Pass the category data to the Inertia view
+        // Initialize latestPosts and threadCounts arrays
+        $latestPosts = [];
+        $threadCounts = [];
+
+        foreach ($categories as $category) {
+            $latestPosts[$category->id] = [];
+            $threadCounts[$category->id] = [];
+
+            foreach ($category->subcategories as $subcategory) {
+                // Get latest post with thread and user
+                $latestPost = $subcategory->threads()
+                    ->where('approved', 1)
+                    ->latest('created_at')
+                    ->first()?->posts()
+                    ->where('approved', 1)
+                    ->latest('created_at')
+                    ->with(['thread', 'user'])
+                    ->first();
+
+                // Count threads in the subcategory
+                $threadCount = $subcategory->threads()->count();
+
+                // Store data in arrays
+                $latestPosts[$category->id][$subcategory->id] = $latestPost;
+                $threadCounts[$category->id][$subcategory->id] = $threadCount;
+            }
+        }
+
+        // Pass data to Inertia
         return Inertia::render('Home/Home', [
-            'categories' => $categories
+            'categories' => $categories,
+            'latestPosts' => $latestPosts,
+            'threadCounts' => $threadCounts,
         ]);
     }
 }
