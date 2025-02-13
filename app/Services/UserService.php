@@ -87,4 +87,58 @@ class UserService
         $user->removeRole('NewUser');
         $user->assignRole('User');
     }
+
+    /**
+     * Check if a user has blocked another user.
+     *
+     * @param \App\Models\User $blocker The user performing the block action.
+     * @param \App\Models\User $blocked The user to check if blocked.
+     * @return bool True if the user has blocked the other user, false otherwise.
+     */
+    public function hasBlocked(User $blocker, User $blocked): bool
+    {
+        return $blocker->blockedUsers()->where('blocked_user_id', $blocked->id)->exists();
+    }
+
+    /**
+     * Check if a user is blocked by another user.
+     *
+     * @param \App\Models\User $blocked The user being checked.
+     * @param \App\Models\User $blocker The user who may have blocked them.
+     * @return bool True if the user is blocked by the given user, false otherwise.
+     */
+    public function isBlockedBy(User $blocked, User $blocker): bool
+    {
+        return $blocked->blockedBy()->where('user_id', $blocker->id)->exists();
+    }
+
+    /**
+     * Block a user.
+     *
+     * This method ensures that a user can block another user only if they haven't already.
+     *
+     * @param \App\Models\User $blocker The user who is blocking.
+     * @param \App\Models\User $blocked The user being blocked.
+     */
+    public function block(User $blocker, User $blocked): void
+    {
+        if (!$this->hasBlocked($blocker, $blocked)) {
+            $blocker->blockedUsers()->attach($blocked->id);
+        }
+    }
+
+    /**
+     * Unblock a user.
+     *
+     * This method removes a previously blocked user from the block list.
+     *
+     * @param \App\Models\User $blocker The user who is unblocking.
+     * @param \App\Models\User $blocked The user being unblocked.
+     */
+    public function unblock(User $blocker, User $blocked): void
+    {
+        if ($this->hasBlocked($blocker, $blocked)) {
+            $blocker->blockedUsers()->detach($blocked->id);
+        }
+    }
 }
