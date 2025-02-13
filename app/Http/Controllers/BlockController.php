@@ -20,12 +20,17 @@ class BlockController extends Controller
     /**
      * Block a user.
      *
-     * @param \App\Models\User $blocked
+     * @param int $userId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function block(User $blocked)
+    public function block(int $userId)
     {
         $blocker = Auth::user(); // Get the current authenticated user
+        $blocked = User::findOrFail($userId);
+
+        if (!$blocked->id) {
+            return back()->with('error', 'Block operation failed.');
+        }
 
         // Perform the blocking action
         $this->userService->block($blocker, $blocked);
@@ -36,12 +41,17 @@ class BlockController extends Controller
     /**
      * Unblock a user.
      *
-     * @param \App\Models\User $blocked
+     * @param int $userId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function unblock(User $blocked)
+    public function unblock(int $userId)
     {
         $blocker = Auth::user(); // Get the current authenticated user
+        $blocked = User::findOrFail($userId);
+
+        if (!$blocked->id) {
+            return back()->with('error', 'Unblock operation failed.');
+        }
 
         // Perform the unblocking action
         $this->userService->unblock($blocker, $blocked);
