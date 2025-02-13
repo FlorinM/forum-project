@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Discussion;
 use App\Models\Message;
 use App\Models\User;
+use App\Services\UserService;
 use App\Http\Requests\StartDiscussionRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,15 +27,23 @@ class DiscussionController extends BaseServiceController
      * 'Discussions/Discussion' component.
      *
      * @param  \App\Models\Discussion  $discussion  The discussion to be shown.
+     * @param \App\Services\UserService $userService
      * @return \Inertia\Response  The Inertia response to render the discussion page.
      */
-    public function showDiscussion (Discussion $discussion) {
+    public function showDiscussion (Discussion $discussion, UserService $userService) {
         $messages = Message::where('discussion_id', $discussion->id)->get();
         $discussion->load(['initiator', 'participant']);
+
+        $authUser = Auth::user();
+        $otherUser = $authUser->id === $discussion->initiator_id
+            ? $discussion->participant
+            : $discussion->initiator;
 
         return Inertia::render('Discussions/Discussion', [
             'messages' => $messages->toArray(),
             'discussion' => $discussion,
+            'isBlockedByOther' => $userService->isBlockedBy($authUser, $otherUser),
+            'hasBlockedOther' => $userService->hasBlocked($authUser, $otherUser),
         ]);
     }
 
