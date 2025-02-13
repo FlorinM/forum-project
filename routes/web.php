@@ -14,6 +14,7 @@ use App\Http\Controllers\VisitedUserController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BlockController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -83,6 +84,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/reports', [ReportController::class, 'store'])
         ->name('report.post');
+
+    Route::post('/block/{user}', [BlockController::class, 'block'])->name('block');
+    Route::post('/unblock/{user}', [BlockController::class, 'unblock'])->name('unblock');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
