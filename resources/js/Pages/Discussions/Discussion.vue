@@ -29,6 +29,13 @@
                 />
             </div>
 
+            <!-- Block/Unblock Button -->
+            <BlockUnblock
+                :blockedStatus="blockedStatus"
+                @block="blockUser"
+                @unblock="unblockUser"
+            />
+
             <!-- Reply Form -->
             <div class="mt-6">
                 <!-- Display Ban Message if Present -->
@@ -91,10 +98,12 @@ import ForumLayout from '@/Layouts/ForumLayout.vue';
 import Message from './Message.vue';
 import Avatar from '@/Components/Avatar.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
+import BlockUnblock from '@/Components/BlockUnblock.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { usePage } from '@inertiajs/vue3';
 import { watch, ref } from 'vue';
 import Echo from '@/echo';
+import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
     messages: {
@@ -102,6 +111,14 @@ const props = defineProps({
     },
     discussion: {
         type: Object,
+    },
+    isBlockedByOther: {
+        type: Boolean,
+        required: true,
+    },
+    hasBlockedOther: {
+        type: Boolean,
+        required: true,
     },
 });
 
@@ -145,4 +162,33 @@ Echo.private(`discussion.${props.discussion.id}`)
     .error((error) => {
         console.error('Subscription error:', error);
     });
+
+// Block/Unblock user functionality
+
+// The other user id, not the auth user
+const otherUserId =
+    usePage().props.auth.user.id === props.discussion.initiator_id
+        ? props.discussion.participant_id
+        : props.discussion.initiator_id;
+
+// Define reactive variable for blocked status
+const blockedStatus = ref(props.hasBlockedOther);
+
+// Sends a request to block the user and updates the blocked status
+const blockUser = () => {
+    router.post(route('block', { user: otherUserId }), {}, {
+        onSuccess: () => {
+            blockedStatus.value = true;
+        }
+    });
+};
+
+// Sends a request to unblock the user and updates the blocked status
+const unblockUser = () => {
+    router.post(route('unblock', { user: otherUserId }), {}, {
+        onSuccess: () => {
+            blockedStatus.value = false;
+        }
+    });
+};
 </script>
