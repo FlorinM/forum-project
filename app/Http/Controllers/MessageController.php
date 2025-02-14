@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Discussion;
 use Illuminate\Http\Request;
 use App\Http\Requests\SendMessageRequest;
 
@@ -28,6 +29,13 @@ class MessageController extends BaseServiceController
         if (!$authUser->can('send_message')) {
             return back()->with([
                 'errorSendMessage' => 'You are not ready to send private messages.',
+            ]);
+        }
+
+        // Check if the discussion is blocked
+        if ($this->isDiscussionBlocked($request)) {
+            return back()->with([
+                'errorSendMessage' => 'This discussion is blocked. To continue, you must unblock the other participant or wait to be unblocked.',
             ]);
         }
 
@@ -85,5 +93,26 @@ class MessageController extends BaseServiceController
             'discussion_id' => $request->input('discussion_id'),
             'message' => $messageContent,
         ]);
+    }
+
+    /**
+     * Check if one of the discussion participants is blocked by the other.
+     *
+     * @param Request $request The request containing the discussion ID.
+     * @return bool True if one participant has blocked the other, false otherwise.
+     */
+    protected function isDiscussionBlocked(Request $request): bool
+    {
+        $discussion = Discussion::findOrFail($request->input('discussion_id'));
+
+        $initiator = User::find($discussion->initiator_id);
+        $participant = User::find($discussion->participant_id);
+
+        if (!$initiator || !$participant) {
+            return false;
+        }
+
+        return $this->userService->hasBlocked($initiator, $participant) ||
+               $this->userService->hasBlocked($participant, $initiator);
     }
 }
