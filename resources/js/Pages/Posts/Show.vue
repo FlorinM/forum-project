@@ -137,13 +137,13 @@ function extractUserText(postContent) {
 function quotePost(post) {
     // Extract only the user's text (excluding quotes)
     const postContent = extractUserText(post.content);
-    const postAuthor = `Posted by User ID: ${post.user_id}`; // You can customize this as needed
-    const postTimestamp = `Posted on ${post.created_at}`; // You can also customize this
+    const postAuthor = `Posted by: ${post.user.nickname}`;
+    const postTimestamp = ` on ${new Date(post.created_at).toLocaleString()}`;
 
     // Create the quoted HTML content
     const quotedText = `<blockquote>
-                        <strong>${postAuthor}</strong><br>
-                        ${postTimestamp}:<br>
+                        <strong>${postAuthor}</strong>
+                        ${postTimestamp}<br>
                         ${postContent}
                       </blockquote>`;
 
