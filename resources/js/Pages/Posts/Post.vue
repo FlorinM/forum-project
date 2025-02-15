@@ -12,6 +12,7 @@
                         {{ post.user.name }}
                     </Link>
                 </p>
+                <div v-if="isUserBanned" class="text-sm"><strong>banned</strong></div>
             </div>
 
             <!-- Right Side: Content and Quote Button (90%) -->
@@ -67,7 +68,7 @@
 import Avatar from '@/Components/Avatar.vue';
 import { Link } from '@inertiajs/vue3';
 import Report from '@/Components/Report.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -94,4 +95,10 @@ watch(
     },
     { immediate: true },
 );
+
+// Check if the user that made the post is banned
+const isUserBanned = computed(() => {
+    return props.post.user.is_banned &&
+           new Date(props.post.user.is_banned) > new Date();
+});
 </script>
