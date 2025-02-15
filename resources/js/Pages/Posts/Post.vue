@@ -16,6 +16,8 @@
 
             <!-- Right Side: Content and Quote Button (90%) -->
             <div class="col-span-9 flex flex-col">
+                <div class="text-xs mb-6">Posted {{ new Date(post.created_at).toLocaleString() }}</div>
+
                 <div
                     class="prose max-w-full text-xs text-gray-800 mb-4"
                     v-html="post.content"
