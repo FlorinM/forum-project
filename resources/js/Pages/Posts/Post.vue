@@ -9,7 +9,7 @@
                 />
                 <p class="text-sm text-gray-800 text-center truncate">
                     <Link :href="route('visited.user.show', post.user.id)">
-                        {{ post.user.name }}
+                        {{ post.user.nickname }}
                     </Link>
                 </p>
                 <div v-if="isUserBanned" class="text-sm"><strong>banned</strong></div>
