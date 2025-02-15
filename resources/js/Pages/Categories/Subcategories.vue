@@ -1,12 +1,9 @@
 <template>
     <ForumLayout>
         <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
-            <h2
-                v-if="subcategories.length > 0"
-                class="text-center text-2xl font-bold text-gray-800 mb-6"
-            >
-                Subcategories of {{ category.name }}
-            </h2>
+            <Title v-if="subcategories.length > 0">
+                Categories in {{ category.name }}
+            </Title>
 
             <!-- Display Subcategories -->
             <CategoryItem
@@ -28,12 +25,9 @@
 
             <!-- Display Threads for the Current Category -->
             <div v-if="threads.length" class="mt-6">
-                <h2
-                    v-if="threads.length > 0"
-                    class="text-center text-2xl font-bold text-gray-800 mb-4"
-                >
-                    Threads in {{ category.name }}
-                </h2>
+                <Title v-if="threads.length > 0">
+                    Threads of {{ category.name }}
+                </Title>
 
                 <ul class="list-none p-0">
                     <li
@@ -120,6 +114,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'; // Importing Link from Inertia
 import CategoryItem from '@/Components/CategoryItem.vue'; // Import the CategoryItem component
+import Title from '@/Components/Title.vue';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import { useFormatDate } from '@/Composables/useFormatDate';
 

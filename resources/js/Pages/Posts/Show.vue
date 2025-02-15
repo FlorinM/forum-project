@@ -2,9 +2,9 @@
     <ForumLayout>
         <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
             <!-- Thread Title -->
-            <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">
+            <Title>
                 {{ thread.title }}
-            </h1>
+            </Title>
 
             <!-- Pagination top -->
             <Pagination
@@ -81,6 +81,7 @@ import { ref } from 'vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import QuillEditor from '@/Components/QuillEditor.vue';
+import Title from '@/Components/Title.vue';
 import Post from './Post.vue';
 import Pagination from './Pagination.vue';
 import { watch } from 'vue';

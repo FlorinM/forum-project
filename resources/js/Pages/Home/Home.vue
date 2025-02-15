@@ -1,9 +1,7 @@
 <template>
     <ForumLayout>
         <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
-            <h1 class="text-center text-xl font-bold text-gray-800 mb-6">
-                X forum
-            </h1>
+            <Title>X forum</Title>
 
             <ul class="list-none p-0">
                 <li
@@ -50,6 +48,7 @@ import { defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import CategoryItem from '@/Components/CategoryItem.vue';
+import Title from '@/Components/Title.vue';
 
 const props = defineProps({
     // Expecting an array of categories, including their direct subcategories
