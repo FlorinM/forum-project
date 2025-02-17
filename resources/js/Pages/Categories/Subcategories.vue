@@ -49,6 +49,7 @@ import ThreadItem from '@/Components/ThreadItem.vue';
 import Title from '@/Components/Title.vue';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import { useFormatDate } from '@/Composables/useFormatDate';
+import { provide } from 'vue';
 
 const props = defineProps({
     category: Object, // The current category passed to this component
@@ -66,5 +67,11 @@ const props = defineProps({
 
     // The number of threads for each subcategory in subcategories, synced with subcategories
     threadCounts: Array,
+
+    // The number of posts per page required in LittlePagination component
+    postsPerPage: Number,
 });
+
+// Make postsPerPage available to LittlePagination component
+provide('postsPerPage', props.postsPerPage);
 </script>

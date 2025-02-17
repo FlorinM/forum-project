@@ -44,6 +44,7 @@ class CategoryController extends Controller
             'latestPostInThreads' => $latestPostInThreads,
             'postCounts' => $postCounts, // Send the number of posts for each thread
             'threadCounts' => $threadCounts, // Send the number of threads for each subcategory
+            'postsPerPage' => 10, // The number of posts per page
         ]);
     }
 

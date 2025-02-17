@@ -1,11 +1,20 @@
 <template>
     <div class="w-full grid grid-cols-10 mb-1 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200">
         <div class="col-span-7">
-            <Link :href="route('threads.show', [category.id, thread.id])"
-                class="block text-sm text-blue-600 w-full text-left pl-5 pt-2 pb-0 mb-1"
-            >
-                {{ thread.title }}
-            </Link>
+            <div class="flex items-center space-x-2">
+                <Link :href="route('threads.show', [category.id, thread.id])"
+                    class="block text-sm text-blue-600 text-left pl-5 pt-2 pb-0 mb-1"
+                >
+                    {{ thread.title }}
+                </Link>
+
+                <LittlePagination
+                    :category="category"
+                    :thread="thread"
+                    :postCount="postCount"
+                >
+            </LittlePagination>
+            </div>
 
             <div class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0 mb-1">
                 Started by {{ thread.user.nickname }} at
@@ -40,6 +49,7 @@
 <script setup>
 import { useFormatDate } from '@/Composables/useFormatDate.js';
 import { Link } from '@inertiajs/vue3';
+import LittlePagination from '@/Components/LittlePagination.vue';
 
 // Props to receive data
 const props = defineProps({
