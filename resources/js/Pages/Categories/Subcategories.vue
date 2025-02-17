@@ -29,83 +29,14 @@
                     Threads of {{ category.name }}
                 </Title>
 
-                <ul class="list-none p-0">
-                    <li
-                        v-for="(thread, index) in threads"
-                        :key="thread.id"
-                        class="w-full grid grid-cols-10 mb-1 bg-blue-50 border border-gray-300 rounded-md transition duration-200 hover:bg-gray-200"
-                    >
-                        <div class="col-span-7">
-                            <Link
-                                :href="
-                                    route('threads.show', [
-                                        category.id,
-                                        thread.id,
-                                    ])
-                                "
-                                class="block text-sm text-blue-600 w-full text-left pl-5 pt-2 pb-0"
-                            >
-                                {{ thread.title }}
-                            </Link>
-
-                            <div
-                                class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0"
-                            >
-                                Started by {{ thread.user.nickname }} at
-                                {{ useFormatDate(thread.created_at) }}
-                            </div>
-                        </div>
-
-                        <div class="col-span-1 mt-5 text-xs text-blue-500">
-                            {{ postCounts[index] }} replies
-                        </div>
-
-                        <!-- Display Latest Post for Each Subcategory -->
-                        <div
-                            v-if="latestPostInThreads[index]"
-                            class="col-span-2 mt-3 text-xs text-blue-500"
-                        >
-                            <div
-                                v-if="$page.props.auth.user"
-                                class="hover:underline"
-                            >
-                                <Link
-                                    :href="
-                                        route(
-                                            'visited.user.show',
-                                            latestPostInThreads[index]?.user
-                                                ?.id,
-                                        )
-                                    "
-                                >
-                                    {{
-                                        latestPostInThreads[index]?.user
-                                            ?.nickname
-                                    }}
-                                </Link>
-                            </div>
-
-                            <div class="hover:underline">
-                                <Link
-                                    :href="
-                                        route(
-                                            'find.post',
-                                            latestPostInThreads[index]?.id,
-                                        )
-                                    "
-                                >
-                                    {{
-                                        new Date(
-                                            latestPostInThreads[
-                                                index
-                                            ]?.created_at,
-                                        ).toLocaleString()
-                                    }}
-                                </Link>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                <ThreadItem
+                    v-for="(thread, index) in threads"
+                    :key="thread.id"
+                    :category="category"
+                    :thread="thread"
+                    :postCount="postCounts[index]"
+                    :latestPost="latestPostInThreads[index]"
+                />
             </div>
         </div>
     </ForumLayout>
@@ -114,6 +45,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'; // Importing Link from Inertia
 import CategoryItem from '@/Components/CategoryItem.vue'; // Import the CategoryItem component
+import ThreadItem from '@/Components/ThreadItem.vue';
 import Title from '@/Components/Title.vue';
 import ForumLayout from '@/Layouts/ForumLayout.vue';
 import { useFormatDate } from '@/Composables/useFormatDate';
