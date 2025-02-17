@@ -18,7 +18,7 @@
             <Link
                 v-if="$page.props.auth.user"
                 :href="route('threads.create', { category: category.id })"
-                class="inline-block mb-4 px-4 py-2 text-white bg-blue-600 rounded-md transition duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                class="inline-block mb-3 px-3 py-1 text-white bg-blue-600 rounded-md transition duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
                 Start New Thread
             </Link>
