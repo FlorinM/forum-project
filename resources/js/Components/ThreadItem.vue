@@ -7,7 +7,7 @@
                 {{ thread.title }}
             </Link>
 
-            <div class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0">
+            <div class="col-span-1 mt-1 text-xs text-blue-500 pl-5 pt-0 mb-1">
                 Started by {{ thread.user.nickname }} at
                 {{ formatDate(thread.created_at) }}
             </div>
