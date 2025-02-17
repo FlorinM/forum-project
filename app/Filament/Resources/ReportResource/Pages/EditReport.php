@@ -25,7 +25,7 @@ class EditReport extends EditRecord
             // Add "Edit Post" button
             Actions\Action::make('edit_post')
                 ->label('Edit Post')
-                ->url(fn () => PostResource::getUrl('edit', ['record' => $this->record->post->id]))
+                ->url(fn () => $this->record->post ? PostResource::getUrl('edit', ['record' => $this->record->post->id]) : '#')
                 ->icon('heroicon-o-pencil-square') // Edit icon
                 ->visible(fn () => auth()->user()->can('solve', $this->record))
                 ->openUrlInNewTab(), // Open in new tab
@@ -33,7 +33,7 @@ class EditReport extends EditRecord
             // Add a "Visit Post" action here
             Actions\Action::make('visit')
                 ->label('Visit Post')
-                ->url(fn () => route('find.post', $this->record->post->id)) // Dynamic URL to the post
+                ->url(fn () => $this->record->post ? route('find.post', $this->record->post->id) : '#')
                 ->icon('heroicon-o-link') // Use an external link icon
                 ->openUrlInNewTab(), // Opens the link in a new tab
         ];

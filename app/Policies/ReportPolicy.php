@@ -13,8 +13,10 @@ class ReportPolicy
      * Determine whether the user can solve reports.
      */
     public function solve(User $authUser, Report $report) {
-        // Fetch the reported user based on the reporter_id in the report
-        //$reportedUser = $report->post->user;
+        // Prevent solving if the report is already resolved
+        if ($report->isSolved()) {
+            return false;
+        }
 
         // Fetch the reported user, including soft-deleted posts
         $reportedUser = $report->post()->withTrashed()->first()?->user;

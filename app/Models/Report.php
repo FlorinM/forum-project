@@ -56,5 +56,15 @@ class Report extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+   /**
+    * Check if the report is solved.
+    *
+    * A report is solved if its status is either Accepted or Rejected.
+    */
+    public function isSolved(): bool
+    {
+        return in_array($this->status, [ReportStatus::Accepted, ReportStatus::Rejected], true);
+    }
 }
 
