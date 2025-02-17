@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ReportResource\Pages;
 
 use App\Filament\Resources\ReportResource;
 use App\Filament\Resources\PostResource;
+use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -28,6 +29,13 @@ class EditReport extends EditRecord
                 ->url(fn () => $this->record->post ? PostResource::getUrl('edit', ['record' => $this->record->post->id]) : '#')
                 ->icon('heroicon-o-pencil-square') // Edit icon
                 ->visible(fn () => auth()->user()->can('solve', $this->record))
+                ->openUrlInNewTab(), // Open in new tab
+
+            Actions\Action::make('edit_user')
+                ->label('Ban User')
+                ->url(fn () => $this->record->post?->user ? UserResource::getUrl('edit', ['record' => $this->record->post->user->id]) : '#')
+                ->icon('heroicon-o-user') // User edit icon
+                ->visible(fn () => auth()->user()->can('ban', $this->record->post?->user))
                 ->openUrlInNewTab(), // Open in new tab
 
             // Add a "Visit Post" action here
