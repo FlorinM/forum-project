@@ -22,7 +22,7 @@ class NotificationController extends Controller
     /**
      * Mark the notification as read.
      *
-     * @param \App\Models\Notification $notification
+     * @param Illuminate\Notifications\DatabaseNotification $notification
      * @return \Illuminate\Http\JsonResponse
      */
     public function markAsRead(DatabaseNotification $notification)
