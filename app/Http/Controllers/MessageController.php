@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Discussion;
 use Illuminate\Http\Request;
 use App\Http\Requests\SendMessageRequest;
+use App\Notifications\PrivateMessageNotification;
 
 class MessageController extends BaseServiceController
 {
@@ -43,9 +44,14 @@ class MessageController extends BaseServiceController
         $messageContent = $this->prepareMessageContent($request->input('message'));
 
         // Save the message
-        $this->createMessage($request, $messageContent);
+        $message = $this->createMessage($request, $messageContent);
 
-        // Optionally notify the receiver (e.g., real-time or email notifications)
+        // Notify the receiver
+        $receiver = User::find($message->receiver_id);
+        $sender = User::find($message->sender_id);
+        if ($receiver && $sender) {
+            $receiver->notify(new PrivateMessageNotification($message, $sender));
+        }
 
         // Return the response
         return back();
@@ -83,16 +89,18 @@ class MessageController extends BaseServiceController
      *
      * @param SendMessageRequest $request The request containing message data.
      * @param string $messageContent The sanitized message content.
-     * @return void
+     * @return App\Models\Message
      */
-    private function createMessage(SendMessageRequest $request, string $messageContent): void
+    private function createMessage(SendMessageRequest $request, string $messageContent): Message
     {
-        Message::create([
+        $message = Message::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $request->input('receiver_id'),
             'discussion_id' => $request->input('discussion_id'),
             'message' => $messageContent,
         ]);
+
+        return $message;
     }
 
     /**

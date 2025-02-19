@@ -15,6 +15,7 @@ use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BlockController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -81,6 +82,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/messages-send/', [MessageController::class, 'sendMessage'])
         ->name('send.message')
         ->middleware([HandlePrecognitiveRequests::class]);
+
+    Route::get('/notifications-unread', [NotificationController::class, 'unreadNotifications'])
+        ->name('notifications.unread');
 
     Route::post('/reports', [ReportController::class, 'store'])
         ->name('report.post');
