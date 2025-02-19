@@ -39,7 +39,7 @@
                         <template #content>
                             <DropdownLink
                                 :href="route('profile.edit')"
-                                class="text-gray-700 hover:bg-gray-200"
+                                class="text-gray-700 hover:bg-blue-100"
                             >
                                 Edit Profile
                             </DropdownLink>
@@ -50,14 +50,14 @@
                                         $page.props.auth.user.id,
                                     )
                                 "
-                                class="text-gray-700 hover:bg-gray-200"
+                                class="text-gray-700 hover:bg-blue-100"
                             >
                                 Profile
                             </DropdownLink>
                             <template v-if="isAdminOrModerator">
                                 <DropdownLink
                                     @click.prevent="goToAdminPanel"
-                                    class="text-gray-700 hover:bg-gray-200 cursor-pointer"
+                                    class="text-gray-700 hover:bg-blue-100 cursor-pointer"
                                 >
                                     Admin Panel
                                 </DropdownLink>
@@ -66,7 +66,7 @@
                                 :href="route('logout')"
                                 method="post"
                                 as="button"
-                                class="text-gray-700 hover:bg-gray-200"
+                                class="text-gray-700 hover:bg-blue-100"
                             >
                                 Log Out
                             </DropdownLink>
