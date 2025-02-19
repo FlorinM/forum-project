@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/notifications-unread', [NotificationController::class, 'unreadNotifications'])
         ->name('notifications.unread');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
 
     Route::post('/reports', [ReportController::class, 'store'])
         ->name('report.post');

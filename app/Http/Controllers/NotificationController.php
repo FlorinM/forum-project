@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationController extends Controller
 {
@@ -15,6 +16,21 @@ class NotificationController extends Controller
     {
         return response()->json([
             'fetchedData' => auth()->user()->unreadNotifications,
+        ]);
+    }
+
+    /**
+     * Mark the notification as read.
+     *
+     * @param \App\Models\Notification $notification
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsRead(DatabaseNotification $notification)
+    {
+        $notification->markAsRead();
+
+        return response()->json([
+            'message' => 'Notification marked as read',
         ]);
     }
 }

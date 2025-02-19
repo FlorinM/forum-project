@@ -30,6 +30,7 @@
                     v-for="notification in notifications"
                     :key="notification.id"
                     :href="route('discussions.show', notification.data.discussion_id)"
+                    @click.prevent="markAsRead(notification.id)"
                     class="text-gray-700 hover:bg-gray-200"
                 >
                     You got a message from {{ notification.data.sender }}
@@ -51,4 +52,29 @@ const notifications = ref([]);
 onMounted(async () => {
     notifications.value = await useFetchData('/notifications-unread');
 });
+
+const markAsRead = async (notificationId) => {
+    try {
+        await axios.patch(`/notifications/${notificationId}/read`);
+
+        // Update the local notifications list to reflect the changes
+        notifications.value = notifications.value.filter(notification => notification.id !== notificationId);
+
+        // Also remove the marked notification from sessionStorage
+        const cacheName = '/notifications-unread'.replace(/\//g, 'c'); // Same as in useFetchData
+        const storedData = sessionStorage.getItem(cacheName);
+
+        if (storedData) {
+            let cachedNotifications = JSON.parse(storedData);
+
+            // Remove the marked notification from cached data
+            cachedNotifications = cachedNotifications.filter(notification => notification.id !== notificationId);
+
+            // Update sessionStorage with the new array of notifications
+            sessionStorage.setItem(cacheName, JSON.stringify(cachedNotifications));
+        }
+    } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+    }
+};
 </script>
