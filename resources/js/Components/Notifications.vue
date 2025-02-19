@@ -31,7 +31,7 @@
                     :key="notification.id"
                     :href="route('discussions.show', notification.data.discussion_id)"
                     @click.prevent="markAsRead(notification.id)"
-                    class="text-gray-700 hover:bg-gray-200"
+                    class="text-gray-700 hover:bg-blue-100"
                 >
                     You got a message from {{ notification.data.sender }}
                 </DropdownLink>
