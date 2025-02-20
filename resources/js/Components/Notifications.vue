@@ -2,7 +2,6 @@
     <Dropdown align="right" width="48">
         <template #trigger>
             <button
-                v-if="notifications.length > 0"
                 class="relative flex items-center p-2 rounded-full bg-blue-800 text-white hover:bg-blue-700 focus:outline-none"
             >
                 <svg
