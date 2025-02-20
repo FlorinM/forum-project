@@ -101,7 +101,7 @@ import QuillEditor from '@/Components/QuillEditor.vue';
 import BlockUnblock from '@/Components/BlockUnblock.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { usePage } from '@inertiajs/vue3';
-import { watch, ref } from 'vue';
+import { watch, ref, onMounted } from 'vue';
 import Echo from '@/echo';
 import { router } from '@inertiajs/vue3';
 
@@ -191,4 +191,57 @@ const unblockUser = () => {
         }
     });
 };
+
+// Mark all notifications related to this discussion as read
+onMounted(async () => {
+    const discussionNotifications = getDiscussionNotifications();
+
+    if (discussionNotifications.length > 0) {
+        await markNotificationsAsRead(discussionNotifications);
+        removeNotificationsFromStorage(discussionNotifications);
+    }
+});
+
+// Get notifications related to this discussion from sessionStorage
+const getDiscussionNotifications = () => {
+    const cacheName = '/notifications-unread'.replace(/\//g, 'c');
+    const storedData = sessionStorage.getItem(cacheName);
+
+    if (!storedData) return [];
+
+    const cachedNotifications = JSON.parse(storedData);
+
+    return cachedNotifications.filter(
+        (notification) => notification.data.discussion_id === props.discussion.id
+    );
+};
+
+// Mark these notifications as read on the server
+const markNotificationsAsRead = async (notifications) => {
+    try {
+        for (const notification of notifications) {
+            await axios.patch(`/notifications/${notification.id}/read`);
+        }
+    } catch (error) {
+        console.error('Error marking notifications as read:', error);
+    }
+};
+
+// Remove the read notifications from sessionStorage
+const removeNotificationsFromStorage = (notifications) => {
+    const cacheName = '/notifications-unread'.replace(/\//g, 'c');
+    const storedData = sessionStorage.getItem(cacheName);
+
+    if (!storedData) return;
+
+    let cachedNotifications = JSON.parse(storedData);
+
+    // Keep only notifications that are NOT related to this discussion
+    cachedNotifications = cachedNotifications.filter(
+        (notification) => !notifications.some((n) => n.id === notification.id)
+    );
+
+    sessionStorage.setItem(cacheName, JSON.stringify(cachedNotifications));
+};
+
 </script>
