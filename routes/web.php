@@ -88,6 +88,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
         ->name('notifications.read');
 
+    Route::get('/followed-content', [ThreadController::class, 'contentIFollow'])
+        ->name('followed.content');
+
     Route::post('/reports', [ReportController::class, 'store'])
         ->name('report.post');
 

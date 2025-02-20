@@ -146,4 +146,45 @@ class ThreadController extends BaseServiceController
             ->route('threads.show', [$categoryId, $thread->id])
             ->with('success', 'Thread created successfully');
     }
+
+    /**
+     * Retrieve the last 10 threads the authenticated user has posted in,
+     * ordered by the latest post in each thread (regardless of the author).
+     * Threads with new posts since the user's last visit are marked as bold.
+     *
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the fetched threads
+     */
+    public function contentIFollow()
+    {
+        $authUser = auth()->user();
+
+        // Get the last 10 threads where the user has posted
+        $lastThreads = Thread::whereHas('posts', function ($query) use ($authUser) {
+            $query->where('user_id', $authUser->id);
+        })
+        ->with(['posts' => function ($query) {
+            $query->latest(); // Get latest posts in each thread
+        }])
+        ->orderByDesc(
+            Post::select('created_at')
+            ->whereColumn('thread_id', 'threads.id')
+            ->latest()
+            ->take(1)
+        )
+        ->limit(10)
+        ->get();
+
+        // Mark threads with new posts since last visit
+        $lastVisit = $authUser->last_visit_at ?? now()->subYears(10); // Default if no last visit recorded
+
+        $lastThreads->transform(function ($thread) use ($lastVisit) {
+            $newestPost = $thread->posts->first(); // Get the latest post in this thread
+            $thread->bold = $newestPost && $newestPost->created_at > $lastVisit ? true : false;
+            return $thread;
+        });
+
+        return response()->json([
+            'fetchedData' => $lastThreads,
+        ]);
+    }
 }
