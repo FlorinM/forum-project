@@ -148,11 +148,11 @@ class ThreadController extends BaseServiceController
     }
 
     /**
-     * Retrieve the last 10 threads the authenticated user has posted in,
-     * ordered by the latest post in each thread (regardless of the author).
-     * Threads with new posts since the user's last visit are marked as bold.
+     * Fetch the last 10 threads where the authenticated user has posted,
+     * including the latest posts in each thread. The threads will be marked as "bold"
+     * if they have new posts since the user last read them.
      *
-     * @return \Illuminate\Http\JsonResponse The JSON response containing the fetched threads
+     * @return \Illuminate\Http\JsonResponse
      */
     public function contentIFollow()
     {
@@ -160,29 +160,37 @@ class ThreadController extends BaseServiceController
 
         // Get the last 10 threads where the user has posted
         $lastThreads = Thread::whereHas('posts', function ($query) use ($authUser) {
+            // Filter threads where the user has posts
             $query->where('user_id', $authUser->id);
         })
         ->with(['posts' => function ($query) {
-            $query->latest(); // Get latest posts in each thread
+            $query->latest(); // Retrieve the latest posts in each thread
         }])
         ->orderByDesc(
-            Post::select('created_at')
+            Post::select('created_at') // Order threads by the most recent post date
             ->whereColumn('thread_id', 'threads.id')
-            ->latest()
-            ->take(1)
+            ->latest()  // Fetch the latest post for each thread
+            ->take(1)  // Take only the most recent post
         )
-        ->limit(10)
+        ->limit(10)  // Limit to the last 10 threads
         ->get();
 
-        // Mark threads with new posts since last visit
-        $lastVisit = $authUser->last_visit_at ?? now()->subYears(10); // Default if no last visit recorded
+        // Determine if the thread should be marked as "bold" based on read_at
+        $lastThreads->transform(function ($thread) use ($authUser) {
+            $newestPost = $thread->posts->first(); // Get the latest post in the thread
 
-        $lastThreads->transform(function ($thread) use ($lastVisit) {
-            $newestPost = $thread->posts->first(); // Get the latest post in this thread
-            $thread->bold = $newestPost && $newestPost->created_at > $lastVisit ? true : false;
+            // Get the last read timestamp from the pivot table (if exists)
+            $readAt = $authUser->readThreads()
+                ->where('thread_id', $thread->id)
+                ->value('read_at');
+
+            // If the thread has a new post after the user's last read, mark it as bold
+            $thread->bold = $newestPost && (!$readAt || $newestPost->created_at > $readAt);
+
             return $thread;
         });
 
+        // Return the fetched threads in a JSON response
         return response()->json([
             'fetchedData' => $lastThreads,
         ]);
