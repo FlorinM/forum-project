@@ -19,7 +19,7 @@
                     v-for="thread in contentIFollow"
                     :key="thread.id"
                     :href="route('threads.show', [thread.category_id, thread.id])"
-                    class="text-gray-700 hover:bg-blue-100"
+                    class="text-gray-700 hover:bg-blue-200 border-b border-gray-300"
                     :class="{'font-bold': thread.bold}"
                 >
                     {{ thread.title }}
