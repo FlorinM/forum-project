@@ -40,5 +40,19 @@ class Thread extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    /**
+     * Define a many-to-many relationship between the Thread and User models.
+     * This relationship is represented by the 'user_thread_reads' pivot table,
+     * which tracks when a user has read a specific thread.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function readers()
+    {
+        return $this->belongsToMany(User::class, 'user_thread_reads')
+            ->withPivot('read_at')
+            ->withTimestamps();
+    }
 }
 

@@ -128,6 +128,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(User::class, 'blocked_users', 'blocked_user_id', 'user_id')->withTimestamps();
     }
 
+    // Get all threads a user has read
+    public function readThreads()
+    {
+        return $this->belongsToMany(Thread::class, 'user_thread_reads')
+            ->withPivot('read_at')
+            ->withTimestamps();
+    }
+
     /**
      * Ban the user for a given number of days.
      *
