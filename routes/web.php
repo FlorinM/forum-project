@@ -96,6 +96,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/block/{user}', [BlockController::class, 'block'])->name('block');
     Route::post('/unblock/{user}', [BlockController::class, 'unblock'])->name('unblock');
+
+    Route::post('/thread/{thread}/read', [ThreadController::class, 'markAsRead'])
+        ->name('thread.read.at');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

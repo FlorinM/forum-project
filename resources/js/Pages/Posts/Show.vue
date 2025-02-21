@@ -187,6 +187,12 @@ onMounted(() => {
     document.querySelectorAll('img').forEach((img) => {
         img.onerror = () => (img.style.display = 'none');
     });
+
+    // Send a request to mark the thread as read for the authenticated user
+    axios.post(route('thread.read.at', { thread: props.thread.id }))
+        .catch(error => {
+            console.error('Failed to mark thread as read:', error);
+        });
 });
 
 function handlePageChange(page) {
