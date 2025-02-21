@@ -1,7 +1,7 @@
 <template>
     <Dropdown align="right" width="48">
         <template #trigger>
-            <button>
+            <button title="Content I Follow">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
