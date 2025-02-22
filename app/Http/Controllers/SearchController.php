@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Requests\SearchRequest;
 use Inertia\Inertia;
 
 class SearchController extends Controller
@@ -18,7 +19,7 @@ class SearchController extends Controller
      * @param  \Illuminate\Http\Request  $request  The incoming request containing the search term.
      * @return \Inertia\Response  The response rendered with the search results.
      */
-    public function search(Request $request)
+    public function search(SearchRequest $request)
     {
         $searchTerm = $request->input('query');
 
