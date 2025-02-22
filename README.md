@@ -1,66 +1,111 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+  <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+  <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Forum Application
+X forum is a full-fledged forum built with **MySQL**, **Laravel 11**, **Inertia SSR**, and **Vue 3**. It uses the **Breeze** starter kit with **Tailwind CSS** for a responsive, modern design. The application comes pre-seeded with categories, subcategories, threads, and posts, providing a fully functional community forum. It features a robust admin panel, extensive user management, and supports real-time messaging, user permissions, content creation, and more.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### **User Management & Authentication**
+- **Authentication with Breeze**: Simple and secure user authentication using Laravel Breeze.
+- **User Profiles**: Customizable user profiles, allowing users to update their details, display names, and more.
+- **Avatars**: Users can upload custom avatars that appear alongside their posts and profile.
+- **User Roles**: 
+  - **Super Admin**: Full access to all functionalities, including managing users, content, and settings.
+  - **Admin**: Manage content and users (except Super Admin settings).
+  - **Moderator**: Moderate threads, posts, and reports; ban users if necessary.
+  - **User**: Regular users who can create threads, post content, and interact.
+  - **New User**: Automatically assigned to new users with limited access until they are verified.
+  
+### **Permissions & Admin Panel**
+- **Permissions**: Role-based permissions to determine what each user can or cannot do within the application.
+- **Admin Panel**: A powerful backend interface for admins to manage users, threads, posts, and reports.
+- **Reports**: Users can report inappropriate content, and moderators can take action based on reports.
+- **Ban**: Admins and moderators can ban users from posting, creating threads, or accessing the forum entirely.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### **Real-Time Features**
+- **Private Messaging with Broadcasting**: Real-time private messaging, allowing users to send and receive messages instantly.
+- **Notifications**: Users receive notifications for private messages.
+- **Followed Content**: Users can follow threads, receiving notifications for new content and updates.
+  
+### **Content Management & Search**
+- **User Content**: Users can search their threads, and replies.
+- **Post with Images & YouTube**: Posts can contain images and embedded YouTube videos, enriching the content shared on the forum.
+- **Search in Posts**: Powerful search functionality allows users to search for specific content within threads and posts across the forum.
 
-## Learning Laravel
+### **Additional Features**
+- **Captcha Protection**: CAPTCHA is enabled to prevent spammy activity on forms like registration, post creation, and comments.
+- **SEO Friendly**: Properly structured URLs, meta tags, and clean markup for better search engine indexing.
+- **Responsive Design**: Fully responsive UI.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Tools Used
+This forum application leverages several powerful tools and libraries to enhance its functionality and performance:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **[Spatie Laravel Permission](https://spatie.be/docs/laravel-permission)**: Used for managing roles and permissions, allowing you to easily assign and control access for users.
+- **[Filament](https://filamentphp.com/)**: A beautiful, powerful admin panel built for Laravel, making it simple to manage content and users.
+- **[Quill](https://quilljs.com/)**: A rich-text editor for posts, allowing users to create formatted content with ease.
+- **[Pusher](https://pusher.com/)**: Used for real-time broadcasting of events, enabling live notifications, private messaging, and other real-time features.
+- **[HTMLPurifier](https://github.com/xemlock/htmlpurifier-html5)**: Ensures the sanitization of user-generated content, preventing XSS and other malicious attacks.
+- **[Intervention Image](https://image.intervention.io/)**: Provides easy image handling for resizing, cropping, and editing images uploaded by users.
 
-## Laravel Sponsors
+These tools work together seamlessly to provide a robust, feature-rich, and secure forum platform.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
+1. Clone the repository: Clone the repository to your local machine using Git.
+    git clone https://github.com/FlorinM/forum-project
+    
+2. Navigate to the project directory: After cloning the repository, navigate to the project folder.
+    cd forum-project
+    
+3. Install dependencies: Make sure you have Composer and Node.js installed. Run the following commands to install the PHP and JavaScript dependencies:
+    composer install
+    npm install
+    
+4. Create the .env file: Copy the .env.example file to a new .env file for configuration.
+    cp .env.example .env
+    
+5. Generate the application key: Laravel requires an application key, which you can generate by running:
+    php artisan key:generate
+    
+6. Set up your database:
+- Create a new MySQL database for the project.
+- Update the .env file with your database credentials:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=your-database-name
+    DB_USERNAME=your-username
+    DB_PASSWORD=your-password
+    
+7. Run migrations and seed the database: This command will set up the database structure and seed it with the required data:
+    php artisan migrate --seed
+    
+8. Run the development server: To start the development server, use the following command:
+    php artisan serve
+Your application will now be accessible at http://127.0.0.1:8000
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+9. Set up front-end assets: Compile the front-end assets using the following:
+    npm run dev
+    
+10. Set up Pusher (Optional for real-time features): If you're using real-time features like private messaging or notifications, set up Pusher by creating an account at Pusher.
+- Update the .env file with your Pusher credentials:
+    PUSHER_APP_ID=your-app-id
+    PUSHER_APP_KEY=your-app-key
+    PUSHER_APP_SECRET=your-app-secret
+    PUSHER_APP_CLUSTER=your-app-cluster
+    
+Now, your local environment should be ready to use. Enjoy working with the X forum application!
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+Copyright © [2025] [Manolache Florin]. All rights reserved.
