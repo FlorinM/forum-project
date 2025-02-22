@@ -19,7 +19,7 @@
                     v-for="thread in contentIFollow"
                     :key="thread.id"
                     :href="route('threads.show', [thread.category_id, thread.id])"
-                    class="text-gray-700 hover:bg-blue-200 border-b border-gray-300"
+                    class="dropdown_link text-gray-700 border-b border-gray-300"
                     :class="{'font-bold': thread.bold}"
                 >
                     {{ thread.title }}
@@ -42,3 +42,9 @@ onMounted(async () => {
     contentIFollow.value = await useFetchData('/followed-content', 6000);
 });
 </script>
+
+<style scoped>
+.dropdown_link:hover {
+    background-color: #dbeafe; /* Equivalent to Tailwind's bg-blue-100 */
+}
+</style>

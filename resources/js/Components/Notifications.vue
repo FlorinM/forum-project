@@ -30,7 +30,7 @@
                     :key="notification.id"
                     :href="route('discussions.show', notification.data.discussion_id)"
                     @click.prevent="markAsRead(notification.id)"
-                    class="text-gray-700 hover:bg-blue-200 border-b border-gray-300"
+                    class="dropdown_link text-gray-700 border-b border-gray-300"
                 >
                     You got a message from {{ notification.data.sender }}
                 </DropdownLink>
@@ -77,3 +77,9 @@ const markAsRead = async (notificationId) => {
     }
 };
 </script>
+
+<style scoped>
+.dropdown_link:hover {
+    background-color: #dbeafe; /* Equivalent to Tailwind's bg-blue-100 */
+}
+</style>
