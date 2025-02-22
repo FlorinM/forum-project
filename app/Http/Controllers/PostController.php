@@ -66,6 +66,9 @@ class PostController extends BaseServiceController
         // Create the new post
         $this->createNewPost($thread, $content);
 
+        // Mark the thread as read
+        $thread->markAsRead();
+
         return back(); // Redirect back to the thread view
     }
 

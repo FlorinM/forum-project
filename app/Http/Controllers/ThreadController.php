@@ -150,31 +150,13 @@ class ThreadController extends BaseServiceController
     /**
      * Mark a specific thread as read for the authenticated user.
      *
-     * This method checks if a user has already interacted with the given thread by checking
-     * the pivot table. If an entry exists, it updates the `read_at` timestamp to the current time.
-     * If no entry exists in the pivot table for the user-thread pair, it creates a new record
-     * with the current timestamp for `read_at`.
-     *
-     * @param int $thread The ID of the thread to be marked as read.
+     * @param Thread $thread The thread to be marked as read.
      *
      * @return \Illuminate\Http\JsonResponse A JSON response with a success message.
      */
-    public function markAsRead(int $thread)
+    public function markAsRead(Thread $thread)
     {
-        $user = auth()->user();
-
-        // Check if the pivot record exists (i.e., user has already interacted with the thread)
-        if ($user->readThreads()->where('thread_id', $thread)->exists()) {
-            // If the pivot record exists, update the read_at timestamp
-            $user->readThreads()->updateExistingPivot($thread, [
-                'read_at' => now(),
-            ]);
-        } else {
-            // If the pivot record doesn't exist, create a new one with the current timestamp
-            $user->readThreads()->attach($thread, [
-                'read_at' => now(),
-            ]);
-        }
+        $thread->markAsRead();
 
         // No need to return anything unless you want a response
         // You can return a success message if needed
