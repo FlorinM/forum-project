@@ -1,0 +1,60 @@
+<template>
+    <div
+        class="flex items-center border border-gray-300 rounded-lg p-0 bg-blue-100 shadow-sm"
+    >
+        <input
+            v-model="form.query"
+            @keyup.enter="submitSearch"
+            type="text"
+            class="p-1 w-40 md:w-64 text-black border-none rounded-lg focus:outline-none"
+            placeholder="Search..."
+        />
+        <button
+            @click="submitSearch"
+            class="ml-2 bg-blue-800 text-white p-1 rounded-lg hover:bg-blue-600 focus:outline-none"
+            aria-label="Search"
+        >
+            <!-- Magnifying Glass Icon -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                class="h-5 w-5"
+            >
+                <circle
+                    cx="10"
+                    cy="10"
+                    r="7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                />
+                <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                />
+            </svg>
+        </button>
+    </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useForm } from 'laravel-precognition-vue-inertia';
+
+// Create the form object with the query field
+const form = useForm('post', route('search'), {
+    query: '',
+});
+
+function submitSearch() {
+    form.submit({
+        preserveScroll: true,
+        onSuccess: () => form.reset(),
+    });
+}
+</script>

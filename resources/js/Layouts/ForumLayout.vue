@@ -8,6 +8,10 @@
             </div>
 
             <div class="flex items-center">
+                <div class="mr-4">
+                    <SearchInput />
+                </div>
+
                 <div v-if="$page.props.auth.user" class="mr-4">
                     <ContentIFollowButton />
                 </div>
@@ -127,6 +131,7 @@ import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import NewTopics from '@/Components/NewTopics.vue';
 import Notifications from '@/Components/Notifications.vue';
 import ContentIFollowButton from '@/Components/ContentIFollowButton.vue';
+import SearchInput from '@/Components/SearchInput.vue';
 import { usePage } from '@inertiajs/vue3';
 
 // Check if the user has Admin or Moderator role

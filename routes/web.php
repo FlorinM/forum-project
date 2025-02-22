@@ -16,6 +16,7 @@ use App\Http\Controllers\CaptchaController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 
 /*
@@ -107,6 +108,10 @@ Route::get('/post/{post}', [PostController::class, 'showByPostId'])->name('find.
 Route::get('/categories/{category}/subcategories', [CategoryController::class, 'showSubcategories'])->name('categories.subcategories');
 Route::get('/new-topics', [NewTopicsController::class, 'index'])->name('new-topics.index');
 Route::get('/captcha', [CaptchaController::class, 'generate'])->middleware('throttle:10,1');
+Route::post('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/search', function () {
+    return back();
+});
 
 
 
