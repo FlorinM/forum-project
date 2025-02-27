@@ -8,7 +8,7 @@
 </p>
 
 # Forum Application
-X forum is a full-fledged forum built with **MySQL**, **Laravel 11**, **Inertia SSR**, and **Vue 3**. It uses the **Breeze** starter kit with **Tailwind CSS** for a responsive, modern design. The application comes pre-seeded with categories, subcategories, threads, and posts, providing a fully functional community forum. It features a robust admin panel, extensive user management, and supports real-time messaging, user permissions, content creation, and more.
+X forum is a Single Page Application (SPA), a full-fledged forum built with **MySQL**, **Laravel 11**, **Inertia SSR**, and **Vue 3**. It uses the **Breeze** starter kit with **Tailwind CSS** for a responsive, modern design. The application comes pre-seeded with categories, subcategories, threads, and posts, providing a fully functional community forum. It features a robust admin panel, extensive user management, and supports real-time messaging, user permissions, content creation, and more.
 
 ## Features
 
@@ -60,47 +60,73 @@ These tools work together seamlessly to provide a robust, feature-rich, and secu
 
 ## Installation
 1. Clone the repository: Clone the repository to your local machine using Git.
+    ```
     git clone https://github.com/FlorinM/forum-project
+    ```
     
 2. Navigate to the project directory: After cloning the repository, navigate to the project folder.
+    ```
     cd forum-project
+    ```
     
 3. Install dependencies: Make sure you have Composer and Node.js installed. Run the following commands to install the PHP and JavaScript dependencies:
+    ```
     composer install
     npm install
+    ```
     
 4. Create the .env file: Copy the .env.example file to a new .env file for configuration.
+    ```
     cp .env.example .env
+    ```
     
 5. Generate the application key: Laravel requires an application key, which you can generate by running:
+    ```
     php artisan key:generate
+    ```
     
-6. Set up your database:
-- Create a new MySQL database for the project.
-- Update the .env file with your database credentials:
+6. Create a new MySQL database for the project.
+
+7. Make a Pusher account. This application requires Pusher for broadcasting.
+
+8. Update the .env file with your database credentials and pusher credentials.
+    ```
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
     DB_DATABASE=your-database-name
     DB_USERNAME=your-username
     DB_PASSWORD=your-password
-    
-7. Run migrations and seed the database: This command will set up the database structure and seed it with the required data:
-    php artisan migrate --seed
-    
-8. Run the development server: To start the development server, use the following command:
-    php artisan serve
-Your application will now be accessible at http://127.0.0.1:8000
-
-9. Set up front-end assets: Compile the front-end assets using the following:
-    npm run dev
-    
-10. Set up Pusher (Optional for real-time features): If you're using real-time features like private messaging or notifications, set up Pusher by creating an account at Pusher.
-- Update the .env file with your Pusher credentials:
+    ...
+    BROADCAST_CONNECTION=pusher
+    ...
     PUSHER_APP_ID=your-app-id
     PUSHER_APP_KEY=your-app-key
     PUSHER_APP_SECRET=your-app-secret
+    PUSHER_HOST=your-pusher-host
+    PUSHER_PORT=443
+    PUSHER_SCHEME="https"
     PUSHER_APP_CLUSTER=your-app-cluster
+    ...
+    VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+    VITE_PUSHER_HOST="${PUSHER_HOST}"
+    VITE_PUSHER_PORT="${PUSHER_PORT}"
+    VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+    VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+    ```
+    
+9. Run migrations and seed the database: This command will set up the database structure and seed it with the required data:
+    ```
+    php artisan migrate --seed
+    ```
+    
+10. Run the development server: To start the development server, use the following commands:
+    ```
+    php artisan serve
+    npm run dev
+    php artisan queue:work
+    ```
+Use different terminals if needed. Your application will now be accessible at http://127.0.0.1:8000
     
 Now, your local environment should be ready to use. Enjoy working with the X forum application!
 
