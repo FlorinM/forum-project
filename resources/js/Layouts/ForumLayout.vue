@@ -138,10 +138,11 @@ import ContentIFollowButton from '@/Components/ContentIFollowButton.vue';
 import SearchInput from '@/Components/SearchInput.vue';
 import { usePage } from '@inertiajs/vue3';
 
-// Check if the user has Admin or Moderator role
+// Check if the user has SuperAdmin, Admin or Moderator role
 const isAdminOrModerator =
     usePage().props.auth.user &&
-    (usePage().props.auth.user.roles.includes('Admin') ||
+    (usePage().props.auth.user.roles.includes('SuperAdmin') ||
+        usePage().props.auth.user.roles.includes('Admin') ||
         usePage().props.auth.user.roles.includes('Moderator'));
 
 function goToAdminPanel() {

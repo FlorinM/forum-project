@@ -65,8 +65,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        // Check if the user has the 'Admin' or 'Moderator' roles
-        return $this->hasRole('Admin') || $this->hasRole('Moderator');
+        // Check if the user has the 'SuperAdmin', 'Admin' or 'Moderator' roles
+        return $this->hasRole('SuperAdmin') || $this->hasRole('Admin') || $this->hasRole('Moderator');
     }
 
     // Relationship with Categories
