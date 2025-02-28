@@ -189,6 +189,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return false;
     }
 
+    /**
+     * Promote a User to the Moderator role.
+     *
+     * @return void
+     */
     public function promoteToModerator(): void
     {
         if (!auth()->user()->can('promoteToModerator', $this)) {
@@ -201,6 +206,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         }
     }
 
+    /**
+     * Promote a Moderator to the Admin role.
+     *
+     * @return void
+     */
     public function promoteToAdmin(): void
     {
         if (!auth()->user()->can('promoteToAdmin', $this)) {
@@ -213,6 +223,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         }
     }
 
+    /**
+     * Demote a Moderator to the User role.
+     *
+     * @return void
+     */
     public function demoteToUser(): void
     {
         if (!auth()->user()->can('demoteToUser', $this)) {
@@ -225,6 +240,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         }
     }
 
+    /**
+     * Demote an Admin to the Moderator role.
+     *
+     * @return void
+     */
     public function demoteToModerator(): void
     {
         if (!auth()->user()->can('demoteToModerator', $this)) {
