@@ -116,8 +116,12 @@
             <slot />
         </div>
 
-        <div class="pt-20 max-w-[1000px] mx-auto">
+        <div class="pt-10 max-w-[1000px] mx-auto">
             <Breadcrumbs></Breadcrumbs>
+            <div class="text-sm mt-8 mb-4">
+                Copyright © 2025 Manolache Florin<br>
+                This project is licensed under the MIT License – see the LICENSE file for details.
+            </div>
         </div>
     </div>
 </template>
