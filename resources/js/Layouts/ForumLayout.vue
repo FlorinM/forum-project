@@ -4,7 +4,7 @@
             class="fixed flex w-full max-w-screen-xl mx-auto justify-between items-center bg-blue-600 text-white shadow-md p-4 rounded-md z-20"
         >
             <div class="flex items-center">
-                <h1 class="text-lg font-bold">X forum</h1>
+                <h1 class="text-lg font-bold"></h1>
             </div>
 
             <div class="flex items-center">

@@ -1,7 +1,7 @@
 <template>
     <ForumLayout>
         <div class="max-w-5xl mx-auto p-5 bg-gray-100 rounded-lg shadow-md">
-            <Title>X forum</Title>
+            <Title></Title>
 
             <ul class="list-none p-0">
                 <li

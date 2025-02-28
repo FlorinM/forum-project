@@ -8,7 +8,7 @@
 </p>
 
 # Forum Application
-X forum is a Single Page Application (SPA), a full-fledged forum built with **MySQL**, **Laravel 11**, **Inertia SSR**, and **Vue 3**. It uses the **Breeze** starter kit with **Tailwind CSS** for a responsive, modern design. The application comes pre-seeded with categories, subcategories, threads, and posts, providing a fully functional community forum. It features a robust admin panel, extensive user management, and supports real-time messaging, user permissions, content creation, and more.
+This project is a Single Page Application (SPA), a full-fledged forum built with **MySQL**, **Laravel 11**, **Inertia SSR**, and **Vue 3**. It uses the **Breeze** starter kit with **Tailwind CSS** for a responsive, modern design. The application comes pre-seeded with categories, subcategories, threads, and posts, providing a fully functional community forum. It features a robust admin panel, extensive user management, and supports real-time messaging, user permissions, content creation, and more.
 
 ## Features
 
