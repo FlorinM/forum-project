@@ -7,6 +7,51 @@ use App\Models\User;
 class UserPolicy
 {
     /**
+     * Determine if the authenticated user can promote another user to admin.
+     *
+     * @param \App\Models\User $authUser
+     * @param \App\Models\User $targetUser
+     * @return bool
+     */
+    public function promoteToAdmin(User $authUser, User $targetUser): bool
+    {
+        // Check if the authenticated user has the "assign_admin_role" permission
+        if (!$authUser->hasPermissionTo('assign_admin_role')) {
+            return false;
+        }
+
+        // Only moderators can be promoted to admins
+        if (!$targetUser->hasRole('Moderator')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if the authenticated user can demote another user to regular user.
+     *
+     * @param \App\Models\User $authUser
+     * @param \App\Models\User $targetUser
+     * @return bool
+     */
+    public function demoteToModerator(User $authUser, User $targetUser): bool
+    {
+        // Check if the authenticated user has the "assign_admin_role" permission
+        if (!$authUser->hasPermissionTo('assign_admin_role')) {
+            return false;
+        }
+
+        // Only admins can be demoted to moderators
+        if (!$targetUser->hasRole('Admin')) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
      * Determine if the authenticated user can promote another user to moderator.
      *
      * @param \App\Models\User $authUser
@@ -69,14 +114,23 @@ class UserPolicy
             return false;
         }
 
-        // Admins can ban anyone except other Admins
-        if ($authUser->hasRole('Admin')) {
-            return !$targetUser->hasRole('Admin');
+        // SuperAdmin can ban anyone
+        if ($authUser->hasRole('SuperAdmin')) {
+            return true;
         }
 
-        // Moderators can only ban regular Users
+        // Admins can ban anyone except other Admins and the SuperAdmin
+        if ($authUser->hasRole('Admin')) {
+            if ($targetUser->hasRole('SuperAdmin') || $targetUser->hasRole('Admin')) {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Moderators can only ban regular Users and New Users
         if ($authUser->hasRole('Moderator')) {
-            return $targetUser->hasRole('User');
+            return $targetUser->hasRole('User') || $targetUser->hasRole('NewUser');
         }
 
         // Other roles can't ban anyone
@@ -95,6 +149,11 @@ class UserPolicy
         // First, check if the authenticated user has the "unban_user" permission
         if (!$authUser->hasPermissionTo('unban_user')) {
             return false;
+        }
+
+        // SuperAdmin can unban anyone
+        if ($authUser->hasRole('SuperAdmin')) {
+            return true;
         }
 
         // Admins can unban anyone except other Admins
@@ -130,9 +189,13 @@ class UserPolicy
             return true;
         }
 
-        // Admins can edit anyone except other Admins
+        // Admins can edit anyone except other Admins and the SuperAdmin
         if ($authUser->hasRole('Admin')) {
-            return !$targetUser->hasRole('Admin');
+            if ($targetUser->hasRole('SuperAdmin') || $targetUser->hasRole('Admin')) {
+                return false;
+            }
+
+            return true;
         }
 
         // Other roles can't edit anyone
@@ -153,9 +216,18 @@ class UserPolicy
             return false;
         }
 
-        // Admins can delete anyone except other Admins
+        // SuperAdmin can delete anyone
+        if ($authUser->hasRole('SuperAdmin')) {
+            return true;
+        }
+
+        // Admins can delete anyone except other Admins and the SuperAdmin
         if ($authUser->hasRole('Admin')) {
-            return !$targetUser->hasRole('Admin');
+            if ($targetUser->hasRole('SuperAdmin') || $targetUser->hasRole('Admin')) {
+                return false;
+            }
+
+            return true;
         }
 
         // Other roles can't delete anyone

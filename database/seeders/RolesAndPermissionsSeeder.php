@@ -31,6 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'move_category',
             'delete_user',
             'promote_user',
+            'assign_admin_role',
             'edit_user',
             'send_message',
             'solve_report_user_reported',
