@@ -142,8 +142,11 @@ This will ensure your captchas look better and more professional.
     php artisan queue:work
     ```
 Use different terminals if needed. Your application will now be accessible at http://127.0.0.1:8000
-    
-Now, your local environment should be ready to use. Enjoy working with the X forum application!
+Now, your local environment should be ready to use. 
+
+13. Register: When registering the first user account, it will automatically be assigned the Super Admin role. Only one Super Admin is allowed in the application.
+
+Enjoy working with the this forum application!
 
 ## License
 
