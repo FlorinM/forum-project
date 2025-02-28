@@ -149,7 +149,9 @@ class UserResource extends Resource
 
             Tables\Columns\TextColumn::make('roles.name')
                 ->label('Role')
-                ->visible(fn () => auth()->user()->hasRole('Admin')),
+                ->visible(fn () => auth()->user()->hasRole('Admin') ||
+                                   auth()->user()->hasRole('SuperAdmin')
+                ),
         ])
         ->actions([
             Tables\Actions\ActionGroup::make([
@@ -185,13 +187,26 @@ class UserResource extends Resource
                               fn (User $record) => auth()->user()->can('unban', $record))
                     ->disabled(fn (User $record) => !auth()->user()->can('unban', $record)),
 
+                Tables\Actions\Action::make('Promote to Admin')
+                    ->action(fn (User $record) => $record->promoteToAdmin())
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->visible(fn (User $record) => auth()->user()->can('promoteToAdmin', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('promoteToAdmin', $record)),
+
+                Tables\Actions\Action::make('Demote to Moderator')
+                    ->action(fn (User $record) => $record->demoteToModerator())
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->visible(fn (User $record) => auth()->user()->can('demoteToModerator', $record))
+                    ->disabled(fn (User $record) => !auth()->user()->can('demoteToModerator', $record)),
+
                 Tables\Actions\Action::make('Promote to Moderator')
                     ->action(fn (User $record) => $record->promoteToModerator())
                     ->requiresConfirmation()
                     ->color('success')
                     ->visible(fn (User $record) => auth()->user()->can('promoteToModerator', $record))
                     ->disabled(fn (User $record) => !auth()->user()->can('promoteToModerator', $record)),
-
 
                 Tables\Actions\Action::make('Demote to User')
                     ->action(fn (User $record) => $record->demoteToUser())

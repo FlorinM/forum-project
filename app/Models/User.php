@@ -201,6 +201,18 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         }
     }
 
+    public function promoteToAdmin(): void
+    {
+        if (!auth()->user()->can('promoteToAdmin', $this)) {
+            abort(403, 'You are not authorized to promote this user.');
+        }
+
+        if ($this->hasRole('Moderator')) {
+            $this->removeRole('Moderator');
+            $this->assignRole('Admin');
+        }
+    }
+
     public function demoteToUser(): void
     {
         if (!auth()->user()->can('demoteToUser', $this)) {
@@ -210,6 +222,18 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         if ($this->hasRole('Moderator')) {
             $this->removeRole('Moderator');
             $this->assignRole('User');
+        }
+    }
+
+    public function demoteToModerator(): void
+    {
+        if (!auth()->user()->can('demoteToModerator', $this)) {
+            abort(403, 'You are not authorized to demote this user.');
+        }
+
+        if ($this->hasRole('Admin')) {
+            $this->removeRole('Admin');
+            $this->assignRole('Moderator');
         }
     }
 
