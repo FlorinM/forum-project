@@ -120,7 +120,17 @@ These tools work together seamlessly to provide a robust, feature-rich, and secu
     php artisan migrate --seed
     ```
     
-10. Run the development server: To start the development server, use the following commands:
+10. Captcha requires at least one `.ttf` file in the `storage/app/public/TTF/` directory. While this is not mandatory, it is **highly recommended** to improve the appearance of your captcha images. You can download a few `.ttf` files from the following sites and place them in the `TTF` directory:
+
+- [Google Fonts](https://fonts.google.com/)
+- [DaFont](https://www.dafont.com/)
+- [FontSpace](https://www.fontspace.com/)
+- [1001 Free Fonts](https://www.1001freefonts.com/)
+- [FontSquirrel](https://www.fontsquirrel.com/)
+
+This will ensure your captchas look better and more professional.
+    
+11. Run the development server: To start the development server, use the following commands:
     ```
     php artisan serve
     npm run dev
