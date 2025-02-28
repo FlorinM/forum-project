@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -60,10 +61,23 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Assign the "NewUser" role to the user
-        $newUserRole = Role::where('name', 'NewUser')->first();
-        if ($newUserRole) {
-            $user->assignRole($newUserRole);
+        // Check if a SuperAdmin already exists
+        $superAdminExists = DB::table('model_has_roles')
+            ->where('role_id', Role::where('name', 'SuperAdmin')->value('id'))
+            ->exists();
+
+        // If no user has the SuperAdmin role, assign this user as SuperAdmin.
+        // Otherwise, assign the user the NewUser role.
+        if (!$superAdminExists) {
+            $superAdminRole = Role::where('name', 'SuperAdmin')->first();
+            if ($superAdminRole) {
+                $user->assignRole($superAdminRole);
+            }
+        } else {
+            $newUserRole = Role::where('name', 'NewUser')->first();
+            if ($newUserRole) {
+                $user->assignRole($newUserRole);
+            }
         }
 
         event(new Registered($user));
