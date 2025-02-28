@@ -129,8 +129,13 @@ These tools work together seamlessly to provide a robust, feature-rich, and secu
 - [FontSquirrel](https://www.fontsquirrel.com/)
 
 This will ensure your captchas look better and more professional.
+
+11. Create a symbolic link from public/storage to storage/app/public, allowing public access to files stored in storage/app/public.
+    ```
+    php artisan storage:link
+    ```
     
-11. Run the development server: To start the development server, use the following commands:
+12. Run the development server: To start the development server, use the following commands:
     ```
     php artisan serve
     npm run dev
