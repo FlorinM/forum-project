@@ -58,28 +58,28 @@
                 <div
                     class="bg-white p-6 rounded-md shadow-md mb-6 col-span-3 mr-4"
                 >
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                        Info:
+                    <h2 class="font-semibold text-gray-800 mb-4">
+                        {{ props.user.name }}
                     </h2>
                     <div class="grid grid-cols-1 text-gray-600">
                         <table>
-                            <tr v-for="(info, index) in infos">
-                                <td>{{ info.name }}:</td>
-                                <td>
-                                    <strong v-if="info.value">{{
-                                        info.value
-                                    }}</strong
-                                    ><strong v-else>Unknown</strong>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Signature:</td>
-                                <td>
-                                    <div class="text-xs italic">
-                                        {{ props.user.signature }}
-                                    </div>
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr v-for="(info, index) in infos">
+                                    <td>{{ info.name }}:</td>
+                                    <td>
+                                        <strong v-if="info.value">{{ info.value }}</strong>
+                                        <strong v-else>Unknown</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Signature:</td>
+                                    <td>
+                                        <div class="text-xs italic">
+                                            {{ props.user.signature }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
