@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        $testUser = User::create([
             'name' => 'Test User',
             'nickname' => 'testuser',
             'email' => 'test@example.com',
-            'password' => 'testuser12345678',
+            'password' => Hash::make('testuser12345678'),
 
         ]);
 
@@ -26,5 +28,11 @@ class DatabaseSeeder extends Seeder
 
         // Run the Categories Seeder
         $this->call(ForumSeeder::class);
+
+        // Give User role to Test User
+        $userRole = Role::where('name', 'User')->first();
+        if ($userRole) {
+            $testUser->assignRole($userRole);
+        }
     }
 }
