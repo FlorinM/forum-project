@@ -25,7 +25,9 @@ class PostController extends BaseServiceController
 
         // Paginate the posts for the current thread
         $posts = $thread->posts()
-            ->with('user')
+            ->with(['user' => function ($query) {
+            $query->withCount('posts');
+        }])
             ->orderBy('created_at', 'asc')
             ->paginate(10, ['*'], 'page', $page);
 

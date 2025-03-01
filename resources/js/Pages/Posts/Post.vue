@@ -2,7 +2,7 @@
     <div class="w-full mb-4 bg-white border border-gray-300 rounded-md p-5">
         <div class="grid grid-cols-10 gap-4">
             <!-- Left Side: Avatar and Name (10%) -->
-            <div class="col-span-1 flex flex-col items-center space-y-2">
+            <div class="col-span-1 flex flex-col space-y-2">
                 <Avatar
                     :avatarUrl="post.user.avatar_url"
                     :altText="post.user.name"
@@ -12,6 +12,8 @@
                         {{ post.user.nickname }}
                     </Link>
                 </p>
+                <div class="text-xs">Registered: {{ formatDate(post.user.created_at) }}</div>
+                <div class="text-xs">Posts: {{ post.user.posts_count }}</div>
                 <div v-if="isUserBanned" class="text-sm"><strong>banned</strong></div>
             </div>
 
@@ -70,6 +72,7 @@ import { Link } from '@inertiajs/vue3';
 import Report from '@/Components/Report.vue';
 import { ref, watch, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useFormatDate } from '@/Composables/useFormatDate.js';
 
 const props = defineProps({
     post: Object, // Post data
@@ -101,4 +104,7 @@ const isUserBanned = computed(() => {
     return props.post.user.is_banned &&
            new Date(props.post.user.is_banned) > new Date();
 });
+
+// Use custom date formatting function
+const formatDate = useFormatDate;
 </script>
